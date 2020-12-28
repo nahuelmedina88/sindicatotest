@@ -1,0 +1,25 @@
+:root {
+  --input-border-color: rgb(218, 203, 203);
+  --bg-color-image-1: rgba(9, 17, 255, 0.8);
+  // --primary-color: rgba(9, 17, 255);
+  --primary-color: rgb(5, 9, 126);
+  --bg-color-image-2: rgba(9, 165, 255, 0.8);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+  //   font-family: "Patrick Hand", cursive;
+}

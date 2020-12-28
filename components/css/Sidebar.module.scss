@@ -1,0 +1,201 @@
+/* .navItemCs:hover {
+  background-color: black;
+}
+
+.navItemCs {
+  padding: 5%;
+  text-decoration: none;
+}
+
+.navItemCs > a:hover {
+  text-decoration: none;
+}
+
+.navLinkCs:hover {
+  color: white;
+} */
+
+.burgerButton {
+  background-color: white;
+}
+
+.sidebar {
+  width: 13rem;
+}
+
+.show {
+  display: flex !important;
+}
+
+.hide {
+  display: none !important;
+}
+
+.aside {
+  background-color: var(--primary-color);
+}
+
+/* Pantalla Chica */
+@media only screen and (max-width: 849px) {
+  .aside {
+    display: flex;
+    flex-direction: column;
+  }
+  /* .nav {
+    display: none;
+  } */
+  .ul {
+    flex-direction: column;
+  }
+}
+
+/* Pantalla grande */
+@media only screen and (min-width: 850px) {
+  .aside {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 18%;
+  }
+  .burguerButtonChanged {
+    align-self: flex-start;
+  }
+  .asideChanged {
+    min-height: 100vh;
+  }
+  .ul {
+    flex-direction: column;
+  }
+}
+
+.burguerButton {
+  /* margin-left: 2rem; */
+}
+
+.nav {
+  /* background-color: red; */
+}
+
+.ul {
+  display: flex;
+  /* background-color: purple; */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.ul > li {
+  width: 100%;
+  padding: 1rem;
+  &:hover {
+    background-color: white;
+    cursor: pointer;
+    a {
+      color: var(--primary-color);
+    }
+    .icon {
+      fill: var(--primary-color);
+    }
+  }
+}
+
+.link {
+  background-color: red;
+}
+
+.link:hover {
+  color: white;
+}
+
+.a {
+  color: white;
+}
+.a:hover {
+  text-decoration: none;
+  color: white;
+}
+.a:active {
+  text-decoration: none;
+  color: grey;
+}
+
+.LinkContainer {
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  font-size: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: white;
+  margin-right: 0.5rem;
+}
+.icon2 {
+  font-size: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: var(--primary-color);
+  //
+}
+@media only screen and (min-width: 850px) {
+  @keyframes animateButton {
+    5% {
+      transform: translateX(-10em);
+    }
+    90% {
+      transform: translateX(0em);
+    }
+    100% {
+      transform: translateX(0em);
+    }
+  }
+  @keyframes animateButtonHide {
+    5% {
+      transform: translateX(0em);
+    }
+    90% {
+      transform: translateX(-10em);
+    }
+    100% {
+      transform: translateX(-20em);
+    }
+  }
+  .btnNewPropertiesShow {
+    transform: translateX(-20em);
+    animation: animateButton 0.5s;
+    animation-delay: 0.5s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+  }
+  /* .btnNewPropertiesHide {
+  transform: translateX(0em);
+  animation: animateButtonHide 0.5s;
+  animation-delay: 0.5s;
+  animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+} */
+}
+
+@media only screen and (max-width: 450px) {
+  @keyframes animateButton {
+    5% {
+      transform: translateY(-5em);
+    }
+    90% {
+      transform: translateY(0em);
+    }
+    100% {
+      transform: translateY(0em);
+    }
+  }
+
+  .btnNewPropertiesShow {
+    transform: translateY(-10em);
+    animation: animateButton 0.5s;
+    animation-delay: 0.5s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+  }
+}

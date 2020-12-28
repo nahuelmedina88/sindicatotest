@@ -1,0 +1,42 @@
+$dangerColor: #d82f2f;
+
+.btn {
+  padding: 0.7rem;
+  border-radius: 5px;
+  text-decoration: none;
+  border-width: 1px;
+  border-color: white;
+  font-size: 1rem;
+  margin: 0.5rem;
+}
+
+.btnPrimary {
+  background-color: darken($myblue, 25%);
+  color: white;
+
+  &:hover {
+    background-color: $myblueBoton;
+    border-width: 1px;
+    border-color: white;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+.btnDanger {
+  background-color: $dangerColor;
+  color: white;
+
+  &:hover {
+    background-color: lighten($dangerColor, 15%);
+    border-width: 1px;
+    border-color: white;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.btnTable {
+  padding: 0.4rem;
+}

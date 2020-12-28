@@ -1,0 +1,102 @@
+@import "../sass/base/base";
+
+$myblue: rgba(9, 17, 255);
+$myblueBoton: #6fa5ff;
+
+@import "../sass/components/buttons";
+@import "../sass/components/inputs";
+@import "../sass/components/forms";
+
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media only screen and (max-width: 760px),
+  (min-device-width: 768px) and (max-device-width: 1024px) {
+  /* Force table to not be like tables anymore */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    border: 1px solid #ccc;
+  }
+
+  td {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding: 0.3rem !important;
+    /* padding-right: 50%; */
+    /* padding: 0; */
+    /* padding-right: 0rem !important; */
+  }
+
+  td:before {
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  /*
+	Label the data
+	*/
+
+  /* td:nth-of-type(1):before {
+    content: "Legajo";
+  }
+  td:nth-of-type(2):before {
+    content: "Apellido";
+  }
+  td:nth-of-type(3):before {
+    content: "Nombre";
+  }
+  td:nth-of-type(4):before {
+    content: "DNI";
+  }
+  td:nth-of-type(5):before {
+    content: "Empresa";
+  } */
+}
+@media only screen and (min-width: 760px),
+  (min-device-width: 768px) and (max-device-width: 1024px) {
+  thead tr {
+    &:hover {
+      background-color: inherit;
+    }
+  }
+
+  tr {
+    &:hover {
+      background-color: rgb(209, 209, 209);
+    }
+  }
+
+  td {
+    border-style: none;
+    // border-top: firebrick;
+    // border-left: firebrick;
+    // border-color: rgb(231, 222, 222);
+    padding: 0.7rem;
+  }
+}
