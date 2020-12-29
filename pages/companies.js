@@ -4,7 +4,7 @@ import { getCompaniesAction } from "../components/redux/actions/CompanyActions";
 import { updatePathnameAction } from "../components/redux/actions/GeneralActions";
 import Layout from "../components/layout/Layout";
 import Login from "./login";
-import Company from "./Company";
+import Company from "../components/Company";
 //Firebase
 import { FirebaseContext } from "../firebase";
 

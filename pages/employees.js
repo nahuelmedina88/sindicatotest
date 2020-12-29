@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Image from 'next/image';
 import styles from "./css/employees.module.scss";
 
-import EmployeeList from "./EmployeeList";
+import EmployeeList from "../components/EmployeeList";
 // import { getDocx } from "./docxHelper"
 
 import Layout from '../components/layout/Layout';

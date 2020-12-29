@@ -29,6 +29,10 @@ const Graph = () => {
             }
         ]
     };
+    let pantalla = 0;
+    if (process.browser) {
+        pantalla = window.screen.width;
+    }
 
     return (<>
         <Layout>
@@ -36,10 +40,11 @@ const Graph = () => {
                 <h2>Cantidad de Empleados</h2>
                 <Bar
                     data={data}
-                    width={(screen.width > 480) ? 500 : null}
-                    height={(screen.width > 480) ? 200 : null}
+
+                    width={(pantalla > 480) ? 500 : null}
+                    height={(pantalla > 480) ? 200 : null}
                     options={{
-                        maintainAspectRatio: (screen.width > 480) ? false : true
+                        maintainAspectRatio: (pantalla > 480) ? false : true
                     }}
                 />
             </div>

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 // import { Link, useHistory } from 'react-router-dom';
 import Link from "next/link";
-import { deleteEmployeeAction, editEmployeeAction } from "../components/redux/actions/EmployeeActions";
+import { deleteEmployeeAction, editEmployeeAction } from "./redux/actions/EmployeeActions";
 import { useDispatch } from "react-redux";
 import swal from "sweetalert2";
 //Firebase

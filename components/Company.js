@@ -8,7 +8,6 @@ const Company = ({ company }) => {
             <td>{nombre}</td>
             <td>{ciudad}</td>
         </tr >
-    );
-}
-
+    )
+};
 export default Company;
