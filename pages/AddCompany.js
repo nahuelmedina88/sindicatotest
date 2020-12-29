@@ -54,7 +54,7 @@ const AddCompany = () => {
                         type="text"
                         className="inputSecondary"
                         name="ciudad"
-                        placeholder="Apellido"
+                        placeholder="Ciudad"
                         value={ciudad}
                         onChange={e => setCiudad(e.target.value)}
                     />
