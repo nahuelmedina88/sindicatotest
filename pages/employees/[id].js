@@ -101,59 +101,56 @@ const EditEmployee = () => {
             {employee ?
                 <div className={styles.container}>
                     <h2 className={styles.title}> Editar Empleado</h2>
-                    <form>
-                        <div className="form-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="nroLegajo"
-                                placeholder="Nro Legajo"
-                                value={employee ? employee.nroLegajo : null}
-                                onChange={changeForm}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="nombre"
-                                placeholder="Nombre"
-                                value={employee ? employee.nombre : null}
-                                onChange={changeForm}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="apellido"
-                                placeholder="Apellido"
-                                value={employee ? employee.apellido : null}
-                                onChange={changeForm}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="number"
-                                className="form-control"
-                                name="dni"
-                                placeholder="DNI"
-                                value={employee ? employee.dni : null}
-                                onChange={changeForm}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <Select
-                                // className={!arsTo ? styles.foreignCurrencyFirst : styles.foreignCurrencySecond}
-                                options={companies}
-                                onChange={changeSelect}
-                                value={comp}
-                            // components={{ Option: IconOption }}
-                            ></Select>
-                        </div>
+                    <form className="form">
+
+                        <input
+                            type="text"
+                            className="inputSecondary"
+                            name="nroLegajo"
+                            placeholder="Nro Legajo"
+                            value={employee ? employee.nroLegajo : null}
+                            onChange={changeForm}
+                        />
+
+
+                        <input
+                            type="text"
+                            className="inputSecondary"
+                            name="nombre"
+                            placeholder="Nombre"
+                            value={employee ? employee.nombre : null}
+                            onChange={changeForm}
+                        />
+
+
+                        <input
+                            type="text"
+                            className="inputSecondary"
+                            name="apellido"
+                            placeholder="Apellido"
+                            value={employee ? employee.apellido : null}
+                            onChange={changeForm}
+                        />
+                        <input
+                            type="number"
+                            className="inputSecondary"
+                            name="dni"
+                            placeholder="DNI"
+                            value={employee ? employee.dni : null}
+                            onChange={changeForm}
+                        />
+
+                        <Select
+                            // className={!arsTo ? styles.foreignCurrencyFirst : styles.foreignCurrencySecond}
+                            options={companies}
+                            onChange={changeSelect}
+                            value={comp}
+                        // components={{ Option: IconOption }}
+                        ></Select>
+
                         <button
                             type="button"
-                            className="btn btn-primary"
+                            className="btn btnPrimary"
                             onClick={submitEmployeeEdited}
                         >Guardar Cambios</button>
                     </form>

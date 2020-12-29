@@ -1,6 +1,5 @@
 .container {
-  display: grid;
-  justify-content: center;
+  align-self: flex-start;
 }
 .title {
   padding: 5% 0 5% 0;
