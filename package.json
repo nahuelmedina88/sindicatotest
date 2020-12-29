@@ -1,9 +1,9 @@
 {
-  "homepage": "http://nahuelmedina88.github.io/sindicatotest",
   "name": "beef-app-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+
     "build": "next build",
     "export": "next export",
     "dev": "cross-env NODE_OPTIONS='--inspect' next",
