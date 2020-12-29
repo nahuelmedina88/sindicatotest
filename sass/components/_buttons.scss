@@ -11,19 +11,21 @@ $dangerColor: #d82f2f;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.btnPrimary {
-  background-color: darken($myblue, 25%);
-  color: white;
 
   &:hover {
-    background-color: $myblueBoton;
     border-width: 1px;
     border-color: white;
   }
   &:focus {
     outline: none;
+  }
+}
+
+.btnPrimary {
+  background-color: darken($myblue, 25%);
+  color: white;
+  &:hover {
+    background-color: $myblueBoton;
   }
 }
 .btnDanger {
@@ -32,11 +34,15 @@ $dangerColor: #d82f2f;
 
   &:hover {
     background-color: lighten($dangerColor, 15%);
-    border-width: 1px;
-    border-color: white;
   }
-  &:focus {
-    outline: none;
+}
+
+.btnExploring {
+  background-color: rgb(7, 138, 7);
+  color: white;
+
+  &:hover {
+    background-color: lighten(rgb(7, 138, 7), 15%);
   }
 }
 

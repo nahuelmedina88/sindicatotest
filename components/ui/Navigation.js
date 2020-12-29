@@ -27,11 +27,11 @@ const Navigation = () => {
                 :
                 <form >
                     <Link href="/login">
-                        <button type="button">Login</button>
+                        <button className="btn btnExploring" type="button">Login</button>
                     </Link>
-                    <Link href="/signin">
+                    {/* <Link href="/signin">
                         <button type="button">Crear cuenta</button>
-                    </Link>
+                    </Link> */}
                 </form>
             }
         </nav >
