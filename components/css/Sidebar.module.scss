@@ -1,37 +1,12 @@
-/* .navItemCs:hover {
-  background-color: black;
-}
-
-.navItemCs {
-  padding: 5%;
-  text-decoration: none;
-}
-
-.navItemCs > a:hover {
-  text-decoration: none;
-}
-
-.navLinkCs:hover {
-  color: white;
-} */
-
-.burgerButton {
-  background-color: white;
-}
+// .burgerButton {
+//   background-color: white;
+// }
 
 .sidebar {
   width: 13rem;
 }
 
-.show {
-  display: flex !important;
-}
-
-.hide {
-  display: none !important;
-}
-
-.aside {
+.nav {
   background-color: var(--primary-color);
 }
 
@@ -47,21 +22,47 @@
   .ul {
     flex-direction: column;
   }
+  .burgerButton {
+    align-self: center;
+    padding: 0.5rem;
+    margin: 1rem;
+    border-radius: 40px;
+    outline: none;
+    background-color: var(--primary-color);
+
+    & > .icon2 {
+      fill: white;
+    }
+  }
+  .show {
+    display: flex !important;
+  }
+
+  .hide {
+    display: none !important;
+  }
 }
 
 /* Pantalla grande */
 @media only screen and (min-width: 850px) {
   .aside {
     display: flex;
-    flex-direction: column;
-    flex: 0 0 18%;
+    flex-direction: row;
+    // flex: 0 0 18%;
+    flex: 0 1 0;
+    min-height: 100vh;
   }
+  .burgerButton {
+    align-self: flex-start;
+    background-color: white;
+  }
+
   .burguerButtonChanged {
     align-self: flex-start;
   }
-  .asideChanged {
-    min-height: 100vh;
-  }
+  // .asideChanged {
+  //   min-height: 100vh;
+  // }
   .ul {
     flex-direction: column;
   }
@@ -134,7 +135,7 @@
 @media only screen and (min-width: 850px) {
   @keyframes animateButton {
     5% {
-      transform: translateX(-10em);
+      transform: translateX(-5em);
     }
     90% {
       transform: translateX(0em);
@@ -144,50 +145,46 @@
     }
   }
   @keyframes animateButtonHide {
-    5% {
+    0% {
       transform: translateX(0em);
     }
-    90% {
-      transform: translateX(-10em);
-    }
+
     100% {
-      transform: translateX(-20em);
+      transform: translateX(-8.5em);
     }
   }
   .btnNewPropertiesShow {
-    transform: translateX(-20em);
+    transform: translateX(-8.5em);
     animation: animateButton 0.5s;
     animation-delay: 0.5s;
     animation-fill-mode: forwards;
     -webkit-animation-fill-mode: forwards;
   }
-  /* .btnNewPropertiesHide {
-  transform: translateX(0em);
-  animation: animateButtonHide 0.5s;
-  animation-delay: 0.5s;
-  animation-fill-mode: forwards;
-  -webkit-animation-fill-mode: forwards;
-} */
-}
-
-@media only screen and (max-width: 450px) {
-  @keyframes animateButton {
-    5% {
-      transform: translateY(-5em);
-    }
-    90% {
-      transform: translateY(0em);
-    }
-    100% {
-      transform: translateY(0em);
-    }
-  }
-
-  .btnNewPropertiesShow {
-    transform: translateY(-10em);
-    animation: animateButton 0.5s;
-    animation-delay: 0.5s;
+  .btnNewPropertiesHide {
+    transform: translateX(0em);
+    animation: animateButtonHide 0.5s;
     animation-fill-mode: forwards;
+    animation-delay: 0.5s;
     -webkit-animation-fill-mode: forwards;
   }
 }
+
+// @media only screen and (max-width: 450px) {
+//   @keyframes animateButton {
+//     from {
+//       height: 0%;
+//     }
+//     to {
+//       height: 100%;
+//     }
+//   }
+
+//   // .btnNewPropertiesShow {
+//   //   // width: 100%;
+//   //   // height: 0%;
+//   //   // animation: animateButton 0s;
+//   //   // animation-delay: 0s;
+//   //   // animation-fill-mode: forwards;
+//   //   // -webkit-animation-fill-mode: forwards;
+//   // }
+// }

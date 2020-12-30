@@ -113,6 +113,7 @@ const AddEmployee = () => {
                         className={`inputSecondary ` + styles.myselect}
                         options={companies}
                         onChange={handleCompany}
+                        placeholder={"Seleccione un frigorífico"}
                     // defaultValue={{ label: "United States Dollar", value: 'USD' }}//usd by default
                     // components={{ Option: IconOption }}
                     ></Select>

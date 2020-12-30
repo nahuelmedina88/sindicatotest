@@ -328,7 +328,7 @@ export const getDocx = (employees) => {
 
     let textLegend = "";
     if (IsPadronGeneral(employees)) {
-        textLegend = "PADRON ELECTORAL";
+        textLegend = "PADRON GENERAL";
     } else {
         let company = employees.map(empleado => empleado.empresa.nombre);
         textLegend = "ZONA OESTE- PERTENECIENTE A " + company[0].toUpperCase();

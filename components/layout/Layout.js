@@ -14,7 +14,7 @@ const Layout = (props) => {
         <div className={buttonPressed ? styles.containerFlexButton : styles.containerFlex}>
             {/* {user ? <Sidebar /> : null} */}
             <Sidebar />
-            <main className={styles.absCenter}>
+            <main className={styles.content}>
                 {props.children}
             </main>
         </div>

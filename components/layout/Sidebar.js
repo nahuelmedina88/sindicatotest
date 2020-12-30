@@ -99,33 +99,21 @@ const Sidebar = () => {
         setState(currentPathname);
     }, [pathnameStore]);
 
-    // useEffect(() => {
+    useEffect(() => {
+        //esta solucion es una cagada.
+        let screenSize = 0;
+        if (process.browser) {
+            screenSize = window.screen.width;
+            if (screenSize < 500) {
+                setPressed(false);
+                dispatch(updateButtonStateAction(false));
+            } else {
+                setPressed(true);
+                dispatch(updateButtonStateAction(true));
+            }
+        }
+    }, [])
 
-    // }, []);
-
-    // const handleOrdenar = (e) => {
-    //     e.preventDefault();
-    //     pressed ? setPressed(false) : setPressed(true);
-    // }
-
-    // const handleByLastName = (e) => {
-
-    //     console.log(e.target.checked);
-    //     setByLastName(e.target.checked);
-    //     let emp = [];
-    //     if (e.target.checked) {
-    //         if (employeesSearch.length > 0) {
-    //             emp = employeesSearch.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-    //         } else {
-    //             let replica = employeesRedux;
-    //             emp = replica.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-    //         }
-    //         dispatch(updateEmployeesAction(emp));
-    //     } else {
-    //         debugger;
-    //         dispatch(updateEmployeesAction(employeesRedux));
-    //     }
-    // }
     const generate = (e) => {
         e.preventDefault();
         employeesSearch.length > 0 ? getDocx(employeesSearch) : getDocx(employeesRedux);
@@ -143,17 +131,12 @@ const Sidebar = () => {
             dispatch(updateButtonStateAction(false))
         }
     }
+    let icon = "";
+    (pressed) ? icon = "img/sprite.svg#icon-cross" : icon = "img/sprite.svg#icon-menu";
 
     return (
         <>
-            <aside className={`${styles.aside} ${(pressed ? styles.asideChanged : null)} ${(pressed ? styles.btnNewPropertiesShow : null)}`}>
-                <button className={`${styles.burgerButton} ${(!pressed ? styles.burguerButtonChanged : null)}`}
-                    onClick={handleMenu}>
-                    {/* <FontAwesomeIcon icon={faBars} className={styles.icon} /> */}
-                    <svg className={styles.icon2}>
-                        <use xlinkHref="img/sprite.svg#icon-menu"></use>
-                    </svg>
-                </button>
+            <aside className={`${styles.aside} ${(pressed ? styles.btnNewPropertiesShow : styles.btnNewPropertiesHide)}`}>
                 <nav className={`${styles.nav} ${(pressed ? styles.show : styles.hide)}`}>
                     <ul className={styles.ul}>
                         {objs.map(obj => (
@@ -199,53 +182,16 @@ const Sidebar = () => {
                                 </div>
                             </Link>
                         </li>
-                        {/* <li className={"nav-item active " + styles.navItemCs}>
-                        <Link
-                            className={"nav-link " + styles.navLinkCs}
-                            href=""
-                        ><a onClick={generate}>Exportar</a>
-                        </Link>
-                    </li> */}
-                        {/* <li className={"nav-item active " + styles.navItemCs}>
-                        <Link
-                            className={"nav-link " + styles.navLinkCs}
-                            href=""
-                        ><a onClick={handleOrdenar}>Ordenar</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <div className={"card card-body " + (pressed ? styles.show : styles.hide)}>
-                            <ul>
-                                <li>
-                                    <input
-                                        type="checkbox"
-                                        name="byLastName"
-                                        value={byLastName}
-                                        onChange={handleByLastName}
-                                    />
-                                     Por Apellido
-
-                                </li>
-                                <li><input type="checkbox" id="vehicle2" name="vehicle2" value="Car" />
-                                    <label for="vehicle2"> Por Nombre</label><br />
-                                </li>
-                                <li><input type="checkbox" id="vehicle2" name="vehicle2" value="Car" />
-                                    <label for="vehicle2"> Por Nro legajo</label><br />
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" />
-                                    <label for="vehicle3"> Por DNI</label><br />
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="vehicle4" name="vehicle4" value="Boat" />
-                                    <label for="vehicle4"> Por Empresa</label><br />
-                                </li>
-                            </ul>
-                        </div>
-                    </li> */}
                     </ul>
                 </nav>
+                <button className={`${styles.burgerButton} ${(!pressed ? styles.burguerButtonChanged : null)}`}
+                    onClick={handleMenu}>
+                    <svg className={styles.icon2}>
+                        <use xlinkHref={icon}></use>
+                    </svg>
+                </button>
             </aside >
+
         </>
     );
 }

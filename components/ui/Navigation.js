@@ -17,7 +17,7 @@ const Navigation = () => {
                     <button
 
                         type="button"
-                        className="btn btnPrimary"
+                        className="btn btnDanger"
                         onClick={() => firebase.cerrarSesion()}
                     >
                         Cerrar Sesion

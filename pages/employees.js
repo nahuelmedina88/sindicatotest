@@ -10,8 +10,8 @@ import Layout from '../components/layout/Layout';
 import Login from "./login";
 
 //Font Awesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 
 //Redux
@@ -23,8 +23,7 @@ import { updatePathnameAction } from "../components/redux/actions/GeneralActions
 
 //Firebase
 import { FirebaseContext } from "../firebase";
-import { TableProperties } from 'docx';
-
+// import { TableProperties } from 'docx';
 
 const Employees = () => {
 
