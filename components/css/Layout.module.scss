@@ -4,7 +4,7 @@
   justify-content: center;
   min-height: 80vh;
   min-width: 80vw;
-  flex: 1;
+  flex: 1 0;
   /* background-image: linear-gradient(
       to right,
       rgba(245, 249, 255, 0.8),
@@ -15,15 +15,11 @@
   background-position: center; */
   background-color: white;
 }
-.containerFlex {
-  display: flex;
-}
-.containerFlex:first-child {
-  z-index: -1;
-}
+
 /* Pantalla grande */
 @media only screen and (min-width: 850px) {
   .containerFlex {
+    display: flex;
     flex-direction: row;
   }
   .containerFlexButton {

@@ -2,17 +2,17 @@ import { saveAs } from "file-saver";
 import { WidthType, Document, TextRun, Packer, Paragraph, Table, TableCell, TableRow, VerticalAlign, AlignmentType, HeadingLevel } from "docx";
 
 
-export const getDocx = (employees) => {
+export const getDocx = (employees, type) => {
 
     const fuente = "Calibri";
     const fontsize = 22;
     const TABLE_WIDTH = 10000;
     const ordenw = 550;
     const afiliadow = 850;
-    const apellidow = 3000;
+    const apellidow = 2500;
     const documentow = 1400;
     const empresaw = 2400;
-    const firmaw = 1700;
+    const firmaw = 2200;
 
     const doc = new Document({
         styles: {
@@ -191,7 +191,7 @@ export const getDocx = (employees) => {
                         children: [new Paragraph({
                             children: [
                                 new TextRun({
-                                    text: "Firma",
+                                    text: type === "confirma" ? "Firma" : "Domicilio Empresa",
                                     // bold: true,
                                     font: fuente,
                                     size: fontsize,
@@ -301,10 +301,18 @@ export const getDocx = (employees) => {
                 new TableCell({
                     children: [
                         new Paragraph({
-                            text: "",
-                        }),
+                            children: [
+                                new TextRun({
+                                    text: type === "confirma" ? "" : employee.empresa.ciudad,
+                                    // bold: true,
+                                    font: fuente,
+                                    size: fontsize,
+                                    // allCaps: true,
+                                })
+                            ],
+                            heading: HeadingLevel.HEADING_3,
+                        })
                     ],
-                    heading: HeadingLevel.HEADING_2,
                 }),
             ],
 
@@ -327,11 +335,19 @@ export const getDocx = (employees) => {
     }
 
     let textLegend = "";
+    let fileName = "";
+    let date = new Date();
+    let textConFirma = "";
+    type === "confirma" ? textConFirma = "Firma" : textConFirma = "";
+
     if (IsPadronGeneral(employees)) {
-        textLegend = "PADRON GENERAL";
+        textLegend = "PADRON GENERAL - " + date.getFullYear().toString();
+        fileName = "Padron General - " + date.getFullYear().toString() + " " + textConFirma;
     } else {
         let company = employees.map(empleado => empleado.empresa.nombre);
-        textLegend = "ZONA OESTE- PERTENECIENTE A " + company[0].toUpperCase();
+        let city = employees.map(empleado => empleado.empresa.ciudad);
+        textLegend = "ZONA OESTE- PERTENECIENTE A " + company[0].toUpperCase() + " - " + city[0].toUpperCase() + " " + date.getFullYear().toString();
+        fileName = company[0].charAt(0).toUpperCase() + company[0].slice(1) + " - " + date.getFullYear().toString() + " " + textConFirma;
     }
 
     let table2 = new Table({
@@ -342,6 +358,19 @@ export const getDocx = (employees) => {
         children: [
             new TextRun({
                 text: "LISTADO DE AFILIADOS AL SINDICATO DE TRABAJADORES DE LA CARNE DEL GRAN BS.AS.",
+                bold: true,
+                allCaps: true,
+                font: "Times New Roman",
+                size: 16,
+                underline: {},
+            }),
+        ],
+        alignment: AlignmentType.CENTER,
+    });
+    const space = new Paragraph({
+        children: [
+            new TextRun({
+                text: "",
                 bold: true,
                 allCaps: true,
                 font: "Times New Roman",
@@ -367,13 +396,12 @@ export const getDocx = (employees) => {
     });
 
     doc.addSection({
-        children: [title1, title2, table, table2],
+        children: [title1, space, title2, space, table, table2],
     });
 
     Packer.toBlob(doc).then(blob => {
         console.log(blob);
-        saveAs(blob, "example.docx");
-        console.log("Document created successfully");
+        saveAs(blob, fileName + ".docx");
     });
 }
 

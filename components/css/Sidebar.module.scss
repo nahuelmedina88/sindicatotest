@@ -1,7 +1,4 @@
-// .burgerButton {
-//   background-color: white;
-// }
-
+//For both devices //
 .sidebar {
   width: 13rem;
 }
@@ -9,6 +6,16 @@
 .nav {
   background-color: var(--primary-color);
 }
+
+.show {
+  display: flex !important;
+}
+
+.hide {
+  display: none !important;
+}
+
+//////end
 
 /* Pantalla Chica */
 @media only screen and (max-width: 849px) {
@@ -33,38 +40,6 @@
     & > .icon2 {
       fill: white;
     }
-  }
-  .show {
-    display: flex !important;
-  }
-
-  .hide {
-    display: none !important;
-  }
-}
-
-/* Pantalla grande */
-@media only screen and (min-width: 850px) {
-  .aside {
-    display: flex;
-    flex-direction: row;
-    // flex: 0 0 18%;
-    flex: 0 1 0;
-    min-height: 100vh;
-  }
-  .burgerButton {
-    align-self: flex-start;
-    background-color: white;
-  }
-
-  .burguerButtonChanged {
-    align-self: flex-start;
-  }
-  // .asideChanged {
-  //   min-height: 100vh;
-  // }
-  .ul {
-    flex-direction: column;
   }
 }
 
@@ -92,21 +67,46 @@
   }
 }
 
-.link {
-  background-color: red;
+.showExportOptions {
+  display: flex;
+  flex-direction: column;
 }
 
-.link:hover {
-  color: white;
+.hideExportOptions {
+  display: none;
+}
+
+.subLista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.subLista > li {
+  width: 100%;
+  padding: 1rem;
+  &:hover {
+    background-color: var(--primary-color);
+    cursor: pointer;
+    a {
+      color: white;
+    }
+    .icon {
+      fill: white;
+    }
+  }
 }
 
 .a {
   color: white;
 }
+
 .a:hover {
   text-decoration: none;
   color: white;
 }
+
 .a:active {
   text-decoration: none;
   color: grey;
@@ -125,6 +125,7 @@
   fill: white;
   margin-right: 0.5rem;
 }
+
 .icon2 {
   font-size: 1rem;
   width: 1.5rem;
@@ -132,6 +133,32 @@
   fill: var(--primary-color);
   //
 }
+
+/* Pantalla grande */
+@media only screen and (min-width: 850px) {
+  .aside {
+    display: flex;
+    flex-direction: row;
+    // flex: 0 0 18%;
+    flex: 0 1 0;
+    min-height: 100vh;
+  }
+  .burgerButton {
+    align-self: flex-start;
+    background-color: white;
+  }
+
+  .burguerButtonChanged {
+    align-self: flex-start;
+  }
+  // .asideChanged {
+  //   min-height: 100vh;
+  // }
+  .ul {
+    flex-direction: column;
+  }
+}
+
 @media only screen and (min-width: 850px) {
   @keyframes animateButton {
     5% {
@@ -144,15 +171,6 @@
       transform: translateX(0em);
     }
   }
-  @keyframes animateButtonHide {
-    0% {
-      transform: translateX(0em);
-    }
-
-    100% {
-      transform: translateX(-8.5em);
-    }
-  }
   .btnNewPropertiesShow {
     transform: translateX(-8.5em);
     animation: animateButton 0.5s;
@@ -160,13 +178,23 @@
     animation-fill-mode: forwards;
     -webkit-animation-fill-mode: forwards;
   }
-  .btnNewPropertiesHide {
-    transform: translateX(0em);
-    animation: animateButtonHide 0.5s;
-    animation-fill-mode: forwards;
-    animation-delay: 0.5s;
-    -webkit-animation-fill-mode: forwards;
-  }
+  // @keyframes animateButtonHide {
+  //   0% {
+  //     transform: translateX(0em);
+  //   }
+
+  //   100% {
+  //     transform: translateX(-8.5em);
+  //   }
+  // }
+
+  // .btnNewPropertiesHide {
+  //   transform: translateX(0em);
+  //   animation: animateButtonHide 0.5s;
+  //   animation-fill-mode: forwards;
+  //   animation-delay: 0.5s;
+  //   -webkit-animation-fill-mode: forwards;
+  // }
 }
 
 // @media only screen and (max-width: 450px) {

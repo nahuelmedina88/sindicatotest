@@ -22,6 +22,7 @@ const Sidebar = () => {
 
     const router = useRouter();
     const [pressed, setPressed] = useState(true);
+    const [exportarButtonPressed, setExportarButton] = useState(false);
     const [objs, updateObjs] = useState([]);
     // const employees = useSelector(state => state.employees.employees)
     const [byLastName, setByLastName] = useState(false);
@@ -114,9 +115,14 @@ const Sidebar = () => {
         }
     }, [])
 
+    const handleExport = (e) => {
+        e.preventDefault();
+        exportarButtonPressed ? setExportarButton(false) : setExportarButton(true);
+    }
+
     const generate = (e) => {
         e.preventDefault();
-        employeesSearch.length > 0 ? getDocx(employeesSearch) : getDocx(employeesRedux);
+        employeesSearch.length > 0 ? getDocx(employeesSearch, e.target.id) : getDocx(employeesRedux, e.target.id);
     }
 
     const handleMenu = (e) => {
@@ -154,20 +160,48 @@ const Sidebar = () => {
                             </li>
                         ))}
 
-                        <li>
+                        <li onClick={handleExport}>
                             <Link
                                 className={styles.link}
                                 href=""
                             >
                                 <div className={styles.LinkContainer}>
                                     <svg className={styles.icon}>
-                                        <use xlinkHref="img/sprite.svg#icon-folder-download"></use>
+                                        <use xlinkHref="img/sprite.svg#icon-file-word"></use>
                                     </svg>
-                                    <a className={styles.a}
-                                        onClick={generate}>Exportar
-                            </a>
+                                    <a className={styles.a}>Exportar</a>
                                 </div>
                             </Link>
+                            <ul className={`${styles.subLista} ${exportarButtonPressed ? styles.showExportOptions : styles.hideExportOptions}`}>
+                                <li onClick={generate}>
+                                    <Link
+                                        className={styles.linkSubLista}
+                                        href=""
+                                    >
+                                        <div className={styles.LinkContainer}>
+                                            <svg className={styles.icon}>
+                                                <use xlinkHref="img/sprite.svg#icon-pencil"></use>
+                                            </svg>
+                                            <a id="confirma" className={styles.a}>Con Firma</a>
+                                        </div>
+                                    </Link>
+                                </li>
+                                <li onClick={generate}>
+                                    <Link
+                                        className={styles.link}
+                                        href=""
+                                    >
+                                        <div className={styles.LinkContainer}>
+                                            <svg className={styles.icon}>
+                                                <use xlinkHref="img/sprite.svg#icon-table"></use>
+                                            </svg>
+                                            <a id="sinfirma" className={styles.a}
+                                            >Sin Firma
+                                            </a>
+                                        </div>
+                                    </Link>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <Link
