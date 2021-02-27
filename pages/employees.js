@@ -54,7 +54,7 @@ const Employees = () => {
         loadPathname();
         loadEmployees(firebase);
         loadCompanies(firebase);
-    }, []);
+    }, [dispatch]);
 
     const searchHandle = (e) => {
         let searching = e.target.value;

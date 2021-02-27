@@ -25,13 +25,13 @@ const Navigation = () => {
 
                 </form>
                 :
-                <form >
+                <form className={styles.form}>
                     <Link href="/login">
                         <button className="btn btnExploring" type="button">Login</button>
                     </Link>
-                    {/* <Link href="/signin">
-                        <button type="button">Crear cuenta</button>
-                    </Link> */}
+                    <Link href="/signin">
+                        <button className="btn btnInfo" type="button">Crear cuenta</button>
+                    </Link>
                 </form>
             }
         </nav >

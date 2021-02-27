@@ -7,7 +7,7 @@ $dangerColor: #d82f2f;
   border-width: 1px;
   border-color: white;
   font-size: 1rem;
-  margin: 0.5rem;
+  // margin: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,6 +43,15 @@ $dangerColor: #d82f2f;
 
   &:hover {
     background-color: lighten(rgb(7, 138, 7), 15%);
+  }
+}
+
+.btnInfo {
+  background-color: rgb(86, 7, 138);
+  color: white;
+
+  &:hover {
+    background-color: lighten(rgb(86, 7, 138), 15%);
   }
 }
 

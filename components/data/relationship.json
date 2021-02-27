@@ -1,0 +1,47 @@
+[
+    {
+        "id": "1",
+        "value": "hermano",
+        "label": "Hermana/a"
+    },
+    {
+        "id": "2",
+        "value": "padre",
+        "label": "Padre"
+    },
+    {
+        "id": "3",
+        "value": "madre",
+        "label": "Madre"
+    },
+    {
+        "id": "4",
+        "value": "Hijo",
+        "label": "Hijo"
+    },
+    {
+        "id": "5",
+        "value": "Hija",
+        "label": "Hija"
+    },
+    {
+        "id": "6",
+        "value": "pareja",
+        "label": "Pareja"
+    },
+    {
+        "id": "7",
+        "value": "primo",
+        "label": "Primo/a"
+    },
+    {
+        "id": "8",
+        "value": "tio",
+        "label": "Tío/a"
+    },
+    {
+        "id": "9",
+        "value": "sobrino",
+        "label": "Sobrino/a"
+    }    
+]

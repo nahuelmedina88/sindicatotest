@@ -1,0 +1,27 @@
+.alert {
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.danger {
+  background-color: rgb(167, 43, 43);
+  border-color: darken(red, 15%);
+  color: white;
+}
+
+@mixin dangerInput {
+  background-color: rgb(167, 43, 43);
+  border-color: darken(red, 15%);
+  color: white;
+  padding: 0.5rem;
+  width: 100%;
+  font-size: 0.8rem;
+}
+
+.dangerInput {
+  @include dangerInput;
+}
+.dangerInputSmall {
+  @include dangerInput;
+  padding: 0.1rem;
+}

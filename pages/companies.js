@@ -29,6 +29,9 @@ const Companies = () => {
                             <tr>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Ciudad</th>
+                                <th scope="col">Domicilio</th>
+                                <th scope="col">CUIT</th>
+                                <th scope="col">Razon Social</th>
                             </tr>
                         </thead>
                         <tbody>

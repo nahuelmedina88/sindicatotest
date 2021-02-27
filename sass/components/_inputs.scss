@@ -2,11 +2,13 @@ $mycolor: rgb(199, 199, 199);
 
 @mixin comunProperties {
   padding: 0.5rem;
-  width: 100%;
+
   // margin: 0.5rem;
   border-radius: 5px;
   border-width: 0.1rem;
   border-style: solid;
+  color: rgb(68, 67, 67);
+  font-size: 1.1rem;
   border-color: var(--input-border-color);
   &::-webkit-input-placeholder {
     color: $mycolor;
@@ -18,9 +20,9 @@ $mycolor: rgb(199, 199, 199);
 
 .input {
   @include comunProperties;
+  width: 100%;
 }
 
 .inputSecondary {
   @include comunProperties;
-  margin: 0.5rem;
 }

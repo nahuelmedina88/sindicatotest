@@ -14,10 +14,8 @@ const useValidation = (initialState, validate, fn) => {
             if (noErrors) {
                 fn();
             }
-
             setSubmitForm(true);
         }
-
     }, [errors]);
 
     const handleChange = e => {
@@ -27,6 +25,10 @@ const useValidation = (initialState, validate, fn) => {
         });
     }
 
+    const emptyInputs = () => {
+        setValues(initialState);
+    }
+
     const handleSubmit = e => {
         e.preventDefault();
         const validationErrors = validate(values);
@@ -34,12 +36,20 @@ const useValidation = (initialState, validate, fn) => {
         setSubmitForm(true);
     }
 
+    const handleBlur = () => {
+        const validationErrors = validate(values);
+        setErrors(validationErrors);
+    }
+
+
     return {
         values,
         errors,
         submitForm,
         handleSubmit,
-        handleChange
+        handleChange,
+        handleBlur,
+        emptyInputs
     }
 }
 

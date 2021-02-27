@@ -1,0 +1,12 @@
+[
+    {
+        "id" : "1",
+        "value" : "F",
+        "label" : "Femenino"
+    },
+    {
+        "id" : "2",
+        "value" : "M",
+        "label" : "Masculino"
+    }
+]

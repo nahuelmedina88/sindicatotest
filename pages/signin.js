@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import Layout2 from "../components/layout/Layout2";
 import Router from "next/router";
+import styles from "./css/signin.module.scss";
+import Link from "next/link";
+import Image from 'next/image';
 
 //validation
 import useValidation from "../hooks/useValidation";
@@ -11,6 +13,7 @@ import firebase from "../firebase/firebase";
 const signin = () => {
 
     const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const initialState = {
         nombre: "",
@@ -20,11 +23,18 @@ const signin = () => {
 
     const crearCuenta = async () => {
         try {
+            setLoading(true);
             await firebase.registrar(nombre, email, password);
+            setLoading(false);
+
             Router.push("/");
         } catch (error) {
             console.log(error);
+            setLoading(false);
             setError(error.message);
+            if (error.code === "auth/email-already-in-use") {
+                setError("Existe una cuenta con ese email");
+            }
         }
     }
 
@@ -33,7 +43,8 @@ const signin = () => {
         errors,
         submitForm,
         handleSubmit,
-        handleChange
+        handleChange,
+        handleBlur
     } = useValidation(initialState, signinValidate, crearCuenta);
 
     const { nombre, email, password } = values
@@ -41,57 +52,75 @@ const signin = () => {
 
 
     return (
-        <Layout2>
-            <div className="container">
-                <div className="d-flex flex-column align-items-center">
-                    <h1 className="p-3">Registrar cuenta</h1>
-                    <form onSubmit={handleSubmit} >
-                        <div className="form-group">
+        <div className={styles.container}>
+            <div className={styles.card}>
+                <h1>Registrar cuenta</h1>
+                {loading ?
+                    <Image
+                        src="/img/loading.gif"
+                        alt="loading"
+                        width={100}
+                        height={100}
+                    ></Image>
+                    :
+                    <form className={styles.form} onSubmit={handleSubmit} >
+                        <div className="formControl">
                             <label htmlFor="exampleInputText1">Nombre</label>
                             <input
                                 type="text"
-                                className="form-control"
+                                className="input"
                                 id="exampleInputText1"
                                 name="nombre"
-                                placeholder="Enter email"
+                                placeholder="Nombre de usuario"
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 value={nombre}
                             />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="exampleInputEmail1">Email address</label>
+                        {errors.nombre && <p className="btn dangerInput">{errors.nombre}</p>}
+                        <div className="formControl">
+                            <label htmlFor="exampleInputEmail1">Email</label>
                             <input
                                 type="email"
-                                className="form-control"
+                                className="input"
                                 id="exampleInputEmail1"
                                 name="email"
                                 placeholder="Enter email"
                                 onChange={handleChange}
                                 value={email}
+                                onBlur={handleBlur}
                             />
                         </div>
-                        <div className="form-group">
+                        {errors.email && <p className="btn dangerInput">{errors.email}</p>}
+                        <div className="formControl">
                             <label htmlFor="exampleInputPassword1">Password</label>
                             <input
                                 type="password"
-                                className="form-control"
+                                className="input"
                                 id="exampleInputPassword1"
                                 name="password"
                                 placeholder="Password"
                                 onChange={handleChange}
                                 value={password}
+                                onBlur={handleBlur}
                             />
                         </div>
+                        {errors.password && <p className="btn dangerInput">{errors.password}</p>}
                         <button
                             type="submit"
-                            className="btn btn-primary"
+                            className="btn btnPrimary formControl"
                         >Aceptar
                 </button>
-                        {error ? <p className="alert alert-danger">{error}</p> : null}
+                        <span>Tiene una cuenta y desea loguearse.</span>
+                        <Link href="/login">
+                            <a>Click Aquí</a>
+                        </Link>
+
                     </form>
-                </div>
+                }
+                {error ? <p className="alert danger">{error}</p> : null}
             </div>
-        </Layout2>
+        </div>
     );
 }
 

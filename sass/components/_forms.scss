@@ -9,3 +9,12 @@
     width: 100%;
   }
 }
+
+.formControl {
+  margin: 5%;
+  width: 100%;
+  label {
+    display: flex;
+    flex-direction: column;
+  }
+}

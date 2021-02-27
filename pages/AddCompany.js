@@ -12,13 +12,15 @@ import { FirebaseContext } from "../firebase";
 const AddCompany = () => {
     const [nombre, setNombre] = useState("");
     const [ciudad, setCiudad] = useState("");
+    const [domicilio, setDomicilio] = useState("");
+    const [cuit, setCUIT] = useState("");
+    const [razonSocial, setRazonSocial] = useState("");
+
     const dispatch = useDispatch();
     const history = useRouter();
     const getPathName = useSelector(state => state.general.pathname);
 
     const { user, firebase } = useContext(FirebaseContext);
-
-
 
     const addCompanyDispatch = (employee, firebase) => {
         dispatch(addCompanyAction(employee, firebase));
@@ -27,7 +29,10 @@ const AddCompany = () => {
         e.preventDefault();
         addCompanyDispatch({
             nombre: nombre,
-            ciudad: ciudad
+            ciudad: ciudad,
+            domicilio: domicilio,
+            cuit: cuit,
+            razonSocial: razonSocial,
         }, firebase);
         history.push("/companies");
     }
@@ -57,6 +62,30 @@ const AddCompany = () => {
                         placeholder="Ciudad"
                         value={ciudad}
                         onChange={e => setCiudad(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        className="inputSecondary"
+                        name="domicilio"
+                        placeholder="Domicilio"
+                        value={domicilio}
+                        onChange={e => setDomicilio(e.target.value)}
+                    />
+                    <input
+                        type="number"
+                        className="inputSecondary"
+                        name="cuit"
+                        placeholder="CUIT"
+                        value={cuit}
+                        onChange={e => setCUIT(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        className="inputSecondary"
+                        name="razonSocial"
+                        placeholder="Razón Social"
+                        value={razonSocial}
+                        onChange={e => setRazonSocial(e.target.value)}
                     />
                     <button
                         onClick={handleOnClick}

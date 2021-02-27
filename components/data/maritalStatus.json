@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "value": "soltero",
+        "label": "Soltero/a"
+    },
+    {
+        "id": "2",
+        "value": "casado",
+        "label": "Casado/a"
+    },
+    {
+        "id": "3",
+        "value": "viudo",
+        "label": "Viudo/a"
+    },
+    {
+        "id": "4",
+        "value": "divorciado",
+        "label": "Divorciado/a"
+    }
+]
