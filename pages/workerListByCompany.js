@@ -78,7 +78,7 @@ const workerListByCompany = (props) => {
 
     return (
         <>
-            <Layout3>
+            <Frame>
                 <div className={styles.absCenterSelf}>
                     <div >
                         <label>Empresa</label>
@@ -137,7 +137,7 @@ const workerListByCompany = (props) => {
                         </Table>
                     </TableContainer>
                 </div>
-            </Layout3>
+            </Frame>
         </>);
 }
 
