@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from 'react';
+import React, { useEffect } from 'react';
 import styles from "../css/employee[id].module.scss";
 import { useSelector } from "react-redux";
 import { calcularEdad } from "../../components/helpers/validHelper";
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const SeeEmployee = memo(() => {
+const SeeEmployee = () => {
     const classes2 = useStyles2();
     const employeeToSee = useSelector(state => state.employees.employeeToSee);
     const classes = useStyles();
@@ -89,10 +89,6 @@ const SeeEmployee = memo(() => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
-    useEffect(() => {
-        console.log("Employee See render")
-    }, [])
 
     return (<>
 
@@ -258,6 +254,6 @@ const SeeEmployee = memo(() => {
         </div>
 
     </>);
-})
+}
 
 export default SeeEmployee;
