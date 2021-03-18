@@ -1,7 +1,194 @@
 .container {
   align-self: flex-start;
 }
-.title {
-  padding: 5% 0 5% 0;
-  //title properties
+
+@mixin FlexForm {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 2rem;
+  padding-right: 1.5rem;
+  border-color: var(--primary-color);
+  border-radius: 10px;
+
+  label {
+    font-weight: bold;
+  }
+  .formControl {
+    margin: 0.5rem;
+  }
+  input {
+    width: 100%;
+  }
+  legend {
+    padding: 1rem 2rem 1rem 2rem;
+  }
+  .myselect {
+    border-style: none;
+    width: 100%;
+    margin-top: 0;
+    padding: 0;
+  }
+}
+
+.flexForm {
+  @include FlexForm;
+
+  justify-content: space-between;
+
+  legend {
+    font-size: 1.5rem;
+  }
+  //Primer linea //
+  .formControl:nth-child(2) {
+    flex: 0 1 55%;
+  }
+
+  .formControl:nth-child(3) {
+    flex: 0 1 40%;
+  }
+  //2da linea //
+  .formControl:nth-child(4) {
+    flex: 0 1 40%;
+  }
+  .formControl:nth-child(5) {
+    flex: 0 1 25%;
+  }
+  .formControl:nth-child(6) {
+    flex: 0 1 25%;
+  }
+  //3er linea //
+  .formControl:nth-child(7) {
+    flex: 0 1 30%;
+  }
+  .formControl:nth-child(8) {
+    flex: 0 1 30%;
+  }
+  .formControl:nth-child(9) {
+    flex: 0 1 30%;
+  }
+  //4ta linea//
+  .formControl:nth-child(10) {
+    flex: 0 1 30%;
+  }
+  .formControl:nth-child(11) {
+    flex: 0 1 30%;
+  }
+  .formControl:nth-child(12) {
+    flex: 0 1 30%;
+  }
+  //end
+}
+
+.flexFormEmpresa {
+  @include FlexForm;
+
+  legend {
+    font-size: 1.3rem;
+  }
+
+  .formControl:nth-child(2) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(3) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(4) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(5) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(6) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(7) {
+    flex: 0 1 20%;
+  }
+}
+
+.mainForm {
+  display: flex;
+  flex-direction: column;
+
+  .mainBoton {
+    align-self: center;
+    margin: 1rem;
+  }
+}
+
+.flexFormFamilia {
+  @include FlexForm;
+  margin: 0 2rem 2rem 2rem;
+  position: relative;
+
+  legend {
+    font-size: 1.3rem;
+  }
+
+  .formControl:nth-child(2) {
+    flex: 1 1 40%;
+  }
+  .formControl:nth-child(3) {
+    flex: 1 1 30%;
+  }
+  .formControl:nth-child(4) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(5) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(6) {
+    flex: 1 1 30%;
+  }
+  .formControl:nth-child(7) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(8) {
+    flex: 0 1 40%;
+    align-self: center;
+  }
+}
+
+.familyMembers {
+  border-radius: 10px;
+  width: 100%;
+  background-color: var(--primary-color);
+  color: white;
+  border-style: solid;
+  border-width: 0.5px;
+  border-color: blue;
+  padding: 1rem;
+  margin: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.iconDelete {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.2rem;
+  fill: white;
+  background-color: red;
+  border-radius: 5px;
+  border-color: white;
+  border-style: solid;
+}
+.buttonDelete {
+  position: absolute;
+  right: -10px;
+  top: -40px;
+}
+
+.familyGroup {
+  @include FlexForm;
+  legend {
+    font-size: 1.3rem;
+  }
+}
+
+.submittingButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

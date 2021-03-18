@@ -9,6 +9,7 @@ import {
     GET_EMPLOYEE_DELETE,
     EMPLOYEE_DELETE_SUCCESS,
     EMPLOYEE_DELETE_FAILURE,
+    SEE_EMPLOYEE,
     EDIT_EMPLOYEE,
     EDIT_EMPLOYEE_SUCCESS,
     EDIT_EMPLOYEE_FAILURE,
@@ -81,12 +82,24 @@ export function editEmployeeAction(employee, firebase) {
             // const response = await axiosClient.put(`/api/empleados/${employee._id}`, employee);
             const response = await firebase.db.collection("empleados").doc(employee.id).set(employee);
             dispatch(editEmployeeSuccess(employee));
-            // sweetAlert.fire("Genial", "El empleado se editó correctamente", "success");
+            sweetAlert.fire("Genial", "El empleado se editó correctamente", "success");
         } catch (error) {
             console.log(error);
             dispatch(editEmployeeFailure(employee));
-            // sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+            sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
         }
+    }
+}
+
+export function editEmployeeAction2(employee, firebase) {
+    return async (dispatch) => {
+        dispatch(getEmployeeToEdit(employee));
+    }
+}
+
+export function seeEmployeeAction(employee) {
+    return async (dispatch) => {
+        dispatch(getEmployeeToSee(employee));
     }
 }
 
@@ -112,6 +125,45 @@ export function searchEmployeeAction(valores, firebase) {
         }
     }
 }
+
+export function getEmployeesByDateAction(values, firebase) {
+    return async (dispatch) => {
+        // dispatch(getEmployeeToEdit(employee));
+        try {
+            // const response = await axiosClient.put(`/api/empleados/${employee._id}`, employee);
+            console.log("values: " + values);
+            console.log("JsON: " + JSON.stringify(values));
+            let employeesRef = firebase.db.collection("empleados");
+            let response = "";
+            if (values.empresa === "Padrón General" || values.empresa === "") {
+                response = await employeesRef
+                    .where("fecha_ingreso", ">", values.fecha_desde)
+                    .where("fecha_ingreso", "<", values.fecha_hasta);
+            } else {
+                response = await employeesRef
+                    .where("fecha_ingreso", ">", values.fecha_desde)
+                    .where("fecha_ingreso", "<", values.fecha_hasta)
+                    .where("empresa.nombre", "==", values.empresa);
+            }
+            let empleados = await response.get();
+            let employees = [];
+            let i = 0;
+            for (const emp of empleados.docs) {
+                employees.push(emp.data());
+                employees[i].id = emp.id;
+                i++;
+            }
+            // dispatch(updateEmployees(employees));
+            dispatch(getEmployeesSuccess(employees));
+            // sweetAlert.fire("Genial", "El empleado se editó correctamente", "success");
+        } catch (error) {
+            console.log(error);
+            dispatch(getEmployeesFailure(employees));
+            // sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+        }
+    }
+}
+
 
 const getEmployeeDelete = (id) => ({
     type: GET_EMPLOYEE_DELETE,
@@ -162,6 +214,10 @@ const addEmployeeFailure = state => ({
 
 const getEmployeeToEdit = (employee) => ({
     type: EDIT_EMPLOYEE,
+    payload: employee
+});
+const getEmployeeToSee = (employee) => ({
+    type: SEE_EMPLOYEE,
     payload: employee
 });
 

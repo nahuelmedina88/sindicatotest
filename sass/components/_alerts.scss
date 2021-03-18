@@ -25,3 +25,16 @@
   @include dangerInput;
   padding: 0.1rem;
 }
+
+.errorMessage {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ef0b0b;
+  margin: 0;
+}
+.errorMessageMedium {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ef0b0b;
+  margin: 0;
+}

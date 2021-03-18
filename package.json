@@ -12,9 +12,11 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.13",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "cross-env": "^7.0.3",
     "css-loader": "^5.0.1",
@@ -23,9 +25,11 @@
     "file-saver": "^2.0.5",
     "firebase": "^8.1.1",
     "firebase-admin": "^9.4.1",
+    "formik": "^2.2.6",
     "next": "10.0.2",
     "next-images": "^1.6.2",
     "react": "17.0.1",
+    "react-bootstrap": "^1.5.1",
     "react-chartjs-2": "^2.11.1",
     "react-dom": "17.0.1",
     "react-redux": "^7.2.2",
@@ -34,7 +38,8 @@
     "redux-thunk": "^2.3.0",
     "sass": "^1.30.0",
     "sweetalert2": "^10.10.1",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "gh-pages": "^3.1.0"

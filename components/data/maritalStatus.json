@@ -2,21 +2,25 @@
     {
         "id": "1",
         "value": "soltero",
-        "label": "Soltero/a"
+        "label": "Soltero/a",
+        "name" :"estado_civil"
     },
     {
         "id": "2",
         "value": "casado",
-        "label": "Casado/a"
+        "label": "Casado/a",
+        "name" :"estado_civil"
     },
     {
         "id": "3",
         "value": "viudo",
-        "label": "Viudo/a"
+        "label": "Viudo/a",
+        "name" :"estado_civil"
     },
     {
         "id": "4",
         "value": "divorciado",
-        "label": "Divorciado/a"
+        "label": "Divorciado/a",
+        "name" :"estado_civil"
     }
 ]

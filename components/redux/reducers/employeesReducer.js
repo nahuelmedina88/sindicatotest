@@ -8,6 +8,7 @@ import {
     GET_EMPLOYEE_DELETE,
     EMPLOYEE_DELETE_SUCCESS,
     EMPLOYEE_DELETE_FAILURE,
+    SEE_EMPLOYEE,
     EDIT_EMPLOYEE,
     EDIT_EMPLOYEE_SUCCESS,
     EDIT_EMPLOYEE_FAILURE,
@@ -21,7 +22,8 @@ const initialState = {
     loading: false,
     success: false,
     employeeToDelete: null,
-    employeeToEdit: null
+    employeeToEdit: null,
+    employeeToSee: null,
 }
 
 
@@ -79,6 +81,11 @@ const employeesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 error: true
+            }
+        case SEE_EMPLOYEE:
+            return {
+                ...state,
+                employeeToSee: action.payload
             }
         case EDIT_EMPLOYEE:
             return {

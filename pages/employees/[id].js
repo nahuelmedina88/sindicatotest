@@ -1,163 +1,479 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { Fragment, memo, useContext, useEffect, useState } from 'react';
 import styles from "../css/[id].module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { editEmployeeAction } from "../../components/redux/actions/EmployeeActions";
+// import { updatePathnameAction } from "../../components/redux/actions/GeneralActions";
+import { addEmployeeAction, getEmployeesAction } from "../../components/redux/actions/EmployeeActions";
+import { getSectionsAction, getCategoriesAction } from "../../components/redux/actions/SectionActions";
 import Select from 'react-select';
 // import { useHistory } from "react-router-dom";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import Image from 'next/image';
 import { getCompaniesAction } from "../../components/redux/actions/CompanyActions";
 // import history from "../history";
+
+//Import Data
+import relationshipSelect from "../../components/data/relationship.json";
+import sexSelect from "../../components/data/sexo.json";
+
 //Firebase
 import { FirebaseContext } from "../../firebase";
 import Layout from '../../components/layout/Layout';
+//Formik
+import { Formik, Field, Form, FieldArray, getIn, ErrorMessage } from "formik";
+import validation from "../../validation/addEmployeeValidate.js"
+import { object, array, number, string, boolean } from "yup";
+//Data
+import maritalStatusSelect from "../../components/data/maritalStatus.json";
 
-const EditEmployee = () => {
-    const [employee, setEmployee] = useState({
-        nroLegajo: 0,
-        nombre: "",
-        apellido: "",
-        dni: 0,
-        empresa: []
-    });
-    const [comp, setComp] = useState([]);
+const ErrorMessageArray = ({ name }) => (
+    <Field
+        name={name}
+        render={({ form }) => {
+            const error = getIn(form.errors, name);
+            const touch = getIn(form.touched, name);
+            return touch && error ? error : null;
+        }}
+    />
+);
+const ErrorMessageArraySelect = ({ name }) => (
+    <Field
+        as={Select}
+        name={name}
+        render={({ form }) => {
+            const error = getIn(form.errors, name);
+            const touch = getIn(form.touched, name);
+            return touch && error ? error : null;
+        }}
+    />
+);
 
-    const [companies, updateCompanies] = useState([]);
-
-    const employeeToEdit = useSelector(state => state.employees.employeeToEdit);
+const EditEmployee = memo(() => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const [employee, setEmployee] = useState({});
+    const [maritalStatusTypes, updateMaritalStatusTypes] = useState("");
+    const [section, setSection] = useState("");
+    const [generalError, setGeneralError] = useState("");
+    //UseSelector
+    const employeesSelector = useSelector(state => state.employees.employees);
     const companiesSelector = useSelector(state => state.companies.companies);
+    const employeeToEdit = useSelector(state => state.employees.employeeToEdit);
+
+    const companiesSelect = companiesSelector.map(company => ({
+        id: company.id,
+        value: company.id,
+        label: company.nombre,
+        nombre: company.nombre,
+        ciudad: company.ciudad,
+        domicilio: company.domicilio
+    }));
+    const sectionsSelector = useSelector(state => state.sections.sections);
+    const sectionsSelect = sectionsSelector.map(section => ({
+        id: section.codigo,
+        value: section.codigo,
+        label: section.nombre
+    }));
+    const categoriesSelector = useSelector(state => state.sections.categories);
+    const categoriesSelect = categoriesSelector.map(category => ({
+        id: category.codigo,
+        value: category.codigo,
+        label: category.nombre
+    }));
+
+    //Firebase
     const { firebase } = useContext(FirebaseContext);
 
     useEffect(() => {
-        const loadCompanies = firebase => { dispatch(getCompaniesAction(firebase)) }
+        // const currentPathname = router.pathname;
+        // const loadPathname = getPathName => { dispatch(updatePathnameAction(getPathName)) }
+        // loadPathname(currentPathname);
+        const loadCompanies = (firebase) => { dispatch(getCompaniesAction(firebase)) }
         loadCompanies(firebase);
-        const companiesSelect = companiesSelector.map(company => ({
-            id: company.id,
-            value: company.id,
-            label: company.nombre,
-            ciudad: company.ciudad
-        }));
-        if (employeeToEdit) {
-            const companySelected = {
-                id: employeeToEdit.empresa.id,
-                value: employeeToEdit.empresa.id,
-                label: employeeToEdit.empresa.nombre,
-                ciudad: employeeToEdit.empresa.ciudad
-            }
-            updateCompanies(companiesSelect);
-            setComp(companySelected);
-        }
-        setEmployee(employeeToEdit);
+        const loadSections = (firebase) => { dispatch(getSectionsAction(firebase)) }
+        loadSections(firebase);
+        const loadEmployees = (firebase) => dispatch(getEmployeesAction(firebase));
+        loadEmployees(firebase);
 
-    }, [employeeToEdit]);
+        updateMaritalStatusTypes(maritalStatusSelect);
+        // }, [dispatch]);
+    }, []);
 
-    const dispatch = useDispatch();
-    // const history = useHistory();
-    const history = useRouter();
+    useEffect(() => {
+        const loadCategories = (firebase, section) => { dispatch(getCategoriesAction(firebase, section)) }
+        loadCategories(firebase, section);
+    }, [section])
 
-    // if (!employee) return null;
+    useEffect(() => {
+        console.log("Edit Employee render")
+    }, [])
 
+    let EmptyObject = {
+        nombre: '',
+        apellido: '',
+        ciudad: '',
+        domicilio: '',
+        codigo_postal: '',
+        dni: '',
+        fecha_nacimiento: '',
+        nacionalidad: '',
+        estado_civil: '',
+        email: '',
+        telefono: '',
+        nroLegajo: '',
+        fecha_ingreso: '',
+        seccion: {},
+        categoria: {},
+        empresa: {},
+        familia: []
+    };
 
-    const submitEmployeeEdited = (e) => {
-        e.preventDefault();
-        console.log(e);
-        //send form
-        // employee.empresa = employee.empresa.id;
-        console.log("Empleado antes de editar: ");
-        dispatch(editEmployeeAction(employee, firebase));
-
-        history.push("/employees");
-        // history.go(0);
-    }
-
-    const changeForm = (e) => {
-        setEmployee({
-            ...employee,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const changeSelect = e => {
-        console.log(e);
-        setComp({
-            id: e.value,
-            value: e.value,
-            label: e.label,
-            ciudad: e.ciudad
-        });
-        setEmployee({
-            ...employee,
-            empresa: {
-                id: e.value,
-                nombre: e.label,
-                ciudad: e.ciudad
-            }
-        });
-    }
-    //  const { nroLegajo, nombre, apellido, dni, empresa } = employee 
-
-    return (
-
-        <Layout>
-            {employee ?
-                <div className={styles.container}>
-                    <h2 className={styles.title}> Editar Empleado</h2>
-                    <form className="form">
-
-                        <input
-                            type="text"
-                            className="inputSecondary"
-                            name="nroLegajo"
-                            placeholder="Nro Legajo"
-                            value={employee ? employee.nroLegajo : null}
-                            onChange={changeForm}
-                        />
-
-
-                        <input
-                            type="text"
-                            className="inputSecondary"
-                            name="nombre"
-                            placeholder="Nombre"
-                            value={employee ? employee.nombre : null}
-                            onChange={changeForm}
-                        />
-
-
-                        <input
-                            type="text"
-                            className="inputSecondary"
-                            name="apellido"
-                            placeholder="Apellido"
-                            value={employee ? employee.apellido : null}
-                            onChange={changeForm}
-                        />
-                        <input
-                            type="number"
-                            className="inputSecondary"
-                            name="dni"
-                            placeholder="DNI"
-                            value={employee ? employee.dni : null}
-                            onChange={changeForm}
-                        />
-
-                        <Select
-                            // className={!arsTo ? styles.foreignCurrencyFirst : styles.foreignCurrencySecond}
-                            options={companies}
-                            onChange={changeSelect}
-                            value={comp}
-                        // components={{ Option: IconOption }}
-                        ></Select>
-
-                        <button
-                            type="button"
-                            className="btn btnPrimary"
-                            onClick={submitEmployeeEdited}
-                        >Guardar Cambios</button>
-                    </form>
-                </div> : null}
-
-        </Layout>
-    );
-}
+    return (<>
+        {employeeToEdit ?
+            <Formik
+                initialValues={employeeToEdit}
+                onSubmit={(values, { setSubmitting }) => {
+                    //const found = employeesSelector.find(emp => (emp.dni === values.dni || emp.nroLegajo === values.nroLegajo));
+                    let oldCompany = employeeToEdit.empresa.nombre;
+                    let newCompany = values.empresa.nombre;
+                    if (oldCompany !== newCompany) {
+                        let currentDay = new Date();
+                        values.fechas_cambio_empresa.push({
+                            fecha: currentDay,
+                            anterior_empresa: oldCompany,
+                            nueva_empresa: newCompany
+                        });
+                    }
+                    setSubmitting(true);
+                    setTimeout(() => {
+                        values && dispatch(editEmployeeAction(values, firebase));
+                        setSubmitting(false);
+                    }, 2000);
+                }}
+                validate={validation}
+                validationSchema={object({
+                    familia: array(object({
+                        nombre_familia: string().required("Ingrese el nombre!"),
+                        apellido_familia: string().required("Ingrese el apellido!"),
+                        dni_familia: number().required("Ingrese el DNI!")
+                            .min(999999, "El mínimo son 7 dígitos")
+                            .max(999999999, "El máximo son 10 dígitos"),
+                        fecha_nacimiento_familia: string().required("Ingrese la fecha de nacimiento!"),
+                        sexo: string().required("Seleccione el sexo"),
+                        parentesco: string().required("Seleccione el parentesco"),
+                    }))
+                })}
+            >
+                {({ values, errors, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
+                    <div>
+                        <Layout>
+                            <div className={styles.container}>
+                                <Form className={styles.mainForm} autoComplete="off">
+                                    <fieldset className={styles.flexForm}>
+                                        <legend>Datos básicos del Trabajador</legend>
+                                        <div className={styles.formControl}>
+                                            <label>Nombre</label>
+                                            <Field
+                                                type="text"
+                                                className="inputSecondary"
+                                                name="nombre"
+                                                placeholder="Nombre"
+                                            />
+                                            {touched.nombre && errors.nombre && <span className="errorMessage">{errors.nombre}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Apellido</label>
+                                            <Field
+                                                type="text"
+                                                className="inputSecondary"
+                                                name="apellido"
+                                                placeholder="Apellido"
+                                            />
+                                            {touched.apellido && errors.apellido && <p className="errorMessage">{errors.apellido}</p>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Domicilio</label>
+                                            <Field
+                                                type="text"
+                                                className="inputSecondary"
+                                                name="domicilio"
+                                                placeholder="Domicilio"
+                                            ></Field>
+                                            {touched.domicilio && errors.domicilio && <span className="errorMessage">{errors.domicilio}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Ciudad</label>
+                                            <Field
+                                                type="text"
+                                                className="inputSecondary"
+                                                name="ciudad"
+                                                placeholder="Ciudad"
+                                            ></Field>
+                                            {touched.ciudad && errors.ciudad && <span className="errorMessage">{errors.ciudad}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Código Postal</label>
+                                            <Field
+                                                type="text"
+                                                className="inputSecondary"
+                                                name="codigo_postal"
+                                                placeholder="Codigo Postal"
+                                            ></Field>
+                                            {touched.codigo_postal && errors.codigo_postal && <span className="errorMessage">{errors.codigo_postal}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>DNI</label>
+                                            <Field
+                                                type="number"
+                                                className={`inputSecondary`}
+                                                name="dni"
+                                                placeholder="DNI"
+                                            ></Field>
+                                            {touched.dni && errors.dni && <span className="errorMessage">{errors.dni}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Fecha de Nacimiento</label>
+                                            <Field
+                                                type="date"
+                                                className="inputSecondary"
+                                                name="fecha_nacimiento"
+                                                placeholder="Fecha de nacimiento"
+                                            ></Field>
+                                            {touched.fecha_nacimiento && errors.fecha_nacimiento && <span className="errorMessage">{errors.fecha_nacimiento}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Nacionalidad</label>
+                                            <Field
+                                                type="text"
+                                                className="inputSecondary"
+                                                name="nacionalidad"
+                                                placeholder="Nacionalidad"
+                                            ></Field>
+                                            {touched.nacionalidad && errors.nacionalidad && <span className="errorMessage">{errors.nacionalidad}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Estado Civil</label>
+                                            <Select
+                                                className={`inputSecondary ` + styles.myselect}
+                                                name="estado_civil"
+                                                options={maritalStatusTypes}
+                                                placeholder={"Estado Civil"}
+                                                value={{ label: values.estado_civil }}
+                                                onChange={option => setFieldValue("estado_civil", option.label)}
+                                                onBlur={option => setFieldTouched("estado_civil", option.label)}
+                                            ></Select>
+                                            {touched.estado_civil && errors.estado_civil && <span className="errorMessage">{errors.estado_civil}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Email</label>
+                                            <Field
+                                                type="email"
+                                                className="inputSecondary"
+                                                name="email"
+                                                placeholder="Email"
+                                            ></Field>
+                                            {touched.email && errors.email && <span className="errorMessage">{errors.email}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Nro de Teléfono</label>
+                                            <Field
+                                                type="text"
+                                                className="inputSecondary"
+                                                name="telefono"
+                                                placeholder="Número de teléfono"
+                                            ></Field>
+                                            {touched.telefono && errors.telefono && <span className="errorMessage">{errors.telefono}</span>}
+                                        </div>
+                                    </fieldset>
+                                    <fieldset className={styles.flexFormEmpresa}>
+                                        <legend>Información relacionada a la Empresa</legend>
+                                        <div className={styles.formControl}>
+                                            <label>Nro Legajo</label>
+                                            <Field
+                                                type="number"
+                                                className="inputSecondary"
+                                                name="nroLegajo"
+                                                placeholder="Nro Legajo"
+                                            ></Field>
+                                            {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Fecha de Ingreso</label>
+                                            <Field
+                                                type="date"
+                                                className="inputSecondary"
+                                                name="fecha_ingreso"
+                                                placeholder="Fecha de Ingreso"
+                                            ></Field>
+                                            {touched.fecha_ingreso && errors.fecha_ingreso && <span className="errorMessage">{errors.fecha_ingreso}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Sección</label>
+                                            <Select
+                                                className={`inputSecondary ` + styles.myselect}
+                                                options={sectionsSelect}
+                                                name="seccion"
+                                                value={{ label: values.seccion.label }}
+                                                placeholder={"Seleccione una Sección"}
+                                                onChange={
+                                                    option => {
+                                                        setFieldValue("seccion", option);
+                                                        setSection({
+                                                            "codigo_seccion": option.value,
+                                                            "nombre_seccion": option.label,
+                                                        });
+                                                    }
+                                                }
+                                                onBlur={option => setFieldTouched("seccion", option)}
+                                            ></Select>
+                                            {touched.seccion && errors.seccion && <span className="errorMessage">{errors.seccion}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Categoría</label>
+                                            <Select
+                                                className={`inputSecondary ` + styles.myselect}
+                                                options={categoriesSelect}
+                                                name="categoria"
+                                                value={{ label: values.categoria.label }}
+                                                placeholder={"Seleccione una Categoría"}
+                                                onChange={option => setFieldValue("categoria", option)}
+                                                onBlur={option => setFieldTouched("categoria", option)}
+                                            ></Select>
+                                            {touched.categoria && errors.categoria && <span className="errorMessage">{errors.categoria}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Empresa</label>
+                                            <Select
+                                                className={`inputSecondary ` + styles.myselect}
+                                                options={companiesSelect}
+                                                name="empresa"
+                                                value={{ label: values.empresa.label }}
+                                                placeholder={"Seleccione un frigorífico"}
+                                                onChange={option => setFieldValue("empresa", option)}
+                                                onBlur={option => setFieldTouched("empresa", option)}
+                                            ></Select>
+                                            {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
+                                        </div>
+                                    </fieldset>
+                                    <FieldArray name="familia">
+                                        {({ push, remove }) => (
+                                            <Fragment>
+                                                {values.familia.map((_, index) => (
+                                                    <Fragment>
+                                                        <fieldset className={styles.flexFormFamilia}>
+                                                            <legend>Nuevo Integrante Familiar</legend>
+                                                            <div className={styles.formControl}>
+                                                                <label>Nombre</label>
+                                                                <Field
+                                                                    type="text"
+                                                                    className="inputSecondary"
+                                                                    name={`familia[.${index}.]nombre_familia`}
+                                                                    placeholder="Nombre"
+                                                                ></Field>
+                                                                <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]nombre_familia`}></ErrorMessageArray></span>
+                                                            </div>
+                                                            <div className={styles.formControl}>
+                                                                <label>Apellido</label>
+                                                                <Field
+                                                                    type="text"
+                                                                    className="inputSecondary"
+                                                                    name={`familia[.${index}.]apellido_familia`}
+                                                                    placeholder="Apellido"
+                                                                ></Field>
+                                                                <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]apellido_familia`}></ErrorMessageArray></span>
+                                                            </div>
+                                                            <div className={styles.formControl}>
+                                                                <label>Parentesco</label>
+                                                                <Select
+                                                                    className={`inputSecondary ` + styles.myselect}
+                                                                    options={relationshipSelect}
+                                                                    name={`familia[.${index}.]parentesco`}
+                                                                    value={{ label: values.familia[index].parentesco }}
+                                                                    placeholder={"Parentesco"}
+                                                                    onChange={option => setFieldValue(`familia[.${index}.]parentesco`, option.label)}
+                                                                    onBlur={option => setFieldTouched(`familia[.${index}.]parentesco`, option.label)}
+                                                                ></Select>
+                                                                <span className="errorMessage"><ErrorMessageArraySelect name={`familia[.${index}.]parentesco`}></ErrorMessageArraySelect></span>
+                                                            </div>
+                                                            <div className={styles.formControl}>
+                                                                <label>Sexo</label>
+                                                                <Select
+                                                                    className={`inputSecondary ` + styles.myselect}
+                                                                    options={sexSelect}
+                                                                    name={`familia[.${index}.]sexo`}
+                                                                    value={{ label: values.familia[index].sexo }}
+                                                                    placeholder={"Sexo"}
+                                                                    onChange={option => setFieldValue(`familia[.${index}.]sexo`, option.label)}
+                                                                    onBlur={option => setFieldTouched(`familia[.${index}.]sexo`, option.label)}
+                                                                ></Select>
+                                                                <span className="errorMessage"><ErrorMessageArraySelect name={`familia[.${index}.]sexo`}></ErrorMessageArraySelect></span>
+                                                            </div>
+                                                            <div className={styles.formControl}>
+                                                                <label>Fecha de Nacimiento</label>
+                                                                <Field
+                                                                    type="date"
+                                                                    className="inputSecondary"
+                                                                    name={`familia[.${index}.]fecha_nacimiento_familia`}
+                                                                    placeholder="Fecha de nacimiento"
+                                                                ></Field>
+                                                                <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]fecha_nacimiento_familia`}></ErrorMessageArray></span>
+                                                            </div>
+                                                            <div className={styles.formControl}>
+                                                                <label>DNI</label>
+                                                                <Field
+                                                                    type="number"
+                                                                    className={`inputSecondary`}
+                                                                    name={`familia[.${index}.]dni_familia`}
+                                                                    placeholder="DNI"
+                                                                ></Field>
+                                                                <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]dni_familia`}></ErrorMessageArray></span>
+                                                            </div>
+                                                            <Link href="#">
+                                                                <a id={index} onClick={() => remove(index)} className={styles.buttonDelete}>
+                                                                    <svg id={index} className={styles.iconDelete} >
+                                                                        <use id={index} xlinkHref="../img/sprite.svg#icon-cross"></use>
+                                                                    </svg>
+                                                                </a>
+                                                            </Link>
+                                                        </fieldset>
+                                                    </Fragment>
+                                                ))}
+                                                <button type="button" onClick={() => push({
+                                                    nombre_familia: '', apellido_familia: '',
+                                                    fecha_nacimiento_familia: '', sexo: '', parentesco: '', dni_familia: ''
+                                                })}
+                                                    className={`btn btnInfo ${styles.mainBoton}`}>Agregar Familiar Nuevo</button>
+                                            </Fragment>
+                                        )}
+                                    </FieldArray>
+                                    <span className="errorMessageMedium">{generalError}</span>
+                                    <div className={styles.submittingButton}>
+                                        <button
+                                            onClick={() => { setGeneralError("") }}
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className={`btn btnExploring alignSelfCenter`}
+                                        >{isSubmitting ? "Guardando cambios" : "Guardar cambios"}</button>
+                                        {isSubmitting ? <Image
+                                            src="/img/loading.gif"
+                                            alt="loading"
+                                            width={50}
+                                            height={50}
+                                        ></Image> : null}
+                                    </div>
+                                </Form>
+                            </div>
+                        </Layout>
+                        {/* <pre>{JSON.stringify(values, null, 2)}</pre>
+                    <pre>   {JSON.stringify(errors, null, 2)}</pre> */}
+                    </div>
+                )}
+            </Formik>
+            : <span className="errorMessage">Something went wrong</span>}
+        {/* <Fragment><pre> employeeedit  {JSON.stringify(employeeToEdit, null, 2)}</pre>
+        </Fragment> */}
+    </>);
+})
 
 export default EditEmployee;

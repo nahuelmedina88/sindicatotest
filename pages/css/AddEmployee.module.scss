@@ -115,3 +115,80 @@
     margin: 1rem;
   }
 }
+
+.flexFormFamilia {
+  @include FlexForm;
+  margin: 0 2rem 2rem 2rem;
+  position: relative;
+
+  legend {
+    font-size: 1.3rem;
+  }
+
+  .formControl:nth-child(2) {
+    flex: 1 1 40%;
+  }
+  .formControl:nth-child(3) {
+    flex: 1 1 30%;
+  }
+  .formControl:nth-child(4) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(5) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(6) {
+    flex: 1 1 30%;
+  }
+  .formControl:nth-child(7) {
+    flex: 1 1 20%;
+  }
+  .formControl:nth-child(8) {
+    flex: 0 1 40%;
+    align-self: center;
+  }
+}
+
+.familyMembers {
+  border-radius: 10px;
+  width: 100%;
+  background-color: var(--primary-color);
+  color: white;
+  border-style: solid;
+  border-width: 0.5px;
+  border-color: blue;
+  padding: 1rem;
+  margin: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.iconDelete {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.2rem;
+  fill: white;
+  background-color: red;
+  border-radius: 5px;
+  border-color: white;
+  border-style: solid;
+}
+.buttonDelete {
+  position: absolute;
+  right: -10px;
+  top: -40px;
+}
+
+.familyGroup {
+  @include FlexForm;
+  legend {
+    font-size: 1.3rem;
+  }
+}
+
+.submittingButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

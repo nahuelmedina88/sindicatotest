@@ -1,4 +1,10 @@
 import React, { useContext, useState, Fragment, memo, useEffect } from 'react';
+
+//Material UI
+import { makeStyles } from '@material-ui/core/styles';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,30 +14,22 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
 
-import Link from "next/link";
-
+//Redux
 import { seeEmployeeAction, editEmployeeAction, editEmployeeAction2 } from "./redux/actions/EmployeeActions";
 import { useDispatch } from "react-redux";
-import swal from "sweetalert2";
+
 //Firebase
 import { FirebaseContext } from "../firebase";
 
+//Next
+import Link from "next/link";
+
 //Formik
-import { Formik, Field, Form } from "formik";
+import { Formik } from "formik";
 import { object, string } from "yup";
 
-// import styles from "../pages/css/EmployeeList.module.scss";
 
-const validation = (values) => {
-
-    let errors = {};
-
-    if (!values.fecha_baja) {
-        errors.fecha_baja = 'Ingrese la Fecha de baja';
-    }
-}
-
-const EmployeeList = memo(({ employee }) => {
+const EmployeeListItem = ({ employee }) => {
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -45,8 +43,6 @@ const EmployeeList = memo(({ employee }) => {
 
     const { firebase } = useContext(FirebaseContext);
 
-    const { id, nroLegajo, apellido, nombre, dni } = employee;
-
     const redirectToEdit = (employee) => {
         dispatch(editEmployeeAction2(employee));
         // history.push(`/employees/edit/${employee.id}`);
@@ -57,32 +53,33 @@ const EmployeeList = memo(({ employee }) => {
     }
 
     useEffect(() => {
-        console.log("employeesList render");
+        console.log("employeesListItem render");
     }, [])
 
-    return (
-        <tr>
-            <td>{nroLegajo}</td>
-            <td>{apellido}</td>
-            <td>{nombre}</td>
-            <td>{dni}</td>
-            <td>{employee.empresa.nombre}</td>
-            <td>
+    return (<>
+        <TableRow key={employee.dni}>
+            <TableCell align="right">{employee.nroLegajo}</TableCell>
+            {/* <TableCell component="th" scope="row">{employee.apellido}</TableCell> */}
+            <TableCell align="right">{employee.apellido}</TableCell>
+            <TableCell align="right">{employee.nombre}</TableCell>
+            <TableCell align="right">{employee.dni}</TableCell>
+            <TableCell align="right">{employee.empresa.nombre}</TableCell>
+            <TableCell align="right">
                 <Link
                     href="/employees/employee[id]"
-                    as={`/employees/employee${id}`}
+                    as={`/employees/employee${employee.id}`}
                 >
                     <a className="btn btnPrimary btnTable"
                         onClick={() => redirectToSee(employee)}
                     >
                         Ver Ficha
-                    </a>
+                                        </a>
                 </Link>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <Link
                     href="/employees/[id]"
-                    as={`/employees/${id}`}
+                    as={`/employees/${employee.id}`}
                 >
                     <a className="btn btnPrimary btnTable"
                         onClick={() => redirectToEdit(employee)}
@@ -90,13 +87,12 @@ const EmployeeList = memo(({ employee }) => {
                         Editar
                     </a>
                 </Link>
-            </td>
-            <td>
-
+            </TableCell>
+            <TableCell>
                 <Fragment>
-                    <Link href="">
+                    <Link href="#">
                         <a className="btn btnDanger btnTable"
-                            onClick={() => handleClickOpen(id)}
+                            onClick={() => handleClickOpen(employee.id)}
                         >Eliminar</a>
                     </Link>
                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -123,7 +119,7 @@ const EmployeeList = memo(({ employee }) => {
                                 <form onSubmit={handleSubmit}>
                                     <DialogContentText>
                                         Ingrese la fecha de baja
-                                    </DialogContentText>
+                                                           </DialogContentText>
                                     <TextField
                                         autoFocus
                                         margin="dense"
@@ -137,7 +133,7 @@ const EmployeeList = memo(({ employee }) => {
                                     <DialogActions>
                                         <Button onClick={handleClose} color="primary">
                                             Cancelar
-                                    </Button>
+                                                                </Button>
                                         <Button
                                             type="submit"
                                             disabled={isSubmitting}
@@ -154,9 +150,9 @@ const EmployeeList = memo(({ employee }) => {
                         </DialogContent>
                     </Dialog>
                 </Fragment>
-            </td>
-        </tr >
-    );
-})
+            </TableCell>
+        </TableRow>
+    </>);
+}
 
-export default EmployeeList;
+export default EmployeeListItem;

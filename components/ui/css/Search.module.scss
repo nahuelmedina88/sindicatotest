@@ -1,0 +1,28 @@
+.searchBox {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  justify-content: center;
+  input {
+    width: 70%;
+  }
+}
+
+.myInput {
+  border-radius: 100px;
+  padding: 0.8rem;
+  border-width: 0.1rem;
+  border-style: solid;
+
+  &:focus {
+    outline: none;
+    width: 80%;
+  }
+}
+
+.icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+  transform: translateX(-3rem);
+}

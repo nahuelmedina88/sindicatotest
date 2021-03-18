@@ -37,6 +37,7 @@ export function validarFechaMenorActual(mydate) {
     let aaaammdd2 = parseInt(aniomydate + mesmydate + diamydate);
     let result = aaaammdd2 <= currentDay ? true : false;
     return result;
+
 }
 
 export function isAdult(mydate) {
@@ -59,4 +60,18 @@ export function isAdult(mydate) {
     let birthdate = parseInt(aniomydate + mesmydate + diamydate);
     let result = birthdate <= adultDate ? true : false;
     return result;
+}
+
+
+export function calcularEdad(fecha) {
+    var hoy = new Date();
+    var cumpleanos = new Date(fecha);
+    var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    var m = hoy.getMonth() - cumpleanos.getMonth();
+
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+        edad--;
+    }
+
+    return edad;
 }

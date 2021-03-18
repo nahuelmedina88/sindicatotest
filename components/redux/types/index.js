@@ -34,4 +34,6 @@ export const GET_SECTIONS_FAILURE = "GET_SECTIONS_FAILURE";
 
 export const GET_CATEGORIES = "GET_CATEGORIES";
 
+export const SEE_EMPLOYEE = "SEE_EMPLOYEE";
+
 

@@ -1,0 +1,39 @@
+.content {
+  display: flex;
+  justify-content: center;
+  min-height: 80vh;
+  min-width: 80vw;
+  flex: 1 0;
+  /* background-image: linear-gradient(
+        to right,
+        rgba(245, 249, 255, 0.8),
+        rgba(255, 255, 255, 0.8)
+      ),
+      url("../../public/vacasNz.jpg");
+    background-size: cover;
+    background-position: center; */
+  background-color: white;
+}
+
+/* Pantalla grande */
+@media only screen and (min-width: 850px) {
+  .containerFlex {
+    display: flex;
+    flex-direction: row;
+  }
+  .containerFlexButton {
+    display: flex;
+    flex-direction: row;
+  }
+  .sidebarClass {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* Pantalla chica */
+@media only screen and (max-width: 849px) {
+  .containerFlex {
+    flex-direction: column;
+  }
+}

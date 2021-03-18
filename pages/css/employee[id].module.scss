@@ -1,0 +1,122 @@
+.container {
+  background-color: grey;
+  display: flex;
+  flex-direction: row;
+}
+
+.headerName {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 1rem;
+  .workerName {
+    font-size: 1.4rem;
+  }
+  .companyName {
+  }
+}
+
+.workerMenu {
+  background-color: blue;
+}
+
+.img {
+  width: 50%;
+}
+
+.imageContainer {
+  display: flex;
+  flex-basis: 20%;
+  max-width: 20%;
+  align-items: center;
+  flex-direction: column;
+}
+.tabsContainer {
+  display: flex;
+  flex-basis: 80%;
+  max-width: 80%;
+  flex-direction: column;
+}
+
+.icon {
+  width: 7rem;
+  height: 7rem;
+  fill: rgb(153, 153, 153);
+}
+
+.sidebarInfoContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  .rowSidebar {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.3rem 0 0.3rem 0;
+    //Manganeta para poner el nro afiliado como titulo
+    & > .title:first-child {
+      flex: 0 1 100%;
+    }
+    .spanLabel {
+      align-self: center;
+      margin-left: 0.2rem;
+    }
+    .title {
+      padding: 0.5rem;
+      margin: 0;
+    }
+  }
+}
+
+.rowBody {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+
+  .title {
+    font-size: 1.2rem;
+  }
+
+  span:nth-child(1) {
+    flex: 0 1 10%;
+    align-self: center;
+  }
+  h4:nth-child(2) {
+    flex: 0 1 90%;
+    margin: 0;
+  }
+  .divider:nth-child(3) {
+    flex: 0 1 100%;
+    margin-bottom: 1rem;
+  }
+  .itemRow:nth-child(4) {
+    flex: 1 1 25%;
+  }
+  .itemRow:nth-child(5) {
+    flex: 1 1 25%;
+  }
+  .itemRow:nth-child(6) {
+    flex: 1 1 25%;
+  }
+  .itemRow:nth-child(7) {
+    flex: 1 1 25%;
+  }
+
+  .itemRow {
+    display: flex;
+    flex-wrap: wrap;
+    & > .title:first-child {
+      flex: 0 1 100%;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+  }
+}
+
+.tableCell {
+  font-size: 1.4rem;
+}
