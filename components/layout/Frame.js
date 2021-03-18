@@ -3,10 +3,10 @@ import Header from "./Header";
 // import 'bootstrap/dist/css/bootstrap.css';
 import Sidebar from './Sidebar';
 // import { FirebaseContext } from "../../firebase";
-import styles from "../css/Layout3.module.scss"
+import styles from "../css/Frame.module.scss"
 import { useDispatch, useSelector } from "react-redux";
 
-const Layout3 = (props) => {
+const Frame = (props) => {
     // const { user } = useContext(FirebaseContext);
     const buttonPressed = useSelector(state => state.general.buttonPressed);
     return (<>
@@ -21,4 +21,4 @@ const Layout3 = (props) => {
     </>);
 }
 
-export default Layout3;
+export default Frame;

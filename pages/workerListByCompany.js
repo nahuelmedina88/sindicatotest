@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import EmployeeListItem from "../components/EmployeeListItem";
 import Select from 'react-select';
 import styles from "./css/workerListByCompany.module.scss";
-import Layout3 from "../components/layout/Layout3";
+import Frame from "../components/layout/Frame";
 import Search from "../components/ui/Search";
 
 //Redux
