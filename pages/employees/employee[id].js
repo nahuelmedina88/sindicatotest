@@ -109,11 +109,11 @@ const SeeEmployee = () => {
                             className={styles.img}
                         /> */}
                         <div className={styles.sidebarInfoContainer}>
-                            {/* <div className={styles.rowSidebar}>
+                            <div className={styles.rowSidebar}>
                                 <h4 className={styles.title}>Edad</h4>
                                 <span className={styles.spanIcon}><CakeRoundedIcon /></span>
                                 <span className={styles.spanLabel}>{calcularEdad(employeeToSee.fecha_nacimiento)}</span>
-                            </div> */}
+                            </div>
                             <Divider variant="middle" />
                             <div className={styles.rowSidebar}>
                                 <h4 className={styles.title}>Nro Afiliado</h4>
