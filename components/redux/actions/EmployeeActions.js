@@ -131,8 +131,8 @@ export function getEmployeesByDateAction(values, firebase) {
         // dispatch(getEmployeeToEdit(employee));
         try {
             // const response = await axiosClient.put(`/api/empleados/${employee._id}`, employee);
-            console.log("values: " + values);
-            console.log("JsON: " + JSON.stringify(values));
+            // console.log("values: " + values);
+            // console.log("JsON: " + JSON.stringify(values));
             let employeesRef = firebase.db.collection("empleados");
             let response = "";
             if (values.empresa === "Padrón General" || values.empresa === "") {
@@ -161,6 +161,43 @@ export function getEmployeesByDateAction(values, firebase) {
             dispatch(getEmployeesFailure(employees));
             // sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
         }
+    }
+}
+
+export function getfoundationalWorkerListAction(firebase) {
+    return async (dispatch) => {
+        // dispatch(getEmployeeToEdit(employee));
+        try {
+            // const response = await axiosClient.put(`/api/empleados/${employee._id}`, employee);
+            // console.log("values: " + values);
+            // console.log("JsON: " + JSON.stringify(values));
+            let employeesRef = firebase.db.collection("empleados");
+            let response = await employeesRef.where("fecha_ingreso", "==", "2004-01-01");
+            let empleados = await response.get();
+            let employees = [];
+            let i = 0;
+            for (const emp of empleados.docs) {
+                employees.push(emp.data());
+                employees[i].id = emp.id;
+                i++;
+            }
+            // dispatch(updateEmployees(employees));
+            console.log(employees);
+            dispatch(getEmployeesSuccess(employees));
+            // sweetAlert.fire("Genial", "El empleado se editó correctamente", "success");
+        } catch (error) {
+            console.log(error);
+            dispatch(getEmployeesFailure(employees));
+            // sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+        }
+    }
+}
+
+export function getfoundationalWorkerListByCompanyAction(employees, company) {
+    return (dispatch) => {
+        let employeesByCompany = employees.filter(e => e.empresa.nombre === company);
+        console.log("employees by company: " + employeesByCompany);
+        dispatch(updateEmployees(employeesByCompany));
     }
 }
 

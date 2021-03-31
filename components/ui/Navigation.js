@@ -99,7 +99,7 @@ const Navigation = () => {
                         <ListItemText primary="Búsqueda de Padrón" />
                     </StyledMenuItem>
                 </Link>
-                <Link href="/foundationlWorkerList">
+                <Link href="/foundationalWorkerList">
                     <StyledMenuItem>
                         <ListItemIcon>
                             <LibraryBooksIcon fontSize="small" />

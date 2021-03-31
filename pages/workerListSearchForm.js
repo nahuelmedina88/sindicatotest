@@ -72,8 +72,6 @@ const workerListSearchForm = () => {
 
     const { firebase } = useContext(FirebaseContext);
 
-
-
     let EmptyObject = {
         fecha_desde: '',
         fecha_hasta: '',
