@@ -194,9 +194,14 @@ export function getfoundationalWorkerListAction(firebase) {
 }
 
 export function getfoundationalWorkerListByCompanyAction(employees, company) {
+    console.log("getfoundationalWorker: " + employees);
     return (dispatch) => {
-        let employeesByCompany = employees.filter(e => e.empresa.nombre === company);
-        console.log("employees by company: " + employeesByCompany);
+        let employeesByCompany = "";
+        if (company === "Padrón General") {
+            employeesByCompany = employees;
+        } else {
+            employeesByCompany = employees.filter(e => e.empresa.nombre === company);
+        }
         dispatch(updateEmployees(employeesByCompany));
     }
 }

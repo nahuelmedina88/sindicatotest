@@ -47,6 +47,7 @@ const StyledMenuItem = withStyles((theme) => ({
 
 const Navigation = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorElUtiles, setAnchorElUtiles] = React.useState(null);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -54,6 +55,14 @@ const Navigation = () => {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleClickUtiles = (event) => {
+        setAnchorElUtiles(event.currentTarget);
+    };
+
+    const handleCloseUtiles = () => {
+        setAnchorElUtiles(null);
     };
     const { user, firebase } = useContext(FirebaseContext);
 
@@ -105,6 +114,38 @@ const Navigation = () => {
                             <LibraryBooksIcon fontSize="small" />
                         </ListItemIcon>
                         <ListItemText primary="Padrón Fundacional" />
+                    </StyledMenuItem>
+                </Link>
+            </StyledMenu>
+            <Button
+                aria-controls="customized-menu-two"
+                aria-haspopup="true"
+                variant="contained"
+                color="primary"
+                onClick={handleClickUtiles}
+            >Útiles Escolares
+            </Button>
+            <StyledMenu
+                id="customized-menu-two"
+                anchorEl={anchorElUtiles}
+                keepMounted
+                open={Boolean(anchorElUtiles)}
+                onClose={handleCloseUtiles}
+            >
+                <Link href="/schoolSuppliesWorkerList">
+                    <StyledMenuItem>
+                        <ListItemIcon>
+                            <LibraryBooksIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText primary="Agregar útiles" />
+                    </StyledMenuItem>
+                </Link>
+                <Link href="/schoolSuppliesReport">
+                    <StyledMenuItem>
+                        <ListItemIcon>
+                            <BusinessIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText primary="Consulta e informe" />
                     </StyledMenuItem>
                 </Link>
             </StyledMenu>

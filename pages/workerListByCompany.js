@@ -53,7 +53,11 @@ const workerListByCompany = (props) => {
         ciudad: company.ciudad,
         domicilio: company.domicilio
     }));
-
+    companiesSelect.push({
+        id: 0,
+        value: "Padron General",
+        label: "Padrón General",
+    });
     const loadEmployees = (firebase) => {
         dispatch(getEmployeesAction(firebase));
     }

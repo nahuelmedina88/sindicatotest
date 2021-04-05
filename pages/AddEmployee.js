@@ -123,7 +123,12 @@ const AddEmployee = () => {
         seccion: {},
         categoria: {},
         empresa: {},
-        familia: []
+        familia: [
+            {
+                talle: [],
+                kit_escolar: []
+            }
+        ]
     };
 
     return (<>
