@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Select from "react-select"
-import WorkerListItemSchoolSupplies from "../components/workerListItemSchoolSupplies";
+import WorkerListItemSchoolSupplies from "../components/WorkerListItemSchoolSupplies";
 
 import styles from "./css/schoolSuppliesWorkerList.module.scss";
 import Layout from "../components/layout/Layout";
