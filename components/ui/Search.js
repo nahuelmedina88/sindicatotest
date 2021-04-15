@@ -7,7 +7,7 @@ import { updateEmployeesAction } from "../../components/redux/actions/EmployeeAc
 //Styles
 import styles from "./css/Search.module.scss";
 
-const Search = ({ employeesRedux, getSearchTextBox }) => {
+const Search = ({ employeesRedux, getSearchTextBox, company }) => {
     const [searchEmployee, setSearchEmployee] = useState("");
     const dispatch = useDispatch();
 
@@ -33,14 +33,19 @@ const Search = ({ employeesRedux, getSearchTextBox }) => {
                 acc.push(item);
             }
             return acc;
-        }, [])
-        emp.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-
-        const updateEmployees = (emp) => {
-            dispatch(updateEmployeesAction(emp));
+        }, []);
+        const updateEmployees = (emp3) => {
+            dispatch(updateEmployeesAction(emp3));
         }
-        console.log("emp: " + JSON.stringify(emp.empresa))
-        updateEmployees(emp);
+        let emp3 = "";
+        if (company === "Padrón General" || !company) {
+            emp.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
+            updateEmployees(emp);
+        } else {
+            emp3 = emp.filter(item => item.empresa.nombre === company);
+            emp3.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
+            updateEmployees(emp3);
+        }
         setSearchEmployee(e.target.value);
         getSearchTextBox(e.target.value);
     }

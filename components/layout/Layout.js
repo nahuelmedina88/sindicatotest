@@ -14,9 +14,14 @@ const Layout = (props) => {
         <div className={buttonPressed ? styles.containerFlexButton : styles.containerFlex}>
             {/* {user ? <Sidebar /> : null} */}
             <Sidebar />
-            <main className={styles.content}>
-                {props.children}
-            </main>
+            {props.homepage ?
+                <main className={styles.homepage}>
+                    {props.children}
+                </main> :
+                <main className={styles.content}>
+                    {props.children}
+                </main>
+            }
         </div>
     </>);
 }

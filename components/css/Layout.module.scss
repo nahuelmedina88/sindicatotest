@@ -15,6 +15,13 @@
   background-position: center; */
   background-color: white;
 }
+.homepage {
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  min-width: 86.5vw;
+  justify-content: center;
+}
 
 /* Pantalla grande */
 @media only screen and (min-width: 850px) {

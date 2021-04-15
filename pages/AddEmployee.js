@@ -126,7 +126,8 @@ const AddEmployee = () => {
         familia: [
             {
                 talle: [],
-                kit_escolar: []
+                kit_escolar: [],
+                documentacion: []
             }
         ]
     };

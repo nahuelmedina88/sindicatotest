@@ -44,7 +44,15 @@ const validation = (values) => {
     return errors;
 }
 
+const useStyles = makeStyles({
+    table: {
+        tableLayout: "fixed",
+    },
+});
+
+
 const workerListSearchForm = () => {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const [companyComboBox, setCompanyComboBox] = useState("");
     const [employeesByCompany, setEmployeesByCompany] = useState([]);
@@ -200,37 +208,61 @@ const workerListSearchForm = () => {
                             <Fragment>
                                 <div className={styles.absCenterSelf}>
                                     <Search employeesRedux={values.fecha_desde ? employeesSorted : employeesSearch}
-                                        getSearchTextBox={getSearchTextBox}></Search>
-
+                                        getSearchTextBox={getSearchTextBox}>
+                                    </Search>
                                     <TableContainer component={Paper}>
-                                        <Table aria-label="caption table">
-                                            {/* <caption>A basic table example with a caption</caption> */}
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                    <TableCell align="right">Apellido</TableCell>
-                                                    <TableCell align="right">Nombre</TableCell>
-                                                    <TableCell align="right">DNI</TableCell>
-                                                    <TableCell align="right">Empresa</TableCell>
-                                                </TableRow>
-                                            </TableHead>
+                                        <Table className={classes.table} aria-label="caption table">
                                             {
                                                 searchTextbox ?
-                                                    <TableBody>
-                                                        {employeesSearch.map(employee => (
-                                                            <EmployeeListItem
-                                                                key={employee.id}
-                                                                employee={employee} />
-                                                        ))}
-                                                    </TableBody>
+                                                    <Fragment>
+                                                        {employeesSearch.length > 0 ?
+                                                            <Fragment>
+                                                                <TableHead>
+                                                                    <TableRow>
+                                                                        <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
+                                                                        <TableCell align="right">Apellido</TableCell>
+                                                                        <TableCell align="right">Nombre</TableCell>
+                                                                        <TableCell align="right">DNI</TableCell>
+                                                                        <TableCell align="right">Empresa</TableCell>
+                                                                    </TableRow>
+                                                                </TableHead>
+                                                                <TableBody>
+                                                                    {
+                                                                        employeesSearch.map(employee => (
+                                                                            <EmployeeListItem
+                                                                                key={employee.id}
+                                                                                employee={employee} />
+                                                                        ))
+                                                                    }
+                                                                </TableBody>
+                                                            </Fragment>
+                                                            : <div className={styles.span}>No existen trabajadores</div>
+                                                        }
+                                                    </Fragment>
                                                     :
-                                                    <TableBody>
-                                                        {employeesSorted.map(employee => (
-                                                            <EmployeeListItem
-                                                                key={employee.id}
-                                                                employee={employee} />
-                                                        ))}
-                                                    </TableBody>
+                                                    <Fragment>
+                                                        {employeesSorted.length > 0 ?
+                                                            <Fragment>
+                                                                <TableHead>
+                                                                    <TableRow>
+                                                                        <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
+                                                                        <TableCell align="right">Apellido</TableCell>
+                                                                        <TableCell align="right">Nombre</TableCell>
+                                                                        <TableCell align="right">DNI</TableCell>
+                                                                        <TableCell align="right">Empresa</TableCell>
+                                                                    </TableRow>
+                                                                </TableHead>
+                                                                <TableBody>
+                                                                    {employeesSorted.map(employee => (
+                                                                        <EmployeeListItem
+                                                                            key={employee.id}
+                                                                            employee={employee} />
+                                                                    ))}
+                                                                </TableBody>
+                                                            </Fragment>
+                                                            : <div className={styles.span}>No existen trabajadores</div>
+                                                        }
+                                                    </Fragment>
                                             }
                                         </Table>
                                     </TableContainer>
@@ -241,7 +273,8 @@ const workerListSearchForm = () => {
 
                     </div>
                 </Layout>
-            )}
+            )
+            }
         </Formik >
 
     );

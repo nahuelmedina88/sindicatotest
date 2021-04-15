@@ -126,7 +126,9 @@ const EditEmployee = memo(() => {
         seccion: {},
         categoria: {},
         empresa: {},
-        familia: []
+        familia: [
+
+        ]
     };
 
     return (<>
@@ -441,7 +443,9 @@ const EditEmployee = memo(() => {
                                                 ))}
                                                 <button type="button" onClick={() => push({
                                                     nombre_familia: '', apellido_familia: '',
-                                                    fecha_nacimiento_familia: '', sexo: '', parentesco: '', dni_familia: ''
+                                                    fecha_nacimiento_familia: '', sexo: '',
+                                                    parentesco: '', dni_familia: '',
+                                                    talle: [], kit_escolar: [], documentacion: []
                                                 })}
                                                     className={`btn btnInfo ${styles.mainBoton}`}>Agregar Familiar Nuevo</button>
                                             </Fragment>

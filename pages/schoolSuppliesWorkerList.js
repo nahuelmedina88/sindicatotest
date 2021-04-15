@@ -2,19 +2,20 @@ import React, { useState, useEffect, useContext } from 'react';
 import Select from "react-select"
 import WorkerListItemSchoolSupplies from "../components/workerListItemSchoolSupplies";
 
-import styles from "./css/foundationalWorkerList.module.scss";
+import styles from "./css/SchoolSuppliesWorkerList.module.scss";
 import Layout from "../components/layout/Layout";
 import Search from "../components/ui/Search";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { getEmployeesAction, getfoundationalWorkerListByCompanyAction } from "../components/redux/actions/EmployeeActions";
+import { getEmployeesActiveAction, getWorkerListByCompanyAction } from "../components/redux/actions/EmployeeActions";
 import { getCompaniesAction } from "../components/redux/actions/CompanyActions";
 
 //Firebase
 import { FirebaseContext } from "../firebase";
 
 //Material UI
+import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,11 +24,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Fragment } from 'react';
 
 const useStyles = makeStyles({
-    root: {
-        // backgroundColor: 'blue',
-        color: props => props.color,
+    table: {
+        tableLayout: "fixed",
     },
 });
 
@@ -39,6 +40,7 @@ const SchoolSuppliesWorkerList = (props) => {
     let employeesSearch = useSelector(state => state.employees.employeesSearch);
     let employeesSorted = employeesSelector.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
     const [searchTextbox, setSearchTextBox] = useState("");
+    const loading = useSelector(state => state.employees.loading);
 
     //Empleados Activos
     //employeesSorted = employeesSorted.filter(employee => employee.estado === "Activo");
@@ -60,7 +62,7 @@ const SchoolSuppliesWorkerList = (props) => {
     const { firebase } = useContext(FirebaseContext);
 
     const loadEmployees = (firebase) => {
-        dispatch(getEmployeesAction(firebase));
+        dispatch(getEmployeesActiveAction(firebase));
     }
 
     useEffect(() => {
@@ -71,7 +73,7 @@ const SchoolSuppliesWorkerList = (props) => {
 
     const handleChangeCompany = (option) => {
         setCompany(option.label);
-        dispatch(getfoundationalWorkerListByCompanyAction(employeesSelector, option.label))
+        dispatch(getWorkerListByCompanyAction(employeesSorted, option.label, searchTextbox))
     }
     const getSearchTextBox = (value) => {
         setSearchTextBox(value);
@@ -79,54 +81,98 @@ const SchoolSuppliesWorkerList = (props) => {
 
     return (<>
         <Layout>
-            <div className={styles.absCenterSelf}>
-                <Search employeesRedux={employeesSearch} getSearchTextBox={getSearchTextBox}></Search>
+            {loading ?
                 <div>
-                    <label>Empresa</label>
-                    <Select
-                        className={`inputSecondary ` + styles.myselect}
-                        options={companiesSelect}
-                        name="empresa"
-                        defaultValue={{ label: "Padrón General", value: 0 }}
-                        placeholder={"Seleccione un frigorífico"}
-                        // onChange={option => dispatch(getfoundationalWorkerListByCompanyAction(employeesSelector, option.label))}
-                        onChange={handleChangeCompany}
-                    ></Select>
+                    <CircularProgress />
                 </div>
-                <TableContainer component={Paper}>
-                    <Table className={classes.root} aria-label="caption table">
-                        {/* <caption>A basic table example with a caption</caption> */}
-                        <TableHead>
-                            <TableRow>
-                                <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                <TableCell align="right">Apellido</TableCell>
-                                <TableCell align="right">Nombre</TableCell>
-                                <TableCell align="right">DNI</TableCell>
-                                <TableCell align="right">Empresa</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        {company ?
-                            <TableBody>
+                :
+                <Fragment>
+                    <div className={styles.absCenterSelf}>
+                        <Search
+                            employeesRedux={employeesSorted}
+                            getSearchTextBox={getSearchTextBox}
+                            company={company}>
+                        </Search>
+                        <div>
+                            <label>Empresa</label>
+                            <Select
+                                className={`inputSecondary ` + styles.myselect}
+                                options={companiesSelect}
+                                name="empresa"
+                                defaultValue={{ label: "Padrón General", value: 0 }}
+                                placeholder={"Seleccione un frigorífico"}
+                                // onChange={option => dispatch(getfoundationalWorkerListByCompanyAction(employeesSelector, option.label))}
+                                onChange={handleChangeCompany}
+                            ></Select>
+                        </div>
 
-                                <>
-                                    {employeesSearch.map(employee => (
-                                        <WorkerListItemSchoolSupplies
-                                            key={employee.id}
-                                            employee={employee} />
-                                    ))}
-                                </>
-                            </TableBody>
-                            :
-                            <TableBody>
-                                {employeesSorted.map(employee => (
-                                    <WorkerListItemSchoolSupplies
-                                        key={employee.id}
-                                        employee={employee} />
-                                ))}
-                            </TableBody>}
-                    </Table>
-                </TableContainer>
-            </div>
+                        <TableContainer component={Paper}>
+                            <Table
+                                className={classes.table}
+                                aria-label="caption table"
+                            >
+                                {/* <caption>A basic table example with a caption</caption> */}
+                                <Fragment>
+                                    {!company && !searchTextbox ?
+                                        <Fragment>
+                                            {
+                                                employeesSorted.length > 0 ?
+                                                    <Fragment>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
+                                                                <TableCell align="right">Apellido</TableCell>
+                                                                <TableCell align="right">Nombre</TableCell>
+                                                                <TableCell align="right">DNI</TableCell>
+                                                                <TableCell align="right">Empresa</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {
+                                                                employeesSorted.map(employee => (
+                                                                    <WorkerListItemSchoolSupplies
+                                                                        key={employee.id}
+                                                                        employee={employee} />
+                                                                ))
+                                                            }
+                                                        </TableBody>
+                                                    </Fragment>
+                                                    : <div className={styles.span}>No existen trabajadores</div>
+                                            }
+                                        </Fragment>
+                                        :
+                                        <Fragment>
+                                            {
+                                                employeesSearch.length > 0 ?
+                                                    <Fragment>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
+                                                                <TableCell align="right">Apellido</TableCell>
+                                                                <TableCell align="right">Nombre</TableCell>
+                                                                <TableCell align="right">DNI</TableCell>
+                                                                <TableCell align="right">Empresa</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {employeesSearch.map(employee => (
+                                                                <WorkerListItemSchoolSupplies
+                                                                    key={employee.id}
+                                                                    employee={employee} />
+                                                            ))}
+                                                        </TableBody>
+                                                    </Fragment>
+                                                    : <div className={styles.span}>No existen trabajadores</div>
+                                            }
+                                        </Fragment>
+                                    }
+                                </Fragment>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                </Fragment>
+            }
+
         </Layout>
     </>);
 }

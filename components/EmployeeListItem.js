@@ -29,9 +29,47 @@ import { Formik } from "formik";
 import { object, string } from "yup";
 
 
+const useStyles = makeStyles({
+    table: {
+        tableLayout: "fixed",
+    },
+    btn: {
+        padding: "0.4rem",
+        borderRadius: "5px",
+        textDecoration: "none",
+        borderWidth: "1px",
+        borderColor: "#fff",
+        fontSize: "1rem",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    buttonPurple: {
+        backgroundColor: "rgb(86, 7, 138)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(86, 7, 138,0.7)",
+        }
+    },
+    buttonClose: {
+        backgroundColor: "rgb(138,7,7)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(138,7,7, 0.7)",
+        }
+    },
+    buttonSave: {
+        backgroundColor: "rgb(7,138,7)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(7,138,7, 0.7)",
+        }
+    }
+});
+
 const EmployeeListItem = ({ employee }) => {
     const [open, setOpen] = useState(false);
-
+    const classes = useStyles();
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -52,9 +90,9 @@ const EmployeeListItem = ({ employee }) => {
         // history.push(`/employees/edit/${employee.id}`);
     }
 
-    useEffect(() => {
-        console.log("employeesListItem render");
-    }, [])
+    // useEffect(() => {
+    //     console.log("employeesListItem render");
+    // }, [])
 
     return (<>
         <TableRow key={employee.dni}>
@@ -69,11 +107,9 @@ const EmployeeListItem = ({ employee }) => {
                     href="/employees/employee[id]"
                     as={`/employees/employee${employee.id}`}
                 >
-                    <a className="btn btnPrimary btnTable"
+                    <a className={`${classes.btn} ${classes.buttonPurple}`}
                         onClick={() => redirectToSee(employee)}
-                    >
-                        Ver Ficha
-                                        </a>
+                    >Ver Ficha</a>
                 </Link>
             </TableCell>
             <TableCell>
@@ -81,7 +117,7 @@ const EmployeeListItem = ({ employee }) => {
                     href="/employees/[id]"
                     as={`/employees/${employee.id}`}
                 >
-                    <a className="btn btnPrimary btnTable"
+                    <a className={`${classes.btn} ${classes.buttonSave}`}
                         onClick={() => redirectToEdit(employee)}
                     >
                         Editar
@@ -91,7 +127,7 @@ const EmployeeListItem = ({ employee }) => {
             <TableCell>
                 <Fragment>
                     <Link href="#">
-                        <a className="btn btnDanger btnTable"
+                        <a className={`${classes.btn} ${classes.buttonClose}`}
                             onClick={() => handleClickOpen(employee.id)}
                         >Eliminar</a>
                     </Link>

@@ -27,78 +27,127 @@ const Sidebar = () => {
     // const employees = useSelector(state => state.employees.employees)
     const [byLastName, setByLastName] = useState(false);
 
-    const setState = (pathname) => {
-        // console.log(pathname);
-        switch (pathname) {
-            case "/employees":
-                updateObjs([{
-                    to: "/AddEmployee",
-                    label: "Agregar Empleado",
-                    key: "1",
-                    icon: "img/sprite.svg#icon-user-plus",
-                },
-                {
-                    to: "/AddCompany",
-                    label: "Agregar Empresa",
-                    key: "2",
-                    icon: "img/sprite.svg#icon-office"
-                },
-                {
-                    to: "/companies",
-                    label: "Ver Empresas",
-                    key: "3",
-                    icon: "img/sprite.svg#icon-office"
+    const sidebarList = [
+        {
+            to: "/AddEmployee",
+            label: "Agregar Afiliado",
+            key: "1",
+            icon: "img/sprite.svg#icon-user-plus",
+        },
+        {
+            to: "/AddCompany",
+            label: "Agregar Empresa",
+            key: "2",
+            icon: "img/sprite.svg#icon-office"
+        },
+        {
+            to: "/companies",
+            label: "Ver Empresas",
+            key: "3",
+            icon: "img/sprite.svg#icon-office"
 
-                }
-                ]);
-                break;
-            case "/AddEmployee":
-                updateObjs([{
-                    to: "/employees",
-                    label: "Ver Empleados",
-                    key: "4",
-                    icon: "img/sprite.svg#icon-user",
-                }]);
-                break;
-            case "/companies":
-                updateObjs([{
-                    to: "/AddCompany",
-                    label: "Agregar Empresa",
-                    key: "2",
-                    icon: "img/sprite.svg#icon-office",
-                },
-                {
-                    to: "/employees",
-                    label: "Ver Empleados",
-                    key: "4",
-                    icon: "img/sprite.svg#icon-user",
-                }
-                ]);
-                break;
-            case "/AddCompany":
-                updateObjs([{
-                    to: "/employees",
-                    label: "Ver Empleados",
-                    key: "4",
-                    icon: "img/sprite.svg#icon-user",
-                },
-                {
-                    to: "/companies",
-                    label: "Ver Empresas",
-                    key: "5",
-                    icon: "img/sprite.svg#icon-office",
-                }
-                ]);
-                break;
+        },
+        {
+            to: "/generalWorkerList",
+            label: "Ver Afiliados",
+            key: "4",
+            icon: "img/sprite.svg#icon-user",
         }
-    }
-    // const dispatch = useDispatch();
-    useEffect(() => {
-        const currentPathname = router.pathname;
-        const ejecutarAction = (currentPathname) => dispatch(updatePathnameAction(currentPathname));
-        ejecutarAction(currentPathname);
-        setState(currentPathname);
-    }, [pathnameStore]);
+
+    ]
+
+    // const setState = (pathname) => {
+    //     // console.log(pathname);
+    //     switch (pathname) {
+    //         case "/employees":
+    //             updateObjs([{
+    //                 to: "/AddEmployee",
+    //                 label: "Agregar Empleado",
+    //                 key: "1",
+    //                 icon: "img/sprite.svg#icon-user-plus",
+    //             },
+    //             {
+    //                 to: "/AddCompany",
+    //                 label: "Agregar Empresa",
+    //                 key: "2",
+    //                 icon: "img/sprite.svg#icon-office"
+    //             },
+    //             {
+    //                 to: "/companies",
+    //                 label: "Ver Empresas",
+    //                 key: "3",
+    //                 icon: "img/sprite.svg#icon-office"
+
+    //             },
+    //             {
+    //                 to: "/employees",
+    //                 label: "Ver Empleados",
+    //                 key: "4",
+    //                 icon: "img/sprite.svg#icon-user",
+    //             }]);
+    //             break;
+    //         case "/companies":
+    //             updateObjs([{
+    //                 to: "/AddCompany",
+    //                 label: "Agregar Empresa",
+    //                 key: "2",
+    //                 icon: "img/sprite.svg#icon-office",
+    //             },
+    //             {
+    //                 to: "/employees",
+    //                 label: "Ver Empleados",
+    //                 key: "4",
+    //                 icon: "img/sprite.svg#icon-user",
+    //             }
+    //             ]);
+    //             break;
+    //         case "/AddEmployee":
+    //             updateObjs([{
+    //                 to: "/employees",
+    //                 label: "Ver Empleados",
+    //                 key: "4",
+    //                 icon: "img/sprite.svg#icon-user",
+    //             }]);
+    //             break;
+    //         case "/companies":
+    //             updateObjs([{
+    //                 to: "/AddCompany",
+    //                 label: "Agregar Empresa",
+    //                 key: "2",
+    //                 icon: "img/sprite.svg#icon-office",
+    //             },
+    //             {
+    //                 to: "/employees",
+    //                 label: "Ver Empleados",
+    //                 key: "4",
+    //                 icon: "img/sprite.svg#icon-user",
+    //             }
+    //             ]);
+    //             break;
+    //         case "/AddCompany":
+    //             updateObjs([{
+    //                 to: "/employees",
+    //                 label: "Ver Empleados",
+    //                 key: "4",
+    //                 icon: "img/sprite.svg#icon-user",
+    //             },
+    //             {
+    //                 to: "/companies",
+    //                 label: "Ver Empresas",
+    //                 key: "5",
+    //                 icon: "img/sprite.svg#icon-office",
+    //             }
+    //             ]);
+    //             break;
+    //     }
+    // }
+    // // const dispatch = useDispatch();
+    // useEffect(() => {
+    //     const currentPathname = router.pathname;
+    //     const ejecutarAction = (currentPathname) => dispatch(updatePathnameAction(currentPathname));
+    //     ejecutarAction(currentPathname);
+    //     setState(currentPathname);
+    // }, [pathnameStore]);
 
     useEffect(() => {
         //esta solucion es una cagada.
@@ -113,7 +162,7 @@ const Sidebar = () => {
                 dispatch(updateButtonStateAction(true));
             }
         }
-    }, [])
+    }, []);
 
     const handleExport = (e) => {
         e.preventDefault();
@@ -127,7 +176,6 @@ const Sidebar = () => {
 
     const handleMenu = (e) => {
         e.preventDefault();
-        console.log("Desde Handle Menu");
         if (!pressed) {
             setPressed(true);
             dispatch(updateButtonStateAction(true))
@@ -145,7 +193,7 @@ const Sidebar = () => {
             <aside className={`${styles.aside} ${(pressed ? styles.btnNewPropertiesShow : styles.btnNewPropertiesHide)}`}>
                 <nav className={`${styles.nav} ${(pressed ? styles.show : styles.hide)}`}>
                     <ul className={styles.ul}>
-                        {objs.map(obj => (
+                        {sidebarList.map(obj => (
                             <li key={obj.key}>
                                 <Link
                                     href={obj.to}>

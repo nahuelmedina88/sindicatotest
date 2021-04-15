@@ -60,6 +60,30 @@ export function getEmployeesAction(firebase) {
         }
     }
 }
+export function getEmployeesActiveAction(firebase) {
+    return async (dispatch) => {
+        dispatch(getEmployees());
+
+        try {
+            // const response = await axiosClient.get("/api/empleados/");
+            const response = firebase.db.collection("empleados").where("estado", "==", "Activo");
+            let empleados = await response.get();
+            let employees = [];
+            let i = 0;
+            for (const emp of empleados.docs) {
+                employees.push(emp.data());
+                employees[i].id = emp.id;
+                i++;
+            }
+            dispatch(getEmployeesSuccess(employees));
+            // sweetAlert.fire("Genial", "El empleado se agregó correctamente", "success");
+        } catch (error) {
+            console.log(error);
+            dispatch(getEmployeesFailure());
+            // sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+        }
+    }
+}
 
 export function deleteEmployeeAction(id, firebase) {
     return async (dispatch) => {
@@ -80,7 +104,9 @@ export function editEmployeeAction(employee, firebase) {
         dispatch(getEmployeeToEdit(employee));
         try {
             // const response = await axiosClient.put(`/api/empleados/${employee._id}`, employee);
+            console.log(JSON.stringify(employee));
             const response = await firebase.db.collection("empleados").doc(employee.id).set(employee);
+            console.log(response);
             dispatch(editEmployeeSuccess(employee));
             sweetAlert.fire("Genial", "El empleado se editó correctamente", "success");
         } catch (error) {
@@ -98,7 +124,7 @@ export function editEmployeeAction2(employee, firebase) {
 }
 
 export function seeEmployeeAction(employee) {
-    return async (dispatch) => {
+    return (dispatch) => {
         dispatch(getEmployeeToSee(employee));
     }
 }
@@ -166,7 +192,7 @@ export function getEmployeesByDateAction(values, firebase) {
 
 export function getfoundationalWorkerListAction(firebase) {
     return async (dispatch) => {
-        // dispatch(getEmployeeToEdit(employee));
+        dispatch(getEmployees());
         try {
             // const response = await axiosClient.put(`/api/empleados/${employee._id}`, employee);
             // console.log("values: " + values);
@@ -201,6 +227,38 @@ export function getfoundationalWorkerListByCompanyAction(employees, company) {
             employeesByCompany = employees;
         } else {
             employeesByCompany = employees.filter(e => e.empresa.nombre === company);
+        }
+        dispatch(updateEmployees(employeesByCompany));
+    }
+}
+export function getWorkerListByCompanyAction(employees, company, searchTextBox) {
+    return (dispatch) => {
+        let employeesByCompany = "";
+        if (company === "Padrón General") {
+            employeesByCompany = employees;
+        } else {
+            employeesByCompany = employees.filter(e => e.empresa.nombre === company);
+        }
+        if (searchTextBox) {
+            let emp1 = [];
+            let nroLegajo = employeesByCompany.filter(emp => emp.nroLegajo.toString().includes(searchTextBox));
+            let apellido = employeesByCompany.filter(emp => emp.apellido.toLocaleLowerCase().includes(searchTextBox.toLocaleLowerCase()));
+            let nombre = employeesByCompany.filter(emp => emp.nombre.toLocaleLowerCase().includes(searchTextBox.toLocaleLowerCase()));
+            let dni = employeesByCompany.filter(emp => emp.dni.toString().includes(searchTextBox));
+            let empresa = employeesByCompany.filter(emp => emp.empresa.nombre.toLocaleLowerCase().includes(searchTextBox));
+
+            emp1 = nroLegajo.concat(apellido);
+            emp1 = emp1.concat(nombre);
+            emp1 = emp1.concat(dni);
+            emp1 = emp1.concat(empresa);
+
+            const emp = emp1.reduce((acc, item) => {
+                if (!acc.includes(item)) {
+                    acc.push(item);
+                }
+                return acc;
+            }, []);
+            employeesByCompany = emp;
         }
         dispatch(updateEmployees(employeesByCompany));
     }
