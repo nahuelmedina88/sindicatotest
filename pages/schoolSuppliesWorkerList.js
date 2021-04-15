@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Select from "react-select"
 import WorkerListItemSchoolSupplies from "../components/workerListItemSchoolSupplies";
 
-import styles from "./css/SchoolSuppliesWorkerList.module.scss";
+import styles from "./css/schoolSuppliesWorkerList.module.scss";
 import Layout from "../components/layout/Layout";
 import Search from "../components/ui/Search";
 
