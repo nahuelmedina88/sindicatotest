@@ -39,7 +39,7 @@
 
     .textSpan {
       font-size: 1rem;
-      font-family: "Patrick Hand", cursive;
+      // font-family: "Patrick Hand", cursive;
       flex: 1 0;
     }
     .numberSpan {
@@ -49,6 +49,7 @@
     .porcentageAf {
       font-size: 1rem;
       padding: 0.2rem;
+      margin-right: 0.3rem;
       flex: 1 0;
       border-radius: 20px;
       background-color: rgba(15, 75, 25, 0.7);
@@ -84,11 +85,11 @@
     }
     .column {
       display: flex;
-      flex: 1 0 70%;
+      flex: 1 0 30%;
       flex-direction: column;
 
       & > * {
-        font-family: "Patrick Hand", cursive;
+        // font-family: "Patrick Hand", cursive;
         font-size: 0.8rem;
         padding: 0.1rem;
         padding-left: 0.5rem;

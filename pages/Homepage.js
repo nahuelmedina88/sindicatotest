@@ -10,6 +10,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import { CircularProgress } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 import PeopleIcon from '@material-ui/icons/People';
@@ -17,7 +19,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { getEmployeesActiveAction } from "../components/redux/actions/EmployeeActions";
+import { getEmployeesAction } from "../components/redux/actions/EmployeeActions";
 
 //Firebase
 import { FirebaseContext } from "../firebase";
@@ -39,6 +41,7 @@ import {
     YAxis
 } from 'react-vis';
 import { TableFooter } from '@material-ui/core';
+import { Fragment } from 'react';
 
 
 const columns = [
@@ -130,7 +133,7 @@ const useStyles = makeStyles({
 const Homepage = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(3);
-
+    const [lastWorker, setLastWorker] = React.useState("");
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -144,15 +147,95 @@ const Homepage = () => {
     const [data, setData] = useState("");
     const dispatch = useDispatch();
     const { firebase } = useContext(FirebaseContext);
+    const loading = useSelector(state => state.employees.loading);
     let employeesSelector = useSelector(state => state.employees.employees);
-    let employeesSorted = employeesSelector.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
+    let inactiveEmployees = employeesSelector.filter(item => item.estado === "Inactivo");
+    let activeEmployees = employeesSelector.filter(item => item.estado === "Activo");
+
+    console.log("LastWorker " + lastWorker);
+    let employeesSorted = activeEmployees.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
 
     const loadEmployees = (firebase) => {
-        dispatch(getEmployeesActiveAction(firebase));
+        dispatch(getEmployeesAction(firebase));
+    }
+
+    const getPorcentageAfiliados = () => {
+        let current = activeEmployees.length;
+        let counter = 0;
+        let lastYear = new Date().getFullYear();
+        lastYear = (lastYear - 1).toString();
+        let date = lastYear + "-12-31"; //"2020-12-31"
+        let dateObject = new Date(date);
+        activeEmployees.map(employee => {
+            let mydate = new Date(employee.fecha_ingreso);
+            if (mydate >= dateObject) { //"2021-03-29" <= "2020-12-31"
+                counter = counter + 1;
+            }
+        });
+
+        let ultimoAnio = current - counter;
+        let esteAnio = counter;
+        let porcentage = 0;
+        if (esteAnio > 0) {
+            porcentage = (counter * 100) / current;
+            porcentage = "+" + porcentage.toFixed(1).toString();
+        } else if (esteAnio < 0) {
+            porcentage = (counter * 100) / current;
+            porcentage = "-" + porcentage.toFixed(1).toString();
+        } else if (esteAnio === 0) {
+            porcentage = porcentage.toFixed(2).toString();
+        }
+        return porcentage;
+    }
+
+    const getLastWorker = () => {
+        let empleadoPrevio = "";
+        let empleadoMaximo = "";
+        activeEmployees.map(empleado => {
+            let empleadoActual = empleado;
+            if (!empleadoPrevio) {
+                empleadoMaximo = empleadoActual;
+            } else if (empleadoActual.nroLegajo > empleadoPrevio.nroLegajo) {
+                empleadoMaximo = empleadoActual;
+            } else {
+                empleadoMaximo = empleadoPrevio;
+            }
+            empleadoPrevio = empleadoActual;
+        });
+
+        setLastWorker(empleadoMaximo);
+    }
+
+    const getPorcentageDesafiliados = () => {
+        let current = inactiveEmployees.length;
+        let counter = 0;
+        let lastYear = new Date().getFullYear();
+        lastYear = (lastYear - 1).toString();
+        let date = lastYear + "-12-31"; //"2020-12-31"
+        let dateObject = new Date(date);
+        inactiveEmployees.map(employee => {
+            let mydate = new Date(employee.fecha_baja);
+            if (mydate >= dateObject) { //"2021-03-29" <= "2020-12-31"
+                counter = counter + 1;
+            }
+        });
+        let ultimoAnio = current - counter;
+        let esteAnio = counter;
+        let porcentage = 0;
+        if (esteAnio > 0) {
+            porcentage = (counter * 100) / current;
+            porcentage = "+" + porcentage.toFixed(1).toString();
+        } else if (esteAnio < 0) {
+            porcentage = (counter * 100) / current;
+            porcentage = "-" + porcentage.toFixed(1).toString();
+        } else if (esteAnio === 0) {
+            porcentage = porcentage.toFixed(2).toString();
+        }
+        return porcentage;
     }
 
     const getData = () => {
-        let cantidadEmpresas = employeesSelector.reduce((contarEmpresas, empleado) => {
+        let cantidadEmpresas = activeEmployees.reduce((contarEmpresas, empleado) => {
             let emp = empleado.empresa.nombre;
             contarEmpresas[emp] = (contarEmpresas[emp] || 0) + 1;
             return contarEmpresas;
@@ -174,6 +257,7 @@ const Homepage = () => {
 
     useEffect(() => {
         getData();
+        getLastWorker();
     }, [employeesSelector]);
 
     return (<Layout homepage={true}>
@@ -182,15 +266,24 @@ const Homepage = () => {
                 {/* Cantidad de Afiliados {employeesSelector.length} */}
                 {/* <PeopleIcon className={classes.icon} /> */}
                 <div className={styles.textSpan}>Afiliados</div>
-                <div className={styles.numberSpan}>250 <span className={styles.porcentageAf}>+15%</span>
+                <div className={styles.numberSpan}>
+                    {loading ? <CircularProgress /> : activeEmployees.length}
+                    <Tooltip title="Incremento Anual(%)" aria-label="increaseAnually">
+                        <span className={styles.porcentageAf}
+                        >{getPorcentageAfiliados()}%</span>
+                    </Tooltip>
                 </div>
+
             </div>
             <div className={`${styles.amountWorker} ${styles.bgColorDes}`}>
                 {/* Cantidad de Afiliados {employeesSelector.length} */}
                 {/* <PeopleIcon className={classes.icon} /> */}
                 <div className={styles.textSpan}>Desafiliados</div>
                 <div className={styles.numberSpan}>
-                    250 <span className={styles.porcentageDes}>+15%</span>
+                    {loading ? <CircularProgress /> : inactiveEmployees.length}
+                    <Tooltip title="Incremento Anual(%)" aria-label="increaseAnually">
+                        <span className={styles.porcentageDes}>{getPorcentageDesafiliados()}%</span>
+                    </Tooltip>
                 </div>
             </div>
             <div className={styles.lastWorker}>
@@ -201,8 +294,13 @@ const Homepage = () => {
                 </div>
                 <div className={styles.column}>
                     <div className={styles.title}>Último afiliado</div>
-                    <div>Maria Antonieta de las Nieves</div>
-                    <div>Afiliado nro 2190</div>
+                    {loading ? <CircularProgress /> :
+                        <Fragment>
+                            <div>{lastWorker.apellido + ", " + lastWorker.nombre}</div>
+                            <div>Afiliado Nro {lastWorker.nroLegajo}</div>
+                        </Fragment>
+                    }
+                    {/* <div>Frigorífico {lastWorker.nroLegajo}</div> */}
                 </div>
             </div>
         </div>
