@@ -45,12 +45,14 @@ const AddCompany = () => {
                 setSubmitting(true);
                 if (!found) {
                     setTimeout(() => {
+                        values.estado = "Activo";
                         addCompanyDispatch(values, firebase);
                         setGeneralError("");
                         resetForm({
                             values: EmptyObject,
                         });
                         setSubmitting(false);
+                        history.push("/companies");
                     }, 1000);
                 } else {
                     setTimeout(() => {

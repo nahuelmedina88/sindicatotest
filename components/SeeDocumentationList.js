@@ -57,8 +57,9 @@ const SeeDocumentationList = ({ item }) => {
                 <Link href="#">
                     <a className={`${classes.btn} ${classes.buttonPurple}`}
                         onClick={() => handleClickOpenImage(item.anio)}
-                    >Ver Documentación
-                                        </a>
+                    >
+                        Ver Documentación
+                    </a>
                 </Link>
                 <Dialog fullWidth
                     open={openImage === item.anio && true}

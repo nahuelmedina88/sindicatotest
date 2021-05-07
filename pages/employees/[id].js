@@ -83,7 +83,7 @@ const EditEmployee = memo(() => {
     }));
 
     //Firebase
-    const { firebase } = useContext(FirebaseContext);
+    const { firebase, user } = useContext(FirebaseContext);
 
     useEffect(() => {
         // const currentPathname = router.pathname;
@@ -103,17 +103,14 @@ const EditEmployee = memo(() => {
     useEffect(() => {
         const loadCategories = (firebase, section) => { dispatch(getCategoriesAction(firebase, section)) }
         loadCategories(firebase, section);
-    }, [section])
-
-    useEffect(() => {
-        console.log("Edit Employee render")
-    }, [])
+    }, [section]);
 
     let EmptyObject = {
         nombre: '',
         apellido: '',
         ciudad: '',
-        domicilio: '',
+        calle: '',
+        numero_calle: '',
         codigo_postal: '',
         dni: '',
         fecha_nacimiento: '',
@@ -149,23 +146,26 @@ const EditEmployee = memo(() => {
                     }
                     setSubmitting(true);
                     setTimeout(() => {
+                        values.fecha_ultima_modificacion = new Date();
+                        values.usuario_ultima_modificacion = user.uid;
                         values && dispatch(editEmployeeAction(values, firebase));
                         setSubmitting(false);
+                        router.push("/generalWorkerList");
                     }, 2000);
                 }}
                 validate={validation}
-                validationSchema={object({
-                    familia: array(object({
-                        nombre_familia: string().required("Ingrese el nombre!"),
-                        apellido_familia: string().required("Ingrese el apellido!"),
-                        dni_familia: number().required("Ingrese el DNI!")
-                            .min(999999, "El mínimo son 7 dígitos")
-                            .max(999999999, "El máximo son 10 dígitos"),
-                        fecha_nacimiento_familia: string().required("Ingrese la fecha de nacimiento!"),
-                        sexo: string().required("Seleccione el sexo"),
-                        parentesco: string().required("Seleccione el parentesco"),
-                    }))
-                })}
+            // validationSchema={object({
+            //     familia: array(object({
+            //         nombre_familia: string().required("Ingrese el nombre!"),
+            //         apellido_familia: string().required("Ingrese el apellido!"),
+            //         dni_familia: number().required("Ingrese el DNI!")
+            //             .min(999999, "El mínimo son 7 dígitos")
+            //             .max(999999999, "El máximo son 10 dígitos"),
+            //         fecha_nacimiento_familia: string().required("Ingrese la fecha de nacimiento!"),
+            //         sexo: string().required("Seleccione el sexo"),
+            //         parentesco: string().required("Seleccione el parentesco"),
+            //     }))
+            // })}
             >
                 {({ values, errors, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
                     <div>
@@ -195,14 +195,25 @@ const EditEmployee = memo(() => {
                                             {touched.apellido && errors.apellido && <p className="errorMessage">{errors.apellido}</p>}
                                         </div>
                                         <div className={styles.formControl}>
-                                            <label>Domicilio</label>
+                                            <label>Calle</label>
                                             <Field
                                                 type="text"
                                                 className="inputSecondary"
-                                                name="domicilio"
-                                                placeholder="Domicilio"
+                                                name="calle"
+                                                placeholder="Calle"
                                             ></Field>
-                                            {touched.domicilio && errors.domicilio && <span className="errorMessage">{errors.domicilio}</span>}
+                                            {touched.calle && errors.calle && <span className="errorMessage">{errors.calle}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Número</label>
+                                            <Field
+                                                type="number"
+                                                className="inputSecondary"
+                                                name="numero_calle"
+                                                placeholder="Número"
+                                                value={values.numero_calle}
+                                            ></Field>
+                                            {touched.numero_calle && errors.numero_calle && <span className="errorMessage">{errors.numero_calle}</span>}
                                         </div>
                                         <div className={styles.formControl}>
                                             <label>Ciudad</label>

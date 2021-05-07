@@ -9,6 +9,8 @@ import Layout from "../components/layout/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompaniesAction } from "../components/redux/actions/CompanyActions";
 
+import Link from "next/link";
+
 //Firebase
 import { FirebaseContext } from "../firebase";
 
@@ -53,6 +55,13 @@ const useStyles = makeStyles({
             backgroundColor: "rgb(138,7,7, 0.7)",
         }
     },
+    buttonSave: {
+        backgroundColor: "rgb(7,138,7)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(7,138,7, 0.7)",
+        }
+    }
 });
 
 
@@ -60,7 +69,8 @@ const companies = (props) => {
     const classes = useStyles(props);
     let companiesSelector = useSelector(state => state.companies.companies);
     const loading = useSelector(state => state.companies.loading);
-    let companiesSorted = companiesSelector.sort((a, b) => (a.nombre > b.nombre) ? 1 : ((b.nombre > a.nombre) ? -1 : 0));
+    let activeCompanies = companiesSelector.filter(item => item.estado === "Activo");
+    let companiesSorted = activeCompanies.sort((a, b) => (a.nombre > b.nombre) ? 1 : ((b.nombre > a.nombre) ? -1 : 0));
     const dispatch = useDispatch();
     const { firebase } = useContext(FirebaseContext);
 
@@ -90,6 +100,13 @@ const companies = (props) => {
                                                 <TableCell align="right">Domicilio</TableCell>
                                                 <TableCell align="right">CUIT</TableCell>
                                                 <TableCell align="right">Razón Social</TableCell>
+                                                <TableCell align="right">
+                                                    <Link href="/AddCompany">
+                                                        <a className={`${classes.btn} ${classes.buttonSave}`}>
+                                                            Agregar
+                                                        </a>
+                                                    </Link>
+                                                </TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>

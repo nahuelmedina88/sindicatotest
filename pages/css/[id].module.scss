@@ -48,32 +48,35 @@
   }
   //2da linea //
   .formControl:nth-child(4) {
-    flex: 0 1 40%;
+    flex: 0 1 25%;
   }
   .formControl:nth-child(5) {
-    flex: 0 1 25%;
+    flex: 0 1 15%;
   }
   .formControl:nth-child(6) {
     flex: 0 1 25%;
   }
-  //3er linea //
   .formControl:nth-child(7) {
-    flex: 0 1 30%;
+    flex: 0 1 25%;
   }
+  //3er linea //
   .formControl:nth-child(8) {
     flex: 0 1 30%;
   }
   .formControl:nth-child(9) {
     flex: 0 1 30%;
   }
-  //4ta linea//
   .formControl:nth-child(10) {
     flex: 0 1 30%;
   }
+  //4ta linea//
   .formControl:nth-child(11) {
     flex: 0 1 30%;
   }
   .formControl:nth-child(12) {
+    flex: 0 1 30%;
+  }
+  .formControl:nth-child(13) {
     flex: 0 1 30%;
   }
   //end

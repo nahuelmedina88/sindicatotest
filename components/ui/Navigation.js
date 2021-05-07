@@ -92,6 +92,14 @@ const Navigation = () => {
                         <ListItemText primary="Padron General" />
                     </StyledMenuItem>
                 </Link>
+                <Link href="/workerListByYear">
+                    <StyledMenuItem>
+                        <ListItemIcon>
+                            <BusinessIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText primary="Padrón por Año" />
+                    </StyledMenuItem>
+                </Link>
                 <Link href="/workerListByCompany">
                     <StyledMenuItem>
                         <ListItemIcon>
@@ -140,7 +148,7 @@ const Navigation = () => {
                         <ListItemText primary="Agregar útiles" />
                     </StyledMenuItem>
                 </Link>
-                <Link href="/schoolSuppliesReport">
+                <Link href="/SchoolSuppliesReport">
                     <StyledMenuItem>
                         <ListItemIcon>
                             <BusinessIcon fontSize="small" />

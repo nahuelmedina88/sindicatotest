@@ -53,14 +53,17 @@ const ErrorMessageArraySelect = ({ name }) => (
 );
 
 const AddEmployee = () => {
+
     const dispatch = useDispatch();
     const router = useRouter();
     const [maritalStatusTypes, updateMaritalStatusTypes] = useState("");
     const [section, setSection] = useState("");
     const [generalError, setGeneralError] = useState("");
+    const [legajo, setLegajo] = useState("");
     //UseSelector
     const loading = useSelector(state => state.employees.loading);
     const employeesSelector = useSelector(state => state.employees.employees);
+
     const companiesSelector = useSelector(state => state.companies.companies);
     const companiesSelect = companiesSelector.map(company => ({
         id: company.id,
@@ -84,41 +87,64 @@ const AddEmployee = () => {
     }));
 
     //Firebase
-    const { firebase } = useContext(FirebaseContext);
+    const { firebase, user } = useContext(FirebaseContext);
     const AddEmployeeDispatch = (employee, firebase) => dispatch(addEmployeeAction(employee, firebase));
 
     useEffect(() => {
-        const currentPathname = router.pathname;
-        const loadPathname = getPathName => { dispatch(updatePathnameAction(getPathName)) }
-        loadPathname(currentPathname);
+        // const currentPathname = router.pathname;
+        // const loadPathname = getPathName => { dispatch(updatePathnameAction(getPathName)) }
+        // loadPathname(currentPathname);
         const loadCompanies = (firebase) => { dispatch(getCompaniesAction(firebase)) }
         loadCompanies(firebase);
         const loadSections = (firebase) => { dispatch(getSectionsAction(firebase)) }
         loadSections(firebase);
         const loadEmployees = (firebase) => dispatch(getEmployeesAction(firebase));
         loadEmployees(firebase);
-
         updateMaritalStatusTypes(maritalStatusSelect);
     }, [dispatch]);
+
+    useEffect(() => {
+        getLastWorker();
+    }, [employeesSelector])
 
     useEffect(() => {
         const loadCategories = (firebase, section) => { dispatch(getCategoriesAction(firebase, section)) }
         loadCategories(firebase, section);
     }, [section])
 
+    const getLastWorker = () => {
+        let empleadoPrevio = "";
+        let empleadoMaximo = "";
+        employeesSelector.map(empleado => {
+            let empleadoActual = empleado;
+            if (!empleadoPrevio) {
+                empleadoMaximo = empleadoActual;
+            } else if (parseInt(empleadoActual.nroLegajo) > parseInt(empleadoMaximo.nroLegajo)) {
+                empleadoMaximo = empleadoActual;
+            } else {
+                empleadoMaximo = empleadoMaximo;
+            }
+            empleadoPrevio = empleadoActual;
+        });
+        setLegajo(empleadoMaximo.nroLegajo);
+    }
+
     let EmptyObject = {
         nombre: '',
         apellido: '',
         ciudad: '',
-        domicilio: '',
+        calle: '',
+        numero_calle: '',
         codigo_postal: '',
         dni: '',
         fecha_nacimiento: '',
         nacionalidad: 'Argentina',
         estado_civil: '',
+        entregado: { checked: false, anio: new Date().getFullYear() },
+        documentacion: [],
         email: '',
         telefono: '',
-        nroLegajo: '',
+        nroLegajo: legajo,
         fecha_ingreso: '',
         seccion: {},
         categoria: {},
@@ -127,10 +153,21 @@ const AddEmployee = () => {
             {
                 talle: [],
                 kit_escolar: [],
-                documentacion: []
+                // documentacion: [] //Sujeto a revision del cliente.
             }
         ]
     };
+
+    // const validateFamilia = (familia) => {
+    //     if (familia.length <= 1) {
+    //         if (
+    //             !familia[0].nombre_familia || !familia[0].apellido_familia ||
+    //             !familia[0].dni_familia || !familia[0].fecha_nacimiento_familia ||
+    //             !familia[0].sexo || !familia[0].parentesco) {
+    //             return false;
+    //         } else { return true; }
+    //     } else { return true; }
+    // }
 
     return (<>
         <Formik
@@ -141,12 +178,18 @@ const AddEmployee = () => {
                 if (!found) {
                     setTimeout(() => {
                         values.estado = "Activo";
+                        values.fecha_creacion = new Date();
+                        values.usuario_creacion = user.uid;
+                        // if (!validateFamilia(values.familia)) {
+                        //     values.familia = null;
+                        // }
                         AddEmployeeDispatch(values, firebase);
                         setGeneralError("");
                         resetForm({
                             values: EmptyObject,
                         });
                         setSubmitting(false);
+                        router.push("/generalWorkerList");
                     }, 1000);
                 } else {
                     setTimeout(() => {
@@ -157,21 +200,22 @@ const AddEmployee = () => {
                 // router.push("/employees");
             }}
             validate={validation}
-            validationSchema={object({
-                familia: array(object({
-                    nombre_familia: string().required("Ingrese el nombre!"),
-                    apellido_familia: string().required("Ingrese el apellido!"),
-                    dni_familia: number().required("Ingrese el DNI!")
-                        .min(999999, "El mínimo son 7 dígitos")
-                        .max(999999999, "El máximo son 10 dígitos"),
-                    fecha_nacimiento_familia: string().required("Ingrese la fecha de nacimiento!"),
-                    sexo: string().required("Seleccione el sexo"),
-                    parentesco: string().required("Seleccione el parentesco"),
-                }))
-            })}
+        // validationSchema={object({
+        //     familia: array(object({
+        //         nombre_familia: string().required("Ingrese el nombre!"),
+        //         apellido_familia: string().required("Ingrese el apellido!"),
+        //         dni_familia: number().required("Ingrese el DNI!")
+        //             .min(999999, "El mínimo son 7 dígitos")
+        //             .max(999999999, "El máximo son 10 dígitos"),
+        //         fecha_nacimiento_familia: string().required("Ingrese la fecha de nacimiento!"),
+        //         sexo: string().required("Seleccione el sexo"),
+        //         parentesco: string().required("Seleccione el parentesco"),
+        //     }))
+        // })}
         >
             {({ values, errors, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
                 <div>
+                    {console.log(values)}
                     <Layout>
                         <div className={styles.container}>
                             <Form className={styles.mainForm} autoComplete="off">
@@ -200,15 +244,26 @@ const AddEmployee = () => {
                                         {touched.apellido && errors.apellido && <p className="errorMessage">{errors.apellido}</p>}
                                     </div>
                                     <div className={styles.formControl}>
-                                        <label>Domicilio</label>
+                                        <label>Calle</label>
                                         <Field
                                             type="text"
                                             className="inputSecondary"
-                                            name="domicilio"
-                                            placeholder="Domicilio"
-                                            value={values.domicilio}
+                                            name="calle"
+                                            placeholder="Calle"
+                                            value={values.calle}
                                         ></Field>
-                                        {touched.domicilio && errors.domicilio && <span className="errorMessage">{errors.domicilio}</span>}
+                                        {touched.calle && errors.calle && <span className="errorMessage">{errors.calle}</span>}
+                                    </div>
+                                    <div className={styles.formControl}>
+                                        <label>Número</label>
+                                        <Field
+                                            type="number"
+                                            className="inputSecondary"
+                                            name="numero_calle"
+                                            placeholder="Número"
+                                            value={values.numero_calle}
+                                        ></Field>
+                                        {touched.numero_calle && errors.numero_calle && <span className="errorMessage">{errors.numero_calle}</span>}
                                     </div>
                                     <div className={styles.formControl}>
                                         <label>Ciudad</label>
@@ -309,7 +364,8 @@ const AddEmployee = () => {
                                             className="inputSecondary"
                                             name="nroLegajo"
                                             placeholder="Nro Legajo"
-                                            value={values.nroLegajo}
+                                            disabled={true}
+                                            value={values.nroLegajo = (legajo || 0) + 1}
                                         ></Field>
                                         {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
                                     </div>
@@ -369,92 +425,99 @@ const AddEmployee = () => {
                                         {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
                                     </div>
                                 </fieldset>
+
                                 <FieldArray name="familia">
                                     {({ push, remove }) => (
                                         <Fragment>
-                                            {values.familia.map((_, index) => (
+                                            {values.familia.length > 0 ?
                                                 <Fragment>
-                                                    <fieldset className={styles.flexFormFamilia}>
-                                                        <legend>Nuevo Integrante Familiar</legend>
-                                                        <div className={styles.formControl}>
-                                                            <label>Nombre</label>
-                                                            <Field
-                                                                type="text"
-                                                                className="inputSecondary"
-                                                                name={`familia[.${index}.]nombre_familia`}
-                                                                placeholder="Nombre"
-                                                            ></Field>
-                                                            <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]nombre_familia`}></ErrorMessageArray></span>
-                                                        </div>
-                                                        <div className={styles.formControl}>
-                                                            <label>Apellido</label>
-                                                            <Field
-                                                                type="text"
-                                                                className="inputSecondary"
-                                                                name={`familia[.${index}.]apellido_familia`}
-                                                                placeholder="Apellido"
-                                                            ></Field>
-                                                            <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]apellido_familia`}></ErrorMessageArray></span>
-                                                        </div>
-                                                        <div className={styles.formControl}>
-                                                            <label>Parentesco</label>
-                                                            <Select
-                                                                className={`inputSecondary ` + styles.myselect}
-                                                                options={relationshipSelect}
-                                                                name={`familia[.${index}.]parentesco`}
-                                                                // onChange={e => setRelationshipFamily(e.label)}
-                                                                placeholder={"Parentesco"}
-                                                                onChange={option => setFieldValue(`familia[.${index}.]parentesco`, option.label)}
-                                                                onBlur={option => setFieldTouched(`familia[.${index}.]parentesco`, option.label)}
-                                                            ></Select>
-                                                            <span className="errorMessage"><ErrorMessageArraySelect name={`familia[.${index}.]parentesco`}></ErrorMessageArraySelect></span>
-                                                        </div>
-                                                        <div className={styles.formControl}>
-                                                            <label>Sexo</label>
-                                                            <Select
-                                                                className={`inputSecondary ` + styles.myselect}
-                                                                options={sexSelect}
-                                                                name={`familia[.${index}.]sexo`}
-                                                                // onChange={e => setSexFamily(e.value)}
-                                                                placeholder={"Sexo"}
-                                                                onChange={option => setFieldValue(`familia[.${index}.]sexo`, option.label)}
-                                                                onBlur={option => setFieldTouched(`familia[.${index}.]sexo`, option.label)}
-                                                            ></Select>
-                                                            <span className="errorMessage"><ErrorMessageArraySelect name={`familia[.${index}.]sexo`}></ErrorMessageArraySelect></span>
-                                                        </div>
-                                                        <div className={styles.formControl}>
-                                                            <label>Fecha de Nacimiento</label>
-                                                            <Field
-                                                                type="date"
-                                                                className="inputSecondary"
-                                                                name={`familia[.${index}.]fecha_nacimiento_familia`}
-                                                                placeholder="Fecha de nacimiento"
-                                                            ></Field>
-                                                            <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]fecha_nacimiento_familia`}></ErrorMessageArray></span>
-                                                        </div>
-                                                        <div className={styles.formControl}>
-                                                            <label>DNI</label>
-                                                            <Field
-                                                                type="number"
-                                                                className={`inputSecondary`}
-                                                                name={`familia[.${index}.]dni_familia`}
-                                                                placeholder="DNI"
-                                                            ></Field>
-                                                            <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]dni_familia`}></ErrorMessageArray></span>
-                                                        </div>
-                                                        <Link href="#">
-                                                            <a id={index} onClick={() => remove(index)} className={styles.buttonDelete}>
-                                                                <svg id={index} className={styles.iconDelete} >
-                                                                    <use id={index} xlinkHref="img/sprite.svg#icon-cross"></use>
-                                                                </svg>
-                                                            </a>
-                                                        </Link>
-                                                    </fieldset>
-                                                </Fragment>
-                                            ))}
+                                                    {values.familia.map((_, index) => (
+                                                        <Fragment>
+                                                            <fieldset className={styles.flexFormFamilia}>
+                                                                <legend>Nuevo Integrante Familiar</legend>
+                                                                <div className={styles.formControl}>
+                                                                    <label>Nombre</label>
+                                                                    <Field
+                                                                        type="text"
+                                                                        className="inputSecondary"
+                                                                        name={`familia[.${index}.]nombre_familia`}
+                                                                        placeholder="Nombre"
+                                                                    ></Field>
+                                                                    <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]nombre_familia`}></ErrorMessageArray></span>
+                                                                </div>
+                                                                <div className={styles.formControl}>
+                                                                    <label>Apellido</label>
+                                                                    <Field
+                                                                        type="text"
+                                                                        className="inputSecondary"
+                                                                        name={`familia[.${index}.]apellido_familia`}
+                                                                        placeholder="Apellido"
+                                                                    ></Field>
+                                                                    <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]apellido_familia`}></ErrorMessageArray></span>
+                                                                </div>
+                                                                <div className={styles.formControl}>
+                                                                    <label>Parentesco</label>
+                                                                    <Select
+                                                                        className={`inputSecondary ` + styles.myselect}
+                                                                        options={relationshipSelect}
+                                                                        name={`familia[.${index}.]parentesco`}
+                                                                        // onChange={e => setRelationshipFamily(e.label)}
+                                                                        placeholder={"Parentesco"}
+                                                                        onChange={option => setFieldValue(`familia[.${index}.]parentesco`, option.label)}
+                                                                        onBlur={option => setFieldTouched(`familia[.${index}.]parentesco`, option.label)}
+                                                                    ></Select>
+                                                                    <span className="errorMessage"><ErrorMessageArraySelect name={`familia[.${index}.]parentesco`}></ErrorMessageArraySelect></span>
+                                                                </div>
+                                                                <div className={styles.formControl}>
+                                                                    <label>Sexo</label>
+                                                                    <Select
+                                                                        className={`inputSecondary ` + styles.myselect}
+                                                                        options={sexSelect}
+                                                                        name={`familia[.${index}.]sexo`}
+                                                                        // onChange={e => setSexFamily(e.value)}
+                                                                        placeholder={"Sexo"}
+                                                                        onChange={option => setFieldValue(`familia[.${index}.]sexo`, option.label)}
+                                                                        onBlur={option => setFieldTouched(`familia[.${index}.]sexo`, option.label)}
+                                                                    ></Select>
+                                                                    <span className="errorMessage"><ErrorMessageArraySelect name={`familia[.${index}.]sexo`}></ErrorMessageArraySelect></span>
+                                                                </div>
+                                                                <div className={styles.formControl}>
+                                                                    <label>Fecha de Nacimiento</label>
+                                                                    <Field
+                                                                        type="date"
+                                                                        className="inputSecondary"
+                                                                        name={`familia[.${index}.]fecha_nacimiento_familia`}
+                                                                        placeholder="Fecha de nacimiento"
+                                                                    ></Field>
+                                                                    <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]fecha_nacimiento_familia`}></ErrorMessageArray></span>
+                                                                </div>
+                                                                <div className={styles.formControl}>
+                                                                    <label>DNI</label>
+                                                                    <Field
+                                                                        type="number"
+                                                                        className={`inputSecondary`}
+                                                                        name={`familia[.${index}.]dni_familia`}
+                                                                        placeholder="DNI"
+                                                                    ></Field>
+                                                                    <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]dni_familia`}></ErrorMessageArray></span>
+                                                                </div>
+                                                                <Link href="#">
+                                                                    <a id={index} onClick={() => remove(index)} className={styles.buttonDelete}>
+                                                                        <svg id={index} className={styles.iconDelete} >
+                                                                            <use id={index} xlinkHref="img/sprite.svg#icon-cross"></use>
+                                                                        </svg>
+                                                                    </a>
+                                                                </Link>
+                                                            </fieldset>
+                                                        </Fragment>
+                                                    ))}
+
+                                                </Fragment> : null}
                                             <button type="button" onClick={() => push({
                                                 nombre_familia: '', apellido_familia: '',
-                                                fecha_nacimiento_familia: '', sexo: '', parentesco: '', dni_familia: ''
+                                                fecha_nacimiento_familia: '', sexo: '', parentesco: '',
+                                                dni_familia: '',
+                                                talle: [], kit_escolar: [], documentacion: []
                                             })}
                                                 className={`btn btnInfo ${styles.mainBoton}`}>Agregar Familiar Nuevo</button>
                                         </Fragment>

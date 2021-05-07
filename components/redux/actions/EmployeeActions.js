@@ -51,6 +51,7 @@ export function getEmployeesAction(firebase) {
                 employees[i].id = emp.id;
                 i++;
             }
+            employees = employees.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
             dispatch(getEmployeesSuccess(employees));
             // sweetAlert.fire("Genial", "El empleado se agregó correctamente", "success");
         } catch (error) {
@@ -98,6 +99,16 @@ export function deleteEmployeeAction(id, firebase) {
         }
     }
 }
+export function deleteEmployeeActionNoImpactDatabase(id, firebase) {
+    return async (dispatch) => {
+        dispatch(getEmployeeDelete(id));
+        try {
+            dispatch(getEmployeeDeleteSuccess());
+        } catch (error) {
+            dispatch(getEmployeeDeleteFailure())
+        }
+    }
+}
 
 export function editEmployeeAction(employee, firebase) {
     return async (dispatch) => {
@@ -113,6 +124,18 @@ export function editEmployeeAction(employee, firebase) {
             console.log(error);
             dispatch(editEmployeeFailure(employee));
             sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+        }
+    }
+}
+
+export function editEmployeeWithoutAlertAction(employee, firebase) {
+    return async (dispatch) => {
+        dispatch(getEmployeeToEdit(employee));
+        try {
+            const response = await firebase.db.collection("empleados").doc(employee.id).set(employee);
+            dispatch(editEmployeeSuccess(employee));
+        } catch (error) {
+            dispatch(editEmployeeFailure(employee));
         }
     }
 }
@@ -231,7 +254,7 @@ export function getfoundationalWorkerListByCompanyAction(employees, company) {
         dispatch(updateEmployees(employeesByCompany));
     }
 }
-export function getWorkerListByCompanyAction(employees, company, searchTextBox) {
+export function getWorkerListByCompanyAction(employees, company, searchTextBox, year) {
     return (dispatch) => {
         let employeesByCompany = "";
         if (company === "Padrón General") {
@@ -260,7 +283,66 @@ export function getWorkerListByCompanyAction(employees, company, searchTextBox) 
             }, []);
             employeesByCompany = emp;
         }
+        if (year) {
+            let date = year.toString() + "-12-31"; //"2020-12-31"
+            let LastDayOfTheYear = new Date(date);
+            let employeesByYear = [];
+            employeesByCompany.map(employee => {
+                let fechaIngreso = new Date(employee.fecha_ingreso);
+                let fechaBaja = employee.fecha_baja ? new Date(employee.fecha_baja) : 0;
+                // 2020/11/05 
+                if (fechaIngreso <= LastDayOfTheYear && (fechaBaja === 0 || fechaBaja > LastDayOfTheYear)) { //"2021-03-29" <= "2020-12-31"
+                    employeesByYear.push(employee);
+                }
+            });
+            employeesByCompany = employeesByYear;
+        }
         dispatch(updateEmployees(employeesByCompany));
+    }
+}
+
+export function getWorkerListByYearAction(employees, anio, searchTextBox, company) {
+    return (dispatch) => {
+        let date = anio.toString() + "-12-31"; //"2020-12-31"
+        let LastDayOfTheYear = new Date(date);
+        let employeesByYear = [];
+        employees.map(employee => {
+            let fechaIngreso = new Date(employee.fecha_ingreso);
+            let fechaBaja = employee.fecha_baja ? new Date(employee.fecha_baja) : 0;
+            // 2020/11/05 
+            if (fechaIngreso <= LastDayOfTheYear && (fechaBaja === 0 || fechaBaja > LastDayOfTheYear)) { //"2021-03-29" <= "2020-12-31"
+                employeesByYear.push(employee);
+            }
+        });
+        if (searchTextBox) {
+            let emp1 = [];
+            let nroLegajo = employeesByYear.filter(emp => emp.nroLegajo.toString().includes(searchTextBox));
+            let apellido = employeesByYear.filter(emp => emp.apellido.toLocaleLowerCase().includes(searchTextBox.toLocaleLowerCase()));
+            let nombre = employeesByYear.filter(emp => emp.nombre.toLocaleLowerCase().includes(searchTextBox.toLocaleLowerCase()));
+            let dni = employeesByYear.filter(emp => emp.dni.toString().includes(searchTextBox));
+            let empresa = employeesByYear.filter(emp => emp.empresa.nombre.toLocaleLowerCase().includes(searchTextBox));
+
+            emp1 = nroLegajo.concat(apellido);
+            emp1 = emp1.concat(nombre);
+            emp1 = emp1.concat(dni);
+            emp1 = emp1.concat(empresa);
+
+            const emp = emp1.reduce((acc, item) => {
+                if (!acc.includes(item)) {
+                    acc.push(item);
+                }
+                return acc;
+            }, []);
+            employeesByYear = emp;
+        }
+        if (company === "Padrón General" || !company) {
+            employeesByYear = employeesByYear.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
+        } else {
+            employeesByYear = employeesByYear.filter(item => item.empresa.nombre === company);
+            employeesByYear.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
+        }
+
+        dispatch(updateEmployees(employeesByYear));
     }
 }
 

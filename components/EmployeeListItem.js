@@ -15,7 +15,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
 
 //Redux
-import { seeEmployeeAction, editEmployeeAction, editEmployeeAction2 } from "./redux/actions/EmployeeActions";
+import {
+    seeEmployeeAction,
+    editEmployeeAction,
+    editEmployeeAction2,
+    deleteEmployeeActionNoImpactDatabase
+} from "./redux/actions/EmployeeActions";
 import { useDispatch } from "react-redux";
 
 //Firebase
@@ -42,7 +47,8 @@ const useStyles = makeStyles({
         fontSize: "1rem",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        textAlign: "center",
     },
     buttonPurple: {
         backgroundColor: "rgb(86, 7, 138)",
@@ -64,7 +70,14 @@ const useStyles = makeStyles({
         "&:hover": {
             backgroundColor: "rgb(7,138,7, 0.7)",
         }
-    }
+    },
+    buttonInfo: {
+        backgroundColor: "#00a2ba",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#00a2bab5",
+        }
+    },
 });
 
 const EmployeeListItem = ({ employee }) => {
@@ -103,33 +116,53 @@ const EmployeeListItem = ({ employee }) => {
             <TableCell align="right">{employee.dni}</TableCell>
             <TableCell align="right">{employee.empresa.nombre}</TableCell>
             <TableCell align="right">
-                <Link
+                {/* <Link
                     href="/employees/employee[id]"
                     as={`/employees/employee${employee.id}`}
                 >
                     <a className={`${classes.btn} ${classes.buttonPurple}`}
                         onClick={() => redirectToSee(employee)}
                     >Ver Ficha</a>
+                </Link> */}
+                <Link href="/employees/employee[id]"
+                    as={`/employees/employee${employee.id}`} passHref>
+                    <Button
+                        variant="contained"
+                        className={`${classes.buttonPurple}`}
+                        onClick={() => redirectToSee(employee)}>Ver Ficha</Button>
                 </Link>
             </TableCell>
-            <TableCell>
-                <Link
+            <TableCell align="right">
+                {/* <Link
                     href="/employees/[id]"
                     as={`/employees/${employee.id}`}
                 >
-                    <a className={`${classes.btn} ${classes.buttonSave}`}
+                    <a className={`${classes.btn} ${classes.buttonInfo}`}
                         onClick={() => redirectToEdit(employee)}
                     >
                         Editar
                     </a>
+                </Link> */}
+                <Link href="/employees/[id]"
+                    as={`/employees/${employee.id}`} passHref>
+                    <Button
+                        variant="contained"
+                        className={`${classes.buttonInfo}`}
+                        onClick={() => redirectToEdit(employee)}>Editar</Button>
                 </Link>
             </TableCell>
-            <TableCell>
+            <TableCell align="right">
                 <Fragment>
-                    <Link href="#">
+                    {/* <Link href="#">
                         <a className={`${classes.btn} ${classes.buttonClose}`}
                             onClick={() => handleClickOpen(employee.id)}
                         >Eliminar</a>
+                    </Link> */}
+                    <Link href="#" passHref>
+                        <Button
+                            variant="contained"
+                            className={`${classes.buttonClose}`}
+                            onClick={() => handleClickOpen(employee.id)}>Eliminar</Button>
                     </Link>
                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                         <DialogTitle id="form-dialog-title">
@@ -143,6 +176,7 @@ const EmployeeListItem = ({ employee }) => {
                                     setTimeout(() => {
                                         values.estado = "Inactivo";
                                         values && dispatch(editEmployeeAction(values, firebase));
+                                        values && dispatch(deleteEmployeeActionNoImpactDatabase(values.id, firebase));
                                         setSubmitting(false);
                                         setOpen(false);
                                     }, 2000);

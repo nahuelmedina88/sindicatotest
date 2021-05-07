@@ -66,36 +66,6 @@ const columns = [
         align: 'right'
     },
 ];
-
-function createData(name, code, population, size) {
-    const density = population / size;
-    return { name, code, population, size, density };
-}
-
-const rows = [
-    createData('India', 'IN', 1324171354, 3287263),
-    createData('China', 'CN', 1403500365, 9596961),
-    createData('Italy', 'IT', 60483973, 301340),
-    createData('United States', 'US', 327167434, 9833520),
-    createData('Canada', 'CA', 37602103, 9984670),
-    createData('Australia', 'AU', 25475400, 7692024),
-    createData('Germany', 'DE', 83019200, 357578),
-    createData('Ireland', 'IE', 4857000, 70273),
-    createData('Mexico', 'MX', 126577691, 1972550),
-    createData('Japan', 'JP', 126317000, 377973),
-    createData('France', 'FR', 67022000, 640679),
-    createData('United Kingdom', 'GB', 67545757, 242495),
-    createData('Russia', 'RU', 146793744, 17098246),
-    createData('Nigeria', 'NG', 200962417, 923768),
-    createData('Brazil', 'BR', 210147125, 8515767),
-];
-
-// const data = [
-//     { x: 'winter', y: 10 },
-//     { x: 'spring', y: 100 },
-//     { x: 'summer', y: 100 },
-//     { x: 'fall', y: 10 }];
-
 const useStyles = makeStyles({
     icon: {
         fontSize: "20vh",
@@ -134,6 +104,7 @@ const Homepage = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(3);
     const [lastWorker, setLastWorker] = React.useState("");
+    const [rowsLength, setRowsLength] = React.useState("");
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -151,8 +122,6 @@ const Homepage = () => {
     let employeesSelector = useSelector(state => state.employees.employees);
     let inactiveEmployees = employeesSelector.filter(item => item.estado === "Inactivo");
     let activeEmployees = employeesSelector.filter(item => item.estado === "Activo");
-
-    console.log("LastWorker " + lastWorker);
     let employeesSorted = activeEmployees.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
 
     const loadEmployees = (firebase) => {
@@ -188,21 +157,21 @@ const Homepage = () => {
         return porcentage;
     }
 
+
     const getLastWorker = () => {
         let empleadoPrevio = "";
         let empleadoMaximo = "";
-        activeEmployees.map(empleado => {
+        employeesSelector.map(empleado => {
             let empleadoActual = empleado;
             if (!empleadoPrevio) {
                 empleadoMaximo = empleadoActual;
-            } else if (empleadoActual.nroLegajo > empleadoPrevio.nroLegajo) {
+            } else if (parseInt(empleadoActual.nroLegajo) > parseInt(empleadoMaximo.nroLegajo)) {
                 empleadoMaximo = empleadoActual;
             } else {
-                empleadoMaximo = empleadoPrevio;
+                empleadoMaximo = empleadoMaximo;
             }
             empleadoPrevio = empleadoActual;
         });
-
         setLastWorker(empleadoMaximo);
     }
 
@@ -243,14 +212,18 @@ const Homepage = () => {
 
         let empresas = Object.keys(cantidadEmpresas);
         let cantidad = Object.values(cantidadEmpresas);
-        console.log(empresas);
-        console.log(cantidad);
         let newData = [];
         empresas.map((item, idx) => {
             newData.push({ x: item, y: cantidad[idx] })
         });
         setData(newData);
     }
+
+    const handleRowsLength = () => {
+        setRowsLength(activeEmployees.length);
+    }
+
+
     useEffect(() => {
         loadEmployees(firebase);
     }, []);
@@ -258,6 +231,7 @@ const Homepage = () => {
     useEffect(() => {
         getData();
         getLastWorker();
+        handleRowsLength();
     }, [employeesSelector]);
 
     return (<Layout homepage={true}>
@@ -366,7 +340,7 @@ const Homepage = () => {
                         <TablePagination
                             rowsPerPageOptions={[3, 5, 10, 25, 100]}
                             component="div"
-                            count={rows.length}
+                            count={rowsLength}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onChangePage={handleChangePage}

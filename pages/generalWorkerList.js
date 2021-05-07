@@ -1,4 +1,6 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { Fragment, useEffect, useContext, useState } from 'react';
+
+import Link from "next/link";
 
 import EmployeeListItem from "../components/EmployeeListItem";
 
@@ -23,7 +25,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Fragment } from 'react';
+import Button from '@material-ui/core/Button';
+
 
 const useStyles = makeStyles({
     table: {
@@ -52,6 +55,13 @@ const useStyles = makeStyles({
         color: "#fff",
         "&:hover": {
             backgroundColor: "rgb(138,7,7, 0.7)",
+        }
+    },
+    buttonSave: {
+        backgroundColor: "rgb(7,138,7)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(7,138,7, 0.7)",
         }
     },
 });
@@ -96,11 +106,18 @@ const GeneralWorkerList = (props) => {
                                             <Fragment>
                                                 <TableHead>
                                                     <TableRow>
-                                                        <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
+                                                        <TableCell align="right">Nro Legajo</TableCell>
                                                         <TableCell align="right">Apellido</TableCell>
                                                         <TableCell align="right">Nombre</TableCell>
                                                         <TableCell align="right">DNI</TableCell>
                                                         <TableCell align="right">Empresa</TableCell>
+                                                        <TableCell align="right">
+                                                            <Link href="/AddEmployee">
+                                                                <a className={`${classes.btn} ${classes.buttonSave}`}>
+                                                                    Agregar
+                                                                </a>
+                                                            </Link>
+                                                        </TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -125,6 +142,19 @@ const GeneralWorkerList = (props) => {
                                                         <TableCell align="right">Nombre</TableCell>
                                                         <TableCell align="right">DNI</TableCell>
                                                         <TableCell align="right">Empresa</TableCell>
+                                                        <TableCell align="right">
+                                                            {/* <Link href="/AddEmployee">
+                                                                <a className={`${classes.btn} ${classes.buttonSave}`}>
+                                                                    Agregar
+                                                                </a>
+                                                            </Link> */}
+                                                            <Link href="/AddEmployee">
+                                                                <Button
+                                                                    variant="contained"
+                                                                    className={`${classes.buttonSave}`}>
+                                                                    Agregar</Button>
+                                                            </Link>
+                                                        </TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>

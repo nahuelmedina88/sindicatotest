@@ -31,18 +31,24 @@ const AddSchoolSuppliesDialog = ({ row }) => {
     const schoolSuppliesSelect = [
         {
             "id": "1",
-            "value": "primario",
-            "label": "Primario",
+            "value": "PrimarioUno",
+            "label": "Primario 1ro 3ro",
             "name": "kit_escolar"
         },
         {
             "id": "2",
+            "value": "PrimarioDos",
+            "label": "Primario 4to 6to",
+            "name": "kit_escolar"
+        },
+        {
+            "id": "3",
             "value": "secundario",
             "label": "Secundario",
             "name": "kit_escolar"
         },
         {
-            "id": "3",
+            "id": "4",
             "value": "especial",
             "label": "Especial",
             "name": "kit_escolar"
@@ -102,7 +108,7 @@ const AddSchoolSuppliesDialog = ({ row }) => {
                 let foundit = familiar.talle.filter(item => (item.anio === talle_anio));
                 if (foundit.length > 0 && talle) {
                     familiar.talle.map((item, idx) => {
-                        if (item.anio === talle_anio) {
+                        <         if (item.anio === talle_anio) {
                             item.numero = talle;
                             item.anio = talle_anio;
                         }

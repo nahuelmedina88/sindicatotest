@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, Fragment, useContext } from 'react';
 import styles from "../css/employee[id].module.scss";
 import { useSelector } from "react-redux";
 import { calcularEdad } from "../../components/helpers/validHelper";
@@ -11,6 +11,19 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Link from "next/link";
+import Image from "next/image";
+
+
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+//Icon
+import EditIcon from '@material-ui/icons/Edit';
 
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,6 +35,14 @@ import Box from '@material-ui/core/Box';
 import { Grid } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
+//Image Compression
+import imageCompression from 'browser-image-compression';
+//Firebase
+import { FirebaseContext } from "../../firebase";
+//Redux
+import { useDispatch } from "react-redux";
+import { seeEmployeeAction, editEmployeeAction, editEmployeeAction2 } from "../../components/redux/actions/EmployeeActions";
 //Icons
 import PhoneAndroidRoundedIcon from '@material-ui/icons/PhoneAndroidRounded';
 import MailOutlineRoundedIcon from '@material-ui/icons/MailOutlineRounded';
@@ -36,6 +57,46 @@ import HourglassEmptyRoundedIcon from '@material-ui/icons/HourglassEmptyRounded'
 const useStyles2 = makeStyles({
     table: {
         minWidth: 650,
+    },
+    btn: {
+        padding: "0.4rem",
+        borderRadius: "5px",
+        textDecoration: "none",
+        borderWidth: "1px",
+        borderColor: "#fff",
+        fontSize: "1rem",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+    },
+    buttonSuccess: {
+        backgroundColor: "#00a441",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#00a441b5",
+        }
+    },
+    buttonPurple: {
+        backgroundColor: "rgb(86, 7, 138)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(86, 7, 138,0.7)",
+        }
+    },
+    buttonSave: {
+        backgroundColor: "rgb(7,138,7)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(7,138,7, 0.7)",
+        }
+    },
+    buttonBlue: {
+        backgroundColor: "#3b5999;",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#3b5999b5",
+        }
     },
 });
 
@@ -80,15 +141,105 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+
 const SeeEmployee = () => {
     const classes2 = useStyles2();
     const employeeToSee = useSelector(state => state.employees.employeeToSee);
     const classes = useStyles();
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
+    const [open, setOpen] = useState(false);
+    const [dni_familiar, setDNIFamiliar] = useState("");
+    const [documentacionURL, setDocumentacionURL] = useState("");
+    const [selectedFile, setSelectedFile] = useState("");
+    const [progress, setProgress] = useState(0);
 
+    const { firebase } = useContext(FirebaseContext);
+    const dispatch = useDispatch();
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const getDateDDMMAAAA = (mydate) => {
+        let date = new Date(mydate);
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let newdate = "";
+        if (month < 10) {
+            newdate = `${day}-0${month}-${year}`;
+        } else {
+            newdate = `${day}-${month}-${year}`;
+        }
+        return newdate;
+    }
+
+    const handleClickOpen = (dni) => {
+        setDocumentacionURL("");
+        setProgress(0);
+        setSelectedFile("");
+        setOpen(dni);
+        setDNIFamiliar(dni);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleSubmit = () => {
+        let newEmployee = Object.assign({}, employeeToSee);
+        newEmployee.imagen_perfil_url = documentacionURL;
+        dispatch(editEmployeeAction(newEmployee, firebase));
+        dispatch(seeEmployeeAction(newEmployee));
+        handleClose();
+    }
+
+    const handleUpload = () => {
+        const uploadTask = firebase.storage.ref(`images/${selectedFile.name}`).put(selectedFile);
+        uploadTask.on(
+            "state_changed",
+            snapshot => {
+                const thisprogress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+                setProgress(thisprogress);
+            },
+            error => {
+                console.log(error);
+            },
+            () => {
+                firebase.storage
+                    .ref("images")
+                    .child(selectedFile.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        console.log(url);
+                        setDocumentacionURL(url);
+                    })
+            }
+
+        )
+    }
+
+    const handleChangeUploadImage = async (event) => {
+        const imageFile = event.target.files[0];
+        console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
+        console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+
+        const options = {
+            maxSizeMB: 0.1, //128KB
+            maxWidthOrHeight: 1920,
+            useWebWorker: true
+        }
+        try {
+            const compressedFile = await imageCompression(imageFile, options);
+            console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+            console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+
+            // await uploadToServer(compressedFile); // write your own logic
+            setSelectedFile(compressedFile);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (<>
         {employeeToSee ?
@@ -96,18 +247,90 @@ const SeeEmployee = () => {
                 <Layout2>
                     <Grid container >
                         <div className={styles.imageContainer}>
-                            <div className={styles.iconImage}>
-                                <svg className={styles.icon}>
-                                    <use xlinkHref="/img/sprite.svg#icon-user"></use>
-                                </svg>
+                            <div className={styles.containerImage}>
+                                {employeeToSee.imagen_perfil_url ?
+
+                                    <Image
+                                        src={employeeToSee.imagen_perfil_url}
+                                        alt="Trabajador Perfil"
+                                        width={150}
+                                        height={110}
+                                        className={styles.img}
+                                    ></Image>
+                                    :
+                                    <svg className={styles.icon}>
+                                        <use xlinkHref="/img/sprite.svg#icon-user">
+                                        </use>
+                                    </svg>}
+                                {/* <button className={styles.btn}>Button</button> */}
+                                <Fragment>
+                                    <Link href="#">
+                                        <a className={`${styles.btn}`}
+                                            onClick={() => handleClickOpen(employeeToSee.dni)}
+                                        ><EditIcon className={styles.editIcon} /></a>
+                                    </Link>
+                                    <Dialog fullScreen open={open === employeeToSee.dni && true}
+                                        onClose={handleClose}
+                                        aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="form-dialog-title">
+                                            {employeeToSee.apellido}, {employeeToSee.nombre}
+                                        </DialogTitle>
+                                        <form>
+                                            <DialogContent>
+                                                <DialogContentText>
+                                                    Imagen de Perfil del Afiliado
+                                </DialogContentText>
+                                                <Fragment>
+                                                    <input
+                                                        type="file"
+                                                        name="selectedFile"
+                                                        onChange={handleChangeUploadImage}
+                                                        className={`${styles.customFileInput}`}
+                                                    />
+                                                    {
+                                                        selectedFile.name ?
+                                                            <Fragment>
+                                                                <LinearProgress variant="determinate" value={progress} />
+                                                                <Button
+                                                                    variant="contained"
+                                                                    component="label"
+                                                                    onClick={handleUpload}
+                                                                    className={`${classes2.btn} ${classes2.buttonSuccess}`}
+                                                                    disabled={documentacionURL ? true : false}
+                                                                >Subir Archivo
+                                                            </Button>
+                                                            </Fragment>
+                                                            : null
+                                                    }
+                                                </Fragment>
+                                                <DialogActions>
+                                                    <Button
+                                                        variant="contained"
+                                                        className={classes2.buttonClose}
+                                                        onClick={handleClose}
+                                                    // disabled={documentacionURL ? true : false}
+                                                    >Cerrar
+                                        </Button>
+                                                    <Button
+                                                        type="button"
+                                                        onClick={handleSubmit}
+                                                        // disabled={isSubmitting}
+                                                        variant="contained"
+                                                        className={classes2.buttonSave}
+                                                    // className={`btn btnDanger`}
+                                                    // startIcon={isSubmitting ? <CircularProgress size="0.9rem" /> : undefined}
+                                                    >Guardar
+                                     {/* {isSubmitting ? <DoneAllIcon fontSize="small" /> : <CheckIcon fontSize="small" />} */}
+                                                    </Button>
+                                                </DialogActions>
+                                            </DialogContent>
+                                        </form>
+                                    </Dialog>
+                                </Fragment>
+
                             </div>
-                            {/* <Image
-                            src="/nahueSuecia.jpg"
-                            alt="Nahuel en Suecia"
-                            width={100}
-                            height={50}
-                            className={styles.img}
-                        /> */}
+
+
                             <div className={styles.sidebarInfoContainer}>
                                 <div className={styles.rowSidebar}>
                                     <h4 className={styles.title}>Edad</h4>
@@ -128,7 +351,7 @@ const SeeEmployee = () => {
                                 <div className={styles.rowSidebar}>
                                     <h4 className={styles.title}>Fecha de Ingreso</h4>
                                     <span className={styles.spanIcon}><EventRoundedIcon /></span>
-                                    <span className={styles.spanLabel}>{employeeToSee.fecha_ingreso}</span>
+                                    <span className={styles.spanLabel}>{getDateDDMMAAAA(employeeToSee.fecha_ingreso)}</span>
                                 </div>
                                 <div className={styles.rowSidebar}>
                                     <h4 className={styles.title}>Antigüedad</h4>
@@ -171,7 +394,10 @@ const SeeEmployee = () => {
                                                 <Divider className={styles.divider} />
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>Domicilio</span>
-                                                    <span className={styles.spanLabel}>{employeeToSee.domicilio}, {employeeToSee.ciudad}</span>
+                                                    <span className={styles.spanLabel}>
+                                                        {employeeToSee.domicilio ? employeeToSee.domicilio : employeeToSee.calle + " " + employeeToSee.numero_calle.toString()},
+                                                        {employeeToSee.ciudad}
+                                                    </span>
                                                 </div>
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>Código Postal</span>
@@ -188,7 +414,7 @@ const SeeEmployee = () => {
                                                 </div>
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>Fecha de Nacimiento</span>
-                                                    <span className={styles.spanLabel}>{employeeToSee.fecha_nacimiento}</span>
+                                                    <span className={styles.spanLabel}>{getDateDDMMAAAA(employeeToSee.fecha_nacimiento)}</span>
                                                 </div>
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>Estado Civil</span>
@@ -235,7 +461,7 @@ const SeeEmployee = () => {
                                                             {row.apellido_familia}, {row.nombre_familia}
                                                         </TableCell>
                                                         <TableCell align="right">{row.dni_familia}</TableCell>
-                                                        <TableCell align="right">{row.fecha_nacimiento_familia}</TableCell>
+                                                        <TableCell align="right">{getDateDDMMAAAA(row.fecha_nacimiento_familia)}</TableCell>
                                                         <TableCell align="right">{row.parentesco}</TableCell>
                                                         <TableCell align="right">{row.sexo}</TableCell>
                                                     </TableRow>
@@ -245,13 +471,41 @@ const SeeEmployee = () => {
                                     </TableContainer>
                                 </TabPanel>
                                 <TabPanel value={value} index={2}>
-                                    Documentos
-      </TabPanel>
+                                    <TableContainer component={Paper}>
+                                        <Table className={classes2.table} aria-label="caption table">
+                                            {/* <caption>A basic table example with a caption</caption> */}
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="left">Tipo</TableCell>
+                                                    <TableCell align="left">Año</TableCell>
+                                                    <TableCell align="left">Enlace</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {employeeToSee.documentacion.map((row) => (
+                                                    <TableRow>
+                                                        <TableCell align="left">{row.tipo}</TableCell>
+                                                        <TableCell align="leftt">{row.anio}</TableCell>
+                                                        <TableCell align="left">
+                                                            <Link href={row.url}>
+                                                                Ver Documento
+                                                            </Link>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </TabPanel>
                             </div>
+                            <Link href={"/generalWorkerList"}>
+                                <a className={`${classes2.btn} ${classes2.buttonPurple}`}
+                                >Volver al Padrón</a>
+                            </Link>
                         </div>
                     </Grid>
                 </Layout2>
-            </div>
+            </div >
             : null}
     </>);
 }

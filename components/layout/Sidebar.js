@@ -251,7 +251,7 @@ const Sidebar = () => {
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 className={styles.link}
                                 href="/graphs"
@@ -263,7 +263,7 @@ const Sidebar = () => {
                                     <a className={styles.a}>Gráficos</a>
                                 </div>
                             </Link>
-                        </li>
+                        </li> */}
                     </ul>
                 </nav>
                 <button className={`${styles.burgerButton} ${(!pressed ? styles.burguerButtonChanged : null)}`}

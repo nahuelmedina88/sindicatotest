@@ -15,7 +15,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
 
 //Redux
-import { seeEmployeeAction, editEmployeeAction, editEmployeeAction2 } from "./redux/actions/EmployeeActions";
+import { editCompanyAction, editCompanyAction2 } from "./redux/actions/CompanyActions";
 import { useDispatch } from "react-redux";
 
 //Firebase
@@ -82,13 +82,13 @@ const Company = ({ company }) => {
     const { firebase } = useContext(FirebaseContext);
 
     const redirectToEdit = (company) => {
-        dispatch(editEmployeeAction2(company));
+        dispatch(editCompanyAction2(company));
         // history.push(`/employees/edit/${employee.id}`);
     }
-    const redirectToSee = (company) => {
-        dispatch(seeEmployeeAction(company));
-        // history.push(`/employees/edit/${employee.id}`);
-    }
+    // const redirectToSee = (company) => {
+    //     dispatch(seeEmployeeAction(company));
+    //     // history.push(`/employees/edit/${employee.id}`);
+    // }
     return (<>
         <TableRow key={company.dni}>
             <TableCell align="right">{company.nombre}</TableCell>
@@ -107,19 +107,27 @@ const Company = ({ company }) => {
                     >Ver Ficha</a>
                 </Link> 
             </TableCell>*/}
-            {/*<TableCell>
-                 <Link
-                    href="/employees/[id]"
-                    as={`/employees/${company.id}`}
+            <TableCell>
+                {/* <Link
+                    href="/companies/[id]"
+                    as={`/companies/${company.id}`}
                 >
-                    <a className={`${classes.btn} ${classes.buttonSave}`}
+                    <a className={`${classes.btn} ${classes.buttonPurple}`}
                         onClick={() => redirectToEdit(company)}
                     >
                         Editar
                     </a>
-                </Link> 
-            </TableCell>*/}
-            {/* <TableCell>
+                </Link> */}
+                <Link
+                    href="/companies/[id]"
+                    as={`/companies/${company.id}`} passHref>
+                    <Button
+                        variant="contained"
+                        className={`${classes.buttonPurple}`}
+                        onClick={() => redirectToEdit(company)}>Editar</Button>
+                </Link>
+            </TableCell>
+            <TableCell>
                 <Fragment>
                     <Link href="#">
                         <a className={`${classes.btn} ${classes.buttonClose}`}
@@ -137,7 +145,7 @@ const Company = ({ company }) => {
                                     setSubmitting(true);
                                     setTimeout(() => {
                                         values.estado = "Inactivo";
-                                        values && dispatch(editEmployeeAction(values, firebase));
+                                        values && dispatch(editCompanyAction(values, firebase));
                                         setSubmitting(false);
                                         setOpen(false);
                                     }, 2000);
@@ -181,7 +189,7 @@ const Company = ({ company }) => {
                         </DialogContent>
                     </Dialog>
                 </Fragment>
-            </TableCell> */}
+            </TableCell>
         </TableRow>
     </>);
 }

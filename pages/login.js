@@ -98,10 +98,13 @@ const login = () => {
                         >Aceptar
                 </button>
 
+
+                        {/* Comentado por temas de seguridad
+                        
                         <span>No tiene una cuenta y desea registrarse</span>
                         <Link href="/signin">
                             <a>Click Aquí</a>
-                        </Link>
+                        </Link> */}
                     </form>
                 }
                 {error ? <p className="alert danger">{error}</p> : null}

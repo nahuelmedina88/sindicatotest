@@ -18,6 +18,7 @@ import { FirebaseContext } from "../firebase";
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
+import Button from '@material-ui/core/Button';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -26,24 +27,45 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Fragment } from 'react';
 
+//Custom Components
+import { DocxCreateSchoolSuppliesList } from "../components/helpers/DocxCreateSchoolSuppliesList";
+
 const useStyles = makeStyles({
     table: {
         tableLayout: "fixed",
     },
+    btn: {
+        padding: "0.4rem",
+        borderRadius: "5px",
+        textDecoration: "none",
+        borderWidth: "1px",
+        borderColor: "#fff",
+        fontSize: "1rem",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+    },
+    buttonOrange: {
+        backgroundColor: "rgb(195 76 7)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(195, 76, 7, 0.7)",
+        }
+    },
 });
 
 
-const SchoolSuppliesWorkerList = (props) => {
-    const classes = useStyles(props);
+const SchoolSuppliesWorkerList = () => {
+    const classes = useStyles();
     const [company, setCompany] = useState("");
+    const [employeesSorted, setEmployeesSorted] = useState("");
     let employeesSelector = useSelector(state => state.employees.employees);
     let employeesSearch = useSelector(state => state.employees.employeesSearch);
-    let employeesSorted = employeesSelector.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
+
     const [searchTextbox, setSearchTextBox] = useState("");
     const loading = useSelector(state => state.employees.loading);
 
-    //Empleados Activos
-    //employeesSorted = employeesSorted.filter(employee => employee.estado === "Activo");
     const companiesSelector = useSelector(state => state.companies.companies);
     const companiesSelect = companiesSelector.map(company => ({
         id: company.id,
@@ -71,12 +93,44 @@ const SchoolSuppliesWorkerList = (props) => {
         loadCompanies(firebase);
     }, []);
 
+
+    const getEmployeesWithChildren = () => {
+        let empArray = [];
+        employeesSelector && employeesSelector.map(emp => {
+            emp.familia && emp.familia.map(familiar => {
+                return (familiar && familiar.parentesco === "Hija" || familiar.parentesco === "Hijo" ?
+                    empArray.push(emp) : null);
+            });
+        });
+        const deleteDuplicate = (array) => {
+            let emp = array.reduce((acc, item) => {
+                if (!acc.includes(item)) {
+                    acc.push(item);
+                }
+                return acc;
+            }, []);
+            return emp;
+        }
+        setEmployeesSorted(deleteDuplicate(empArray).sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0)));
+    }
+
+    useEffect(() => {
+        getEmployeesWithChildren();
+    }, [employeesSelector])
+
     const handleChangeCompany = (option) => {
         setCompany(option.label);
         dispatch(getWorkerListByCompanyAction(employeesSorted, option.label, searchTextbox))
     }
     const getSearchTextBox = (value) => {
         setSearchTextBox(value);
+    }
+
+    const generate = (e) => {
+        e.preventDefault();
+        employeesSearch.length > 0 ?
+            DocxCreateSchoolSuppliesList(employeesSearch, e.target.id) :
+            DocxCreateSchoolSuppliesList(employeesSelector, e.target.id);
     }
 
     return (<>
@@ -88,11 +142,17 @@ const SchoolSuppliesWorkerList = (props) => {
                 :
                 <Fragment>
                     <div className={styles.absCenterSelf}>
-                        <Search
-                            employeesRedux={employeesSorted}
-                            getSearchTextBox={getSearchTextBox}
-                            company={company}>
-                        </Search>
+                        <div className={styles.searchExportParent}>
+                            <Search
+                                employeesRedux={employeesSorted}
+                                getSearchTextBox={getSearchTextBox}
+                                company={company}>
+                            </Search>
+                            <Button
+                                onClick={generate}
+                                className={`${classes.btn} ${classes.buttonOrange} ${styles.buttonExport}`}
+                            >Exportar</Button>
+                        </div>
                         <div>
                             <label>Empresa</label>
                             <Select
@@ -120,11 +180,14 @@ const SchoolSuppliesWorkerList = (props) => {
                                                     <Fragment>
                                                         <TableHead>
                                                             <TableRow>
+                                                                <TableCell align="right">Entregado</TableCell>
                                                                 <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
                                                                 <TableCell align="right">Apellido</TableCell>
                                                                 <TableCell align="right">Nombre</TableCell>
                                                                 <TableCell align="right">DNI</TableCell>
                                                                 <TableCell align="right">Empresa</TableCell>
+                                                                <TableCell align="right">Guardapolvos</TableCell>
+                                                                <TableCell align="right">Kit Escolares</TableCell>
                                                             </TableRow>
                                                         </TableHead>
                                                         <TableBody>
@@ -147,11 +210,14 @@ const SchoolSuppliesWorkerList = (props) => {
                                                     <Fragment>
                                                         <TableHead>
                                                             <TableRow>
-                                                                <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
+                                                                <TableCell align="right">Entregado</TableCell>
+                                                                <TableCell align="right">Nro Legajo</TableCell>
                                                                 <TableCell align="right">Apellido</TableCell>
                                                                 <TableCell align="right">Nombre</TableCell>
                                                                 <TableCell align="right">DNI</TableCell>
                                                                 <TableCell align="right">Empresa</TableCell>
+                                                                <TableCell align="right">Guardapolvos</TableCell>
+                                                                <TableCell align="right">Kit Escolares</TableCell>
                                                             </TableRow>
                                                         </TableHead>
                                                         <TableBody>

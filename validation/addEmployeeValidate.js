@@ -10,8 +10,11 @@ export default function validation(values) {
     if (!values.apellido) {
         errors.apellido = 'Ingrese el apellido';
     }
-    if (!values.domicilio) {
-        errors.domicilio = 'Ingrese el domicilio';
+    if (!values.calle) {
+        errors.calle = 'Ingrese la calle';
+    }
+    if (!values.numero_calle) {
+        errors.numero_calle = 'Ingrese el número de la calle';
     }
     if (!values.ciudad) {
         errors.ciudad = 'Ingrese la ciudad';

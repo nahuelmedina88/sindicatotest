@@ -60,7 +60,8 @@ const HistorialDialog = ({ row }) => {
         setOpenHistorial("");
     };
 
-    const ArregloUtiles = (talle, kit_escolar, documentacion) => {
+    // const ArregloUtiles = (talle, kit_escolar, documentacion) => {
+    const ArregloUtiles = (talle, kit_escolar) => {
         const currentYear = new Date().getFullYear();
         let yearsArray = [];
         for (let i = currentYear; i >= 2017; i--) {
@@ -78,15 +79,15 @@ const HistorialDialog = ({ row }) => {
                     return item.tipo;
                 }
             });
-            let tipoDoc = documentacion.map(item => {
-                if (item.anio === itemAnio) {
-                    return item.url;
-                }
-            });
+            // let tipoDoc = documentacion.map(item => {
+            //     if (item.anio === itemAnio) {
+            //         return item.url;
+            //     }
+            // });
             nuevoArray.push({
                 talleNumero: talleNumero.find(element => element !== undefined),
                 tipoKit: tipoKit.find(element => element !== undefined),
-                tipoDoc: tipoDoc.find(element => element !== undefined),
+                // tipoDoc: tipoDoc.find(element => element !== undefined),
                 anio: itemAnio
             });
         });
@@ -117,21 +118,22 @@ const HistorialDialog = ({ row }) => {
                                 <TableRow>
                                     <TableCell align="left">Talle</TableCell>
                                     <TableCell align="left">Kit Escolar</TableCell>
-                                    <TableCell align="left">Documentación</TableCell>
+                                    {/* <TableCell align="left">Documentación</TableCell> */}
                                     <TableCell align="left">Año</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {ArregloUtiles(row.talle, row.kit_escolar, row.documentacion).map(item => (
+                                {/* ArregloUtiles(row.talle, row.kit_escolar, row.documentacion).map(item => ( */}
+                                {ArregloUtiles(row.talle, row.kit_escolar).map(item => (
                                     <TableRow key={item.anio} id={item.anio}>
                                         <TableCell align="left">{item && item.talleNumero}</TableCell>
                                         <TableCell align="left">{item && item.tipoKit}</TableCell>
-                                        <TableCell align="left">
+                                        {/* <TableCell align="left">
                                             {item.tipoDoc ?
                                                 <SeeDocumentationList item={item} />
                                                 : null
                                             }
-                                        </TableCell>
+                                        </TableCell> */}
                                         <TableCell align="left">{item && item.anio}</TableCell>
                                     </TableRow>
                                 ))}

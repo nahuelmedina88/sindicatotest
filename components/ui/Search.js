@@ -7,7 +7,7 @@ import { updateEmployeesAction } from "../../components/redux/actions/EmployeeAc
 //Styles
 import styles from "./css/Search.module.scss";
 
-const Search = ({ employeesRedux, getSearchTextBox, company }) => {
+const Search = ({ employeesRedux, getSearchTextBox, company, chosenYear }) => {
     const [searchEmployee, setSearchEmployee] = useState("");
     const dispatch = useDispatch();
 
@@ -39,13 +39,26 @@ const Search = ({ employeesRedux, getSearchTextBox, company }) => {
         }
         let emp3 = "";
         if (company === "Padrón General" || !company) {
-            emp.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-            updateEmployees(emp);
+            emp3 = emp.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
         } else {
             emp3 = emp.filter(item => item.empresa.nombre === company);
             emp3.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-            updateEmployees(emp3);
         }
+
+        if (chosenYear) {
+            let date = chosenYear.toString() + "-12-31"; //"2020-12-31"
+            let LastDayOfTheYear = new Date(date);
+            let employeesByYear = [];
+            emp3.map(employee => {
+                let fechaIngreso = new Date(employee.fecha_ingreso);
+                let fechaBaja = employee.fecha_baja ? new Date(employee.fecha_baja) : 0;
+                if (fechaIngreso <= LastDayOfTheYear && (fechaBaja === 0 || fechaBaja > LastDayOfTheYear)) { //"2021-03-29" <= "2020-12-31"
+                    employeesByYear.push(employee);
+                }
+            });
+            emp3 = employeesByYear;
+        }
+        updateEmployees(emp3);
         setSearchEmployee(e.target.value);
         getSearchTextBox(e.target.value);
     }

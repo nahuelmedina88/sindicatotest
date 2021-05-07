@@ -4,9 +4,13 @@ import {
     ADD_COMPANY_SUCCESS,
     GET_COMPANIES,
     GET_COMPANIES_FAILURE,
-    GET_COMPANIES_SUCCESS
+    GET_COMPANIES_SUCCESS,
+    EDIT_COMPANY,
+    EDIT_COMPANY_SUCCESS,
+    EDIT_COMPANY_FAILURE,
 } from "../types";
 // import axiosClient from "../config/axios";
+import sweetAlert from "sweetalert2";
 
 
 export function addCompanyAction(company, firebase) {
@@ -49,6 +53,36 @@ export function getCompaniesAction(firebase) {
     }
 }
 
+export function editCompanyAction2(company) {
+    return async (dispatch) => {
+        dispatch(getCompanyToEdit(company));
+    }
+}
+
+const getCompanyToEdit = (company) => ({
+    type: EDIT_COMPANY,
+    payload: company
+});
+
+export function editCompanyAction(company, firebase) {
+    return async (dispatch) => {
+        dispatch(getCompanyToEdit(company));
+        console.log(JSON.stringify(company));
+        try {
+            // const response = await axiosClient.put(`/api/empleados/${employee._id}`, employee);
+            console.log(JSON.stringify(company));
+            const response = await firebase.db.collection("empresas").doc(company.id).set(company);
+            console.log(response);
+            dispatch(editCompanySuccess(company));
+            sweetAlert.fire("Genial", "La empresa se editó correctamente", "success");
+        } catch (error) {
+            console.log(error);
+            dispatch(editCompanyFailure(company));
+            sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+        }
+    }
+}
+
 const addCompany = () => ({
     type: ADD_COMPANY
 });
@@ -73,4 +107,13 @@ const getCompaniesSuccess = (companies) => ({
 
 const getCompaniesFailure = () => ({
     type: GET_COMPANIES_FAILURE
+});
+
+const editCompanySuccess = (company) => ({
+    type: EDIT_COMPANY_SUCCESS,
+    payload: company
+});
+
+const editCompanyFailure = () => ({
+    type: EDIT_COMPANY_FAILURE
 });
