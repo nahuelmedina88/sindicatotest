@@ -67,14 +67,24 @@ const EditCompany = memo(() => {
                                             {touched.ciudad && errors.ciudad && <span className="errorMessage">{errors.ciudad}</span>}
                                         </div>
                                         <div className={styles.formControl}>
-                                            <label>Domicilio</label>
+                                            <label>Calle</label>
                                             <Field
                                                 type="text"
                                                 className="inputSecondary"
-                                                name="domicilio"
-                                                placeholder="Domicilio"
+                                                name="calle"
+                                                placeholder="Calle"
                                             ></Field>
-                                            {touched.domicilio && errors.domicilio && <span className="errorMessage">{errors.domicilio}</span>}
+                                            {touched.calle && errors.calle && <span className="errorMessage">{errors.calle}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Número</label>
+                                            <Field
+                                                type="number"
+                                                className="inputSecondary"
+                                                name="numero_calle"
+                                                placeholder="Número"
+                                            ></Field>
+                                            {touched.numero_calle && errors.numero_calle && <span className="errorMessage">{errors.numero_calle}</span>}
                                         </div>
                                         <div className={styles.formControl}>
                                             <label>CUIT</label>

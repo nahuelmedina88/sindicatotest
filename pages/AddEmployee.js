@@ -72,7 +72,8 @@ const AddEmployee = () => {
         label: company.nombre,
         nombre: company.nombre,
         ciudad: company.ciudad,
-        domicilio: company.domicilio
+        calle: company.calle,
+        numero_calle: company.numero_calle,
     }));
     const sectionsSelector = useSelector(state => state.sections.sections);
     const sectionsSelect = sectionsSelector.map(section => ({

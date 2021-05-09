@@ -94,7 +94,9 @@ const Company = ({ company }) => {
             <TableCell align="right">{company.nombre}</TableCell>
             {/* <TableCell component="th" scope="row">{employee.apellido}</TableCell> */}
             <TableCell align="right">{company.ciudad}</TableCell>
-            <TableCell align="right">{company.domicilio}</TableCell>
+            <TableCell align="right">
+                {company.domicilio ? company.domicilio : `${company.calle} ${company.numero_calle}`}
+            </TableCell>
             <TableCell align="right">{company.cuit}</TableCell>
             <TableCell align="right">{company.razonSocial}</TableCell>
             {/* <TableCell align="right">

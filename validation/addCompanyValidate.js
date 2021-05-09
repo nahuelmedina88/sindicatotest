@@ -7,8 +7,11 @@ export default function validation(values) {
     if (!values.ciudad) {
         errors.ciudad = "Ingrese la ciudad";
     }
-    if (!values.domicilio) {
-        errors.domicilio = "Ingrese el domicilio";
+    if (!values.calle) {
+        errors.calle = "Ingrese la calle";
+    }
+    if (!values.numero_calle) {
+        errors.numero_calle = "Ingrese el número";
     }
     if (!values.cuit) {
         errors.cuit = 'Ingrese el CUIT';
