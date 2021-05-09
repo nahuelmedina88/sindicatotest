@@ -1,6 +1,7 @@
 import React, { useContext, useState, Fragment, memo, useEffect } from 'react';
 
 //Material UI
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -13,6 +14,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
+import styles from "./css/EmployeeListItem.module.scss";
+
+//Image Compression
+import imageCompression from 'browser-image-compression';
 
 //Redux
 import {
@@ -32,6 +37,7 @@ import Link from "next/link";
 //Formik
 import { Formik } from "formik";
 import { object, string } from "yup";
+import { TramRounded } from '@material-ui/icons';
 
 
 const useStyles = makeStyles({
@@ -71,6 +77,13 @@ const useStyles = makeStyles({
             backgroundColor: "rgb(7,138,7, 0.7)",
         }
     },
+    buttonBlue: {
+        backgroundColor: "#3b5999;",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#3b5999b5",
+        }
+    },
     buttonInfo: {
         backgroundColor: "#00a2ba",
         color: "#fff",
@@ -78,17 +91,41 @@ const useStyles = makeStyles({
             backgroundColor: "#00a2bab5",
         }
     },
+    buttonSuccess: {
+        backgroundColor: "#00a441",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#00a441b5",
+        }
+    },
 });
 
 const EmployeeListItem = ({ employee }) => {
     const [open, setOpen] = useState(false);
+    const [openFicha, setOpenFicha] = useState(false);
     const classes = useStyles();
-    const handleClickOpen = () => {
-        setOpen(true);
+
+    const [dni_familiar, setDNIFamiliar] = useState("");
+    const [selectedFile, setSelectedFile] = useState("");
+    const [documentacionURL, setDocumentacionURL] = useState("");
+    const [progress, setProgress] = useState(0);
+    const handleClickOpen = (dni) => {
+        setOpen(dni);
+    };
+
+    const handleClickOpenFicha = (dni) => {
+        setDocumentacionURL("");
+        setProgress(0);
+        setSelectedFile("");
+        setOpenFicha(dni);
+        setDNIFamiliar(dni);
     };
 
     const handleClose = () => {
         setOpen(false);
+    };
+    const handleCloseFicha = () => {
+        setOpenFicha(false);
     };
     const dispatch = useDispatch();
 
@@ -101,6 +138,69 @@ const EmployeeListItem = ({ employee }) => {
     const redirectToSee = (employee) => {
         dispatch(seeEmployeeAction(employee));
         // history.push(`/employees/edit/${employee.id}`);
+    }
+
+
+    const handleSubmitFicha = () => {
+        let currentYear = new Date().getFullYear();
+        let tipoDoc = "Ficha Trabajador";
+        let newEmployee = Object.assign({}, employee);
+        newEmployee.documentacion.push({ tipo: tipoDoc, anio: currentYear, url: documentacionURL });
+        dispatch(editEmployeeAction(newEmployee, firebase));
+        dispatch(seeEmployeeAction(newEmployee));
+        handleCloseFicha();
+    }
+
+    const handleUpload = () => {
+        const uploadTask = firebase.storage.ref(`images/${selectedFile.name}`).put(selectedFile);
+        uploadTask.on(
+            "state_changed",
+            snapshot => {
+                const thisprogress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+                setProgress(thisprogress);
+            },
+            error => {
+                console.log(error);
+            },
+            () => {
+                firebase.storage
+                    .ref("images")
+                    .child(selectedFile.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        console.log(url);
+                        setDocumentacionURL(url);
+                    })
+            }
+
+        )
+    }
+
+    const handleChangeUploadImage = async (event) => {
+        const imageFile = event.target.files[0];
+        console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
+        console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+        const options = {
+            maxSizeMB: 0.5,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true
+        }
+        try {
+            const compressedFile = await imageCompression(imageFile, options);
+            console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+            console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+            // await uploadToServer(compressedFile); // write your own logic
+            setSelectedFile(compressedFile);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const tieneFichaCargada = (doc) => {
+        let foundit = doc.find(item => item.anio === new Date().getFullYear() && item.tipo === "Ficha Trabajador");
+        return foundit;
     }
 
     // useEffect(() => {
@@ -220,6 +320,77 @@ const EmployeeListItem = ({ employee }) => {
                         </DialogContent>
                     </Dialog>
                 </Fragment>
+            </TableCell>
+            <TableCell align="right">
+                {employee.documentacion && tieneFichaCargada(employee.documentacion) ?
+                    null :
+                    <Fragment>
+                        <Link href="#">
+                            <Button className={`${classes.buttonBlue}`}
+                                onClick={() => handleClickOpenFicha(employee.dni)}
+                            >Adjuntar Ficha</Button>
+                        </Link>
+                        <Dialog fullScreen open={openFicha === employee.dni && true}
+                            onClose={handleCloseFicha}
+                            aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">
+                                {employee.apellido}, {employee.nombre}
+                            </DialogTitle>
+                            <form>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        Adjuntar Ficha de trabajador
+                                </DialogContentText>
+                                    <Fragment>
+                                        <input
+                                            type="file"
+                                            name="selectedFile"
+                                            onChange={handleChangeUploadImage}
+                                            className={`${styles.customFileInput}`}
+                                        />
+                                        {
+                                            selectedFile.name ?
+                                                <Fragment>
+                                                    <LinearProgress variant="determinate" value={progress} />
+                                                    <Button
+                                                        variant="contained"
+                                                        component="label"
+                                                        onClick={handleUpload}
+                                                        className={`${classes.btn} ${classes.buttonSuccess}`}
+                                                        disabled={documentacionURL ? true : false}
+                                                    >
+                                                        Subir Archivo
+                                            </Button>
+                                                </Fragment>
+                                                : null
+                                        }
+                                    </Fragment>
+                                    <DialogActions>
+                                        <Button
+                                            variant="contained"
+                                            className={classes.buttonClose}
+                                            onClick={handleCloseFicha}
+                                            disabled={documentacionURL ? true : false}
+                                        >Cerrar
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            onClick={handleSubmitFicha}
+                                            // disabled={isSubmitting}
+                                            disabled={documentacionURL ? false : true}
+                                            variant="contained"
+                                            className={classes.buttonSave}
+                                        // className={`btn btnDanger`}
+                                        // startIcon={isSubmitting ? <CircularProgress size="0.9rem" /> : undefined}
+                                        >Guardar
+                                    {/* {isSubmitting ? <DoneAllIcon fontSize="small" /> : <CheckIcon fontSize="small" />} */}
+                                        </Button>
+                                    </DialogActions>
+                                </DialogContent>
+                            </form>
+                        </Dialog>
+                    </Fragment>
+                }
             </TableCell>
         </TableRow>
     </>);

@@ -60,6 +60,7 @@ const AddEmployee = () => {
     const [section, setSection] = useState("");
     const [generalError, setGeneralError] = useState("");
     const [legajo, setLegajo] = useState("");
+
     //UseSelector
     const loading = useSelector(state => state.employees.loading);
     const employeesSelector = useSelector(state => state.employees.employees);
@@ -425,7 +426,6 @@ const AddEmployee = () => {
                                         {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
                                     </div>
                                 </fieldset>
-
                                 <FieldArray name="familia">
                                     {({ push, remove }) => (
                                         <Fragment>

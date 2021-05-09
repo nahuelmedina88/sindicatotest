@@ -176,6 +176,11 @@ const WorkerListItemSchoolSupplies = ({ employee }) => {
         )
     }
 
+    const tienePlanillaCargada = (doc) => {
+        let foundit = doc.find(item => item.anio === new Date().getFullYear() && item.tipo === "Planilla Utiles");
+        return foundit;
+    }
+
     const handleChangeUploadImage = async (event) => {
 
         const imageFile = event.target.files[0];
@@ -294,9 +299,7 @@ const WorkerListItemSchoolSupplies = ({ employee }) => {
             </TableCell>
             <TableCell align="right">
 
-                {employee.documentacion && employee.documentacion[0] &&
-                    employee.documentacion[0].anio === new Date().getFullYear() &&
-                    employee.documentacion[0].url ?
+                {employee.documentacion && tienePlanillaCargada(employee.documentacion) ?
                     null :
                     <Fragment>
                         <Link href="#">

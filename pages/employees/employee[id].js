@@ -487,9 +487,14 @@ const SeeEmployee = () => {
                                                         <TableCell align="left">{row.tipo}</TableCell>
                                                         <TableCell align="leftt">{row.anio}</TableCell>
                                                         <TableCell align="left">
-                                                            <Link href={row.url}>
+                                                            {/* <Link href={row.url}>
                                                                 Ver Documento
-                                                            </Link>
+                                                            </Link> */}
+                                                            <a target="_blank"
+                                                                href={row.url}
+                                                                rel="noopener noreferrer">
+                                                                Ver Documento
+                                                            </a>
                                                         </TableCell>
                                                     </TableRow>
                                                 ))}
