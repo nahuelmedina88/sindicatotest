@@ -16,18 +16,18 @@
     },
     {
         "id": "4",
-        "value": "Hijo",
-        "label": "Hijo"
+        "value": "Hijo/a",
+        "label": "Hijo/a"
     },
     {
         "id": "5",
-        "value": "Hija",
-        "label": "Hija"
+        "value": "Abuelo/a",
+        "label": "Abuelo/a"
     },
     {
         "id": "6",
-        "value": "pareja",
-        "label": "Pareja"
+        "value": "Conyuge",
+        "label": "Cónyuge"
     },
     {
         "id": "7",

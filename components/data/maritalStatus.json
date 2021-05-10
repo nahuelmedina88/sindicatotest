@@ -22,5 +22,11 @@
         "value": "divorciado",
         "label": "Divorciado/a",
         "name" :"estado_civil"
+    },
+    {
+        "id": "5",
+        "value": "concubinato",
+        "label": "Concubinato",
+        "name" :"estado_civil"
     }
 ]

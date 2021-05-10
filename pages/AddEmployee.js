@@ -146,10 +146,12 @@ const AddEmployee = () => {
         documentacion: [],
         email: '',
         telefono: '',
-        nroLegajo: legajo,
+        // nroLegajo: legajo,
+        nroLegajo: '',
         fecha_ingreso: '',
         seccion: {},
         categoria: {},
+        fecha_ingreso_empresa: '',
         empresa: {},
         familia: [
             {
@@ -359,7 +361,7 @@ const AddEmployee = () => {
                                 </fieldset>
                                 <fieldset className={styles.flexFormEmpresa}>
                                     <legend>Información relacionada a la Empresa</legend>
-                                    <div className={styles.formControl}>
+                                    {/* <div className={styles.formControl}>
                                         <label>Nro Legajo</label>
                                         <Field
                                             type="number"
@@ -368,6 +370,17 @@ const AddEmployee = () => {
                                             placeholder="Nro Legajo"
                                             disabled={true}
                                             value={values.nroLegajo = (legajo || 0) + 1}
+                                        ></Field>
+                                        {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
+                                    </div> */}
+                                    <div className={styles.formControl}>
+                                        <label>Nro Legajo</label>
+                                        <Field
+                                            type="number"
+                                            className="inputSecondary"
+                                            name="nroLegajo"
+                                            placeholder="Nro Legajo"
+                                            value={values.nroLegajo}
                                         ></Field>
                                         {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
                                     </div>
@@ -425,6 +438,17 @@ const AddEmployee = () => {
                                             onBlur={option => setFieldTouched("empresa", option)}
                                         ></Select>
                                         {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
+                                    </div>
+                                    <div className={styles.formControl}>
+                                        <label>Fecha de Ingreso a la Empresa</label>
+                                        <Field
+                                            type="date"
+                                            className="inputSecondary"
+                                            name="fecha_ingreso_empresa"
+                                            placeholder="Fecha de Ingreso"
+                                            value={values.fecha_ingreso_empresa}
+                                        ></Field>
+                                        {touched.fecha_ingreso_empresa && errors.fecha_ingreso_empresa && <span className="errorMessage">{errors.fecha_ingreso_empresa}</span>}
                                     </div>
                                 </fieldset>
                                 <FieldArray name="familia">
