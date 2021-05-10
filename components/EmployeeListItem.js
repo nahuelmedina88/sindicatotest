@@ -152,7 +152,8 @@ const EmployeeListItem = ({ employee }) => {
     }
 
     const handleUpload = () => {
-        const uploadTask = firebase.storage.ref(`images/${selectedFile.name}`).put(selectedFile);
+        // const uploadTask = firebase.storage.ref(`images/${selectedFile.name}`).put(selectedFile);
+        const uploadTask = firebase.storage.ref(`ficha_trabajador/${employee.dni}`).put(selectedFile);
         uploadTask.on(
             "state_changed",
             snapshot => {
@@ -166,8 +167,9 @@ const EmployeeListItem = ({ employee }) => {
             },
             () => {
                 firebase.storage
-                    .ref("images")
-                    .child(selectedFile.name)
+                    .ref("ficha_trabajador")
+                    // .child(selectedFile.name)
+                    .child(employee.dni.toString())
                     .getDownloadURL()
                     .then(url => {
                         console.log(url);
@@ -183,7 +185,7 @@ const EmployeeListItem = ({ employee }) => {
         console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
         console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
         const options = {
-            maxSizeMB: 0.5,
+            maxSizeMB: 0.4,
             maxWidthOrHeight: 1920,
             useWebWorker: true
         }
