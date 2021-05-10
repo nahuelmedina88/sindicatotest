@@ -48,5 +48,10 @@
         "id": "10",
         "value": "Concubino/a",
         "label": "Concubino/a"
+    },
+    {
+        "id": "11",
+        "value": "Hijastro/a",
+        "label": "Hijastro/a"
     }
 ]
