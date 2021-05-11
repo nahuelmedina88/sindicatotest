@@ -98,7 +98,7 @@ const SchoolSuppliesWorkerList = () => {
         let empArray = [];
         employeesSelector && employeesSelector.map(emp => {
             emp.familia && emp.familia.map(familiar => {
-                return (familiar && familiar.parentesco === "Hija" || familiar.parentesco === "Hijo" ?
+                return (familiar && familiar.parentesco === "Hijo/a" ?
                     empArray.push(emp) : null);
             });
         });
