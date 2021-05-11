@@ -137,7 +137,7 @@ const EditEmployee = memo(() => {
                     //const found = employeesSelector.find(emp => (emp.dni === values.dni || emp.nroLegajo === values.nroLegajo));
                     let oldCompany = employeeToEdit.empresa.nombre;
                     let newCompany = values.empresa.nombre;
-                    if (oldCompany !== newCompany) {
+                    if (oldCompany && oldCompany !== newCompany) {
                         let currentDay = new Date();
                         values.fechas_cambio_empresa.push({
                             fecha: currentDay,
