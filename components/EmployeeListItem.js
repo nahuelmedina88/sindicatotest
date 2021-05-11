@@ -153,7 +153,7 @@ const EmployeeListItem = ({ employee }) => {
 
     const handleUpload = () => {
         // const uploadTask = firebase.storage.ref(`images/${selectedFile.name}`).put(selectedFile);
-        const uploadTask = firebase.storage.ref(`ficha_trabajador/ficha_afiliado_${employee.dni}`).put(selectedFile);
+        const uploadTask = firebase.storage.ref(`ficha_trabajador/ficha_afiliado_${new Date().getFullYear().toString()}_${employee.dni}`).put(selectedFile);
         uploadTask.on(
             "state_changed",
             snapshot => {
@@ -169,7 +169,7 @@ const EmployeeListItem = ({ employee }) => {
                 firebase.storage
                     .ref("ficha_trabajador")
                     // .child(selectedFile.name)
-                    .child("ficha_afiliado_" + employee.dni.toString())
+                    .child(`ficha_afiliado_${new Date().getFullYear().toString()}_${employee.dni}`)
                     .getDownloadURL()
                     .then(url => {
                         console.log(url);
