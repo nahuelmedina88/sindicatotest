@@ -313,12 +313,12 @@ const EditEmployee = memo(() => {
                                             {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
                                         </div>
                                         <div className={styles.formControl}>
-                                            <label>Fecha de Ingreso</label>
+                                            <label>Fecha de Afiliación</label>
                                             <Field
                                                 type="date"
                                                 className="inputSecondary"
                                                 name="fecha_ingreso"
-                                                placeholder="Fecha de Ingreso"
+                                                placeholder="Fecha de Afiliacion"
                                             ></Field>
                                             {touched.fecha_ingreso && errors.fecha_ingreso && <span className="errorMessage">{errors.fecha_ingreso}</span>}
                                         </div>
@@ -368,6 +368,17 @@ const EditEmployee = memo(() => {
                                                 onBlur={option => setFieldTouched("empresa", option)}
                                             ></Select>
                                             {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
+                                            <label>Fecha de Ingreso a la Empresa</label>
+                                            <Field
+                                                type="date"
+                                                className="inputSecondary"
+                                                name="fecha_ingreso_empresa"
+                                                placeholder="Fecha de Ingreso"
+                                                value={values.fecha_ingreso_empresa}
+                                            ></Field>
+                                            {touched.fecha_ingreso_empresa && errors.fecha_ingreso_empresa && <span className="errorMessage">{errors.fecha_ingreso_empresa}</span>}
                                         </div>
                                     </fieldset>
                                     <FieldArray name="familia">
