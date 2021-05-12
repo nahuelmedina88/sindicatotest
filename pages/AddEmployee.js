@@ -139,6 +139,7 @@ const AddEmployee = () => {
         numero_calle: '',
         codigo_postal: '',
         dni: '',
+        cuil: '',
         fecha_nacimiento: '',
         nacionalidad: 'Argentina',
         estado_civil: '',
@@ -148,6 +149,7 @@ const AddEmployee = () => {
         telefono: '',
         // nroLegajo: legajo,
         nroLegajo: '',
+        nro_legajo_empresa: '',
         fecha_ingreso: '',
         seccion: {},
         categoria: {},
@@ -303,6 +305,17 @@ const AddEmployee = () => {
                                         {touched.dni && errors.dni && <span className="errorMessage">{errors.dni}</span>}
                                     </div>
                                     <div className={styles.formControl}>
+                                        <label>CUIL</label>
+                                        <Field
+                                            type="number"
+                                            className={`inputSecondary`}
+                                            name="cuil"
+                                            placeholder="CUIL"
+                                            value={values.cuil}
+                                        ></Field>
+                                        {touched.cuil && errors.cuil && <span className="errorMessage">{errors.cuil}</span>}
+                                    </div>
+                                    <div className={styles.formControl}>
                                         <label>Fecha de Nacimiento</label>
                                         <Field
                                             type="date"
@@ -360,6 +373,31 @@ const AddEmployee = () => {
                                     </div>
                                 </fieldset>
                                 <fieldset className={styles.flexFormEmpresa}>
+                                    <legend>Información relacionada al Sindicato</legend>
+                                    <div className={styles.formControl}>
+                                        <label>Nro Afiliado</label>
+                                        <Field
+                                            type="number"
+                                            className="inputSecondary"
+                                            name="nroLegajo"
+                                            placeholder="Nro Legajo"
+                                            value={values.nroLegajo}
+                                        ></Field>
+                                        {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
+                                    </div>
+                                    <div className={styles.formControl}>
+                                        <label>Fecha de Afiliación</label>
+                                        <Field
+                                            type="date"
+                                            className="inputSecondary"
+                                            name="fecha_ingreso"
+                                            placeholder="Fecha de Ingreso"
+                                            value={values.fecha_ingreso}
+                                        ></Field>
+                                        {touched.fecha_ingreso && errors.fecha_ingreso && <span className="errorMessage">{errors.fecha_ingreso}</span>}
+                                    </div>
+                                </fieldset>
+                                <fieldset className={styles.flexFormEmpresa}>
                                     <legend>Información relacionada a la Empresa</legend>
                                     {/* <div className={styles.formControl}>
                                         <label>Nro Legajo</label>
@@ -378,22 +416,11 @@ const AddEmployee = () => {
                                         <Field
                                             type="number"
                                             className="inputSecondary"
-                                            name="nroLegajo"
+                                            name="nro_legajo_empresa"
                                             placeholder="Nro Legajo"
-                                            value={values.nroLegajo}
+                                            value={values.nro_legajo_empresa}
                                         ></Field>
-                                        {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
-                                    </div>
-                                    <div className={styles.formControl}>
-                                        <label>Fecha de Ingreso</label>
-                                        <Field
-                                            type="date"
-                                            className="inputSecondary"
-                                            name="fecha_ingreso"
-                                            placeholder="Fecha de Ingreso"
-                                            value={values.fecha_ingreso}
-                                        ></Field>
-                                        {touched.fecha_ingreso && errors.fecha_ingreso && <span className="errorMessage">{errors.fecha_ingreso}</span>}
+                                        {touched.nro_legajo_empresa && errors.nro_legajo_empresa && <p className="errorMessage">{errors.nro_legajo_empresa}</p>}
                                     </div>
                                     <div className={styles.formControl}>
                                         <label>Sección</label>
@@ -428,6 +455,17 @@ const AddEmployee = () => {
                                         {touched.categoria && errors.categoria && <span className="errorMessage">{errors.categoria}</span>}
                                     </div>
                                     <div className={styles.formControl}>
+                                        <label>Fecha de Ingreso a la Empresa</label>
+                                        <Field
+                                            type="date"
+                                            className="inputSecondary"
+                                            name="fecha_ingreso_empresa"
+                                            placeholder="Fecha de Ingreso"
+                                            value={values.fecha_ingreso_empresa}
+                                        ></Field>
+                                        {touched.fecha_ingreso_empresa && errors.fecha_ingreso_empresa && <span className="errorMessage">{errors.fecha_ingreso_empresa}</span>}
+                                    </div>
+                                    <div className={styles.formControl}>
                                         <label>Empresa</label>
                                         <Select
                                             className={`inputSecondary ` + styles.myselect}
@@ -439,17 +477,7 @@ const AddEmployee = () => {
                                         ></Select>
                                         {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
                                     </div>
-                                    <div className={styles.formControl}>
-                                        <label>Fecha de Ingreso a la Empresa</label>
-                                        <Field
-                                            type="date"
-                                            className="inputSecondary"
-                                            name="fecha_ingreso_empresa"
-                                            placeholder="Fecha de Ingreso"
-                                            value={values.fecha_ingreso_empresa}
-                                        ></Field>
-                                        {touched.fecha_ingreso_empresa && errors.fecha_ingreso_empresa && <span className="errorMessage">{errors.fecha_ingreso_empresa}</span>}
-                                    </div>
+
                                 </fieldset>
                                 <FieldArray name="familia">
                                     {({ push, remove }) => (

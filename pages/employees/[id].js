@@ -114,19 +114,19 @@ const EditEmployee = memo(() => {
         numero_calle: '',
         codigo_postal: '',
         dni: '',
+        cuil: '',
         fecha_nacimiento: '',
         nacionalidad: '',
         estado_civil: '',
         email: '',
         telefono: '',
         nroLegajo: '',
+        nro_legajo_empresa: '',
         fecha_ingreso: '',
         seccion: {},
         categoria: {},
         empresa: {},
-        familia: [
-
-        ]
+        familia: []
     };
 
     return (<>
@@ -247,6 +247,17 @@ const EditEmployee = memo(() => {
                                             {touched.dni && errors.dni && <span className="errorMessage">{errors.dni}</span>}
                                         </div>
                                         <div className={styles.formControl}>
+                                            <label>CUIL</label>
+                                            <Field
+                                                type="number"
+                                                className={`inputSecondary`}
+                                                name="cuil"
+                                                placeholder="CUIL"
+                                                value={values.cuil}
+                                            ></Field>
+                                            {touched.cuil && errors.cuil && <span className="errorMessage">{errors.cuil}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
                                             <label>Fecha de Nacimiento</label>
                                             <Field
                                                 type="date"
@@ -301,14 +312,15 @@ const EditEmployee = memo(() => {
                                         </div>
                                     </fieldset>
                                     <fieldset className={styles.flexFormEmpresa}>
-                                        <legend>Información relacionada a la Empresa</legend>
+                                        <legend>Información relacionada al Sindicato</legend>
                                         <div className={styles.formControl}>
-                                            <label>Nro Legajo</label>
+                                            <label>Nro Afiliado</label>
                                             <Field
                                                 type="number"
                                                 className="inputSecondary"
                                                 name="nroLegajo"
                                                 placeholder="Nro Legajo"
+                                                value={values.nroLegajo}
                                             ></Field>
                                             {touched.nroLegajo && errors.nroLegajo && <p className="errorMessage">{errors.nroLegajo}</p>}
                                         </div>
@@ -318,9 +330,24 @@ const EditEmployee = memo(() => {
                                                 type="date"
                                                 className="inputSecondary"
                                                 name="fecha_ingreso"
-                                                placeholder="Fecha de Afiliacion"
+                                                placeholder="Fecha de Ingreso"
+                                                value={values.fecha_ingreso}
                                             ></Field>
                                             {touched.fecha_ingreso && errors.fecha_ingreso && <span className="errorMessage">{errors.fecha_ingreso}</span>}
+                                        </div>
+                                    </fieldset>
+                                    <fieldset className={styles.flexFormEmpresa}>
+                                        <legend>Información relacionada a la Empresa</legend>
+                                        <div className={styles.formControl}>
+                                            <label>Nro Legajo</label>
+                                            <Field
+                                                type="number"
+                                                className="inputSecondary"
+                                                name="nro_legajo_empresa"
+                                                placeholder="Nro Legajo"
+                                                value={values.nro_legajo_empresa}
+                                            ></Field>
+                                            {touched.nro_legajo_empresa && errors.nro_legajo_empresa && <p className="errorMessage">{errors.nro_legajo_empresa}</p>}
                                         </div>
                                         <div className={styles.formControl}>
                                             <label>Sección</label>
@@ -357,6 +384,17 @@ const EditEmployee = memo(() => {
                                             {touched.categoria && errors.categoria && <span className="errorMessage">{errors.categoria}</span>}
                                         </div>
                                         <div className={styles.formControl}>
+                                            <label>Fecha de Ingreso a la Empresa</label>
+                                            <Field
+                                                type="date"
+                                                className="inputSecondary"
+                                                name="fecha_ingreso_empresa"
+                                                placeholder="Fecha de Ingreso"
+                                                value={values.fecha_ingreso_empresa}
+                                            ></Field>
+                                            {touched.fecha_ingreso_empresa && errors.fecha_ingreso_empresa && <span className="errorMessage">{errors.fecha_ingreso_empresa}</span>}
+                                        </div>
+                                        <div className={styles.formControl}>
                                             <label>Empresa</label>
                                             <Select
                                                 className={`inputSecondary ` + styles.myselect}
@@ -368,17 +406,6 @@ const EditEmployee = memo(() => {
                                                 onBlur={option => setFieldTouched("empresa", option)}
                                             ></Select>
                                             {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
-                                        </div>
-                                        <div className={styles.formControl}>
-                                            <label>Fecha de Ingreso a la Empresa</label>
-                                            <Field
-                                                type="date"
-                                                className="inputSecondary"
-                                                name="fecha_ingreso_empresa"
-                                                placeholder="Fecha de Ingreso"
-                                                value={values.fecha_ingreso_empresa}
-                                            ></Field>
-                                            {touched.fecha_ingreso_empresa && errors.fecha_ingreso_empresa && <span className="errorMessage">{errors.fecha_ingreso_empresa}</span>}
                                         </div>
                                     </fieldset>
                                     <FieldArray name="familia">
