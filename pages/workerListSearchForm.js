@@ -32,6 +32,8 @@ import { FirebaseContext } from "../firebase";
 //Formik
 import { Formik, Form, Field } from 'formik';
 
+import ExportButton from '../components/ui/ExportButton';
+
 const validation = (values) => {
     let errors = {};
 
@@ -207,9 +209,17 @@ const workerListSearchForm = () => {
                         {formSubmit ?
                             <Fragment>
                                 <div className={styles.absCenterSelf}>
-                                    <Search employeesRedux={values.fecha_desde ? employeesSorted : employeesSearch}
-                                        getSearchTextBox={getSearchTextBox}>
-                                    </Search>
+                                    <div className={styles.searchExportParent}>
+                                        <Search employeesRedux={values.fecha_desde ? employeesSorted : employeesSearch}
+                                            getSearchTextBox={getSearchTextBox}>
+                                        </Search>
+                                        <div>
+                                            <ExportButton
+                                                employeesSearch={employeesSearch}
+                                                employeesSorted={employeesSorted}
+                                            />
+                                        </div>
+                                    </div>
                                     <TableContainer component={Paper}>
                                         <Table className={classes.table} aria-label="caption table">
                                             {

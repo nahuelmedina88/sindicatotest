@@ -171,7 +171,9 @@ const Sidebar = () => {
 
     const generate = (e) => {
         e.preventDefault();
-        employeesSearch.length > 0 ? getDocx(employeesSearch, e.target.id) : getDocx(employeesRedux, e.target.id);
+        employeesSearch.length > 0 ?
+            getDocx(employeesSearch, e.target.id) :
+            getDocx(employeesRedux, e.target.id);
     }
 
     const handleMenu = (e) => {

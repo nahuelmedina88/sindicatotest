@@ -26,6 +26,20 @@ import validation from "../../validation/addEmployeeValidate.js"
 import { object, array, number, string, boolean } from "yup";
 //Data
 import maritalStatusSelect from "../../components/data/maritalStatus.json";
+import { date } from 'yup/lib/locale';
+//Material UI
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+    buttonPurple: {
+        backgroundColor: "rgb(86, 7, 138)",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "rgb(86, 7, 138,0.7)",
+        }
+    },
+});
 
 const ErrorMessageArray = ({ name }) => (
     <Field
@@ -50,9 +64,11 @@ const ErrorMessageArraySelect = ({ name }) => (
 );
 
 const EditEmployee = memo(() => {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const router = useRouter();
     const [employee, setEmployee] = useState({});
+    const [url, setUrl] = useState();
     const [maritalStatusTypes, updateMaritalStatusTypes] = useState("");
     const [section, setSection] = useState("");
     const [generalError, setGeneralError] = useState("");
@@ -96,7 +112,7 @@ const EditEmployee = memo(() => {
         loadSections(firebase);
         const loadEmployees = (firebase) => dispatch(getEmployeesAction(firebase));
         loadEmployees(firebase);
-
+        getUrl();
         updateMaritalStatusTypes(maritalStatusSelect);
         // }, [dispatch]);
     }, []);
@@ -105,6 +121,17 @@ const EditEmployee = memo(() => {
         const loadCategories = (firebase, section) => { dispatch(getCategoriesAction(firebase, section)) }
         loadCategories(firebase, section);
     }, [section]);
+
+    const getUrl = () => {
+        let documentacionurl = "";
+        employeeToEdit.documentacion.map(doc => {
+            if (doc.anio === new Date().getFullYear() &&
+                doc.tipo === "Ficha Trabajador") {
+                documentacionurl = doc.url;
+            }
+        })
+        setUrl(documentacionurl);
+    }
 
     let EmptyObject = {
         nombre: '',
@@ -171,7 +198,22 @@ const EditEmployee = memo(() => {
                 {({ values, errors, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
                     <div>
                         <Layout>
+
                             <div className={styles.container}>
+                                {url ?
+                                    <div className={styles.fichaButton}>
+                                        <a target="_blank"
+                                            href={url}
+                                            rel="noopener noreferrer">
+                                            <Button variant="contained"
+                                                color="primary"
+                                                className={`${classes.buttonPurple}`}
+                                            >Ver Ficha de Afiliacion
+                                        </Button>
+                                        </a>
+                                    </div>
+                                    : null
+                                }
                                 <Form className={styles.mainForm} autoComplete="off">
                                     <fieldset className={styles.flexForm}>
                                         <legend>Datos básicos del Trabajador</legend>
@@ -423,7 +465,9 @@ const EditEmployee = memo(() => {
                                                                     name={`familia[.${index}.]nombre_familia`}
                                                                     placeholder="Nombre"
                                                                 ></Field>
-                                                                <span className="errorMessage"><ErrorMessageArray name={`familia[.${index}.]nombre_familia`}></ErrorMessageArray></span>
+                                                                <span className="errorMessage">
+                                                                    <ErrorMessageArray name={`familia[.${index}.]nombre_familia`}></ErrorMessageArray>
+                                                                </span>
                                                             </div>
                                                             <div className={styles.formControl}>
                                                                 <label>Apellido</label>

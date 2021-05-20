@@ -26,7 +26,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-
+import ExportButton from '../components/ui/ExportButton';
 
 const useStyles = makeStyles({
     table: {
@@ -64,12 +64,19 @@ const useStyles = makeStyles({
             backgroundColor: "rgb(7,138,7, 0.7)",
         }
     },
+    buttonExport: {
+        backgroundColor: "#FF5733",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#FF5733b5",
+        }
+    },
 });
-
 
 const GeneralWorkerList = (props) => {
     const classes = useStyles(props);
     const [searchTextbox, setSearchTextBox] = useState("");
+
     let employeesSelector = useSelector(state => state.employees.employees);
     let employeesSearch = useSelector(state => state.employees.employeesSearch);
     const loading = useSelector(state => state.employees.loading);
@@ -95,9 +102,19 @@ const GeneralWorkerList = (props) => {
                     <CircularProgress />
                     :
                     <div className={styles.absCenterSelf}>
-                        <Search employeesRedux={employeesSorted}
-                            getSearchTextBox={getSearchTextBox}
-                        ></Search>
+                        <div className={styles.searchExportParent}>
+                            <Search
+                                className={styles.searchBox}
+                                employeesRedux={employeesSorted}
+                                getSearchTextBox={getSearchTextBox}
+                            ></Search>
+                            <div>
+                                <ExportButton
+                                    employeesSearch={employeesSearch}
+                                    employeesSorted={employeesSorted}
+                                />
+                            </div>
+                        </div>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} aria-label="caption table">
                                 {searchTextbox ?

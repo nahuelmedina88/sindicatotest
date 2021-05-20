@@ -191,7 +191,7 @@ export const getDocx = (employees, type) => {
                         children: [new Paragraph({
                             children: [
                                 new TextRun({
-                                    text: type === "confirma" ? "Firma" : "Domicilio Empresa",
+                                    text: type === "confirma" || type === "Con Firma" ? "Firma" : "Domicilio Empresa",
                                     // bold: true,
                                     font: fuente,
                                     size: fontsize,
@@ -303,7 +303,7 @@ export const getDocx = (employees, type) => {
                         new Paragraph({
                             children: [
                                 new TextRun({
-                                    text: type === "confirma" ? "" : employee.empresa.ciudad,
+                                    text: type === "confirma" || type === "Con Firma" ? "" : employee.empresa.ciudad,
                                     // bold: true,
                                     font: fuente,
                                     size: fontsize,
@@ -338,7 +338,7 @@ export const getDocx = (employees, type) => {
     let fileName = "";
     let date = new Date();
     let textConFirma = "";
-    type === "confirma" ? textConFirma = "Firma" : textConFirma = "";
+    type === "confirma" || type === "Con Firma" ? textConFirma = "Firma" : textConFirma = "";
 
     if (IsPadronGeneral(employees)) {
         textLegend = "PADRON GENERAL - " + date.getFullYear().toString();

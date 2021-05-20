@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, Fragment } from 'react';
 
 import EmployeeListItem from "../components/EmployeeListItem";
 import Select from 'react-select';
-import styles from "./css/workerListByCompany.module.scss";
+import styles from "./css/workerListByYear.module.scss";
 import Frame from "../components/layout/Frame";
 import Search from "../components/ui/Search";
 
@@ -24,6 +24,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+
+import ExportButton from '../components/ui/ExportButton';
 
 const useStyles = makeStyles({
     table: {
@@ -104,13 +106,20 @@ const workerListByYear = (props) => {
                     :
                     <Fragment>
                         <div className={styles.absCenterSelf}>
-                            <Search
-                                employeesRedux={employeesSorted}
-                                getSearchTextBox={getSearchTextBox}
-                                company={company}
-                                chosenYear={chosenYear}
-                            >
-                            </Search>
+                            <div className={styles.searchExportParent}>
+                                <Search
+                                    employeesRedux={employeesSorted}
+                                    getSearchTextBox={getSearchTextBox}
+                                    company={company}
+                                    chosenYear={chosenYear}
+                                ></Search>
+                                <div>
+                                    <ExportButton
+                                        employeesSearch={employeesSearch}
+                                        employeesSorted={employeesSorted}
+                                    />
+                                </div>
+                            </div>
                             <div className={styles.flexContainerForm}>
                                 <div className={styles.controlForm}>
                                     <Select

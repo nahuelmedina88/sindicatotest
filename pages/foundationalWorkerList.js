@@ -25,6 +25,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+import ExportButton from '../components/ui/ExportButton';
+
 const useStyles = makeStyles({
     table: {
         tableLayout: "fixed",
@@ -86,11 +88,19 @@ const foundationalWorkerList = () => {
                 :
                 <Fragment>
                     <div className={styles.absCenterSelf}>
-                        <Search
-                            employeesRedux={employeesSorted}
-                            getSearchTextBox={getSearchTextBox}
-                            company={company}>
-                        </Search>
+                        <div className={styles.searchExportParent}>
+                            <Search
+                                employeesRedux={employeesSorted}
+                                getSearchTextBox={getSearchTextBox}
+                                company={company}>
+                            </Search>
+                            <div>
+                                <ExportButton
+                                    employeesSearch={employeesSearch}
+                                    employeesSorted={employeesSorted}
+                                />
+                            </div>
+                        </div>
                         <div>
                             <Select
                                 className={`inputSecondary ` + styles.myselect}

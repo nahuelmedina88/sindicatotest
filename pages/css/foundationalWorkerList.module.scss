@@ -26,3 +26,15 @@
   flex: 1 0;
   background-color: white;
 }
+
+.searchExportParent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .searchBox {
+    flex: 1 1 20%;
+  }
+  .buttonExport {
+    flex: 1 1 30%;
+  }
+}

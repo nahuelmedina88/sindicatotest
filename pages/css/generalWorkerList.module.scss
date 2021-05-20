@@ -16,3 +16,15 @@
   margin-top: 0;
   padding: 0;
 }
+
+.searchExportParent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .searchBox {
+    flex: 1 1 20%;
+  }
+  .buttonExport {
+    flex: 1 1 30%;
+  }
+}
