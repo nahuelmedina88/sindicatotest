@@ -190,12 +190,13 @@ const AddEmployee = () => {
                         //     values.familia = null;
                         // }
                         AddEmployeeDispatch(values, firebase);
-                        setGeneralError("");
-                        resetForm({
-                            values: EmptyObject,
-                        });
+                        // setGeneralError("");
+                        // resetForm({
+                        //     values: EmptyObject,
+                        // });
                         setSubmitting(false);
                         router.push("/generalWorkerList");
+                        //router.push("/generalWorkerList", undefined, { shallow: true })
                     }, 1000);
                 } else {
                     setTimeout(() => {

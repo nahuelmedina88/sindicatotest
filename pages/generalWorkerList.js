@@ -93,7 +93,7 @@ const GeneralWorkerList = (props) => {
 
     useEffect(() => {
         loadEmployees(firebase);
-    }, []);
+    }, [dispatch]);
 
     return (
         <>

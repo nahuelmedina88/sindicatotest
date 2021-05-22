@@ -21,12 +21,12 @@ import sweetAlert from "sweetalert2";
 
 export function addEmployeeAction(employee, firebase) {
     return async (dispatch) => {
-        console.log(employee);
         dispatch(addEmployee());
         try {
             // await axiosClient.post("/api/empleados/", employee);
             await firebase.db.collection("empleados").add(employee);
-            dispatch(addEmployeeSuccess(employee));
+            //Esto fue comentado porque estaba generando doble registro en la visualizacion del listado ya que cuando pusheo con router al agregar el nuevo empleado hace un nuevo render.
+            // dispatch(addEmployeeSuccess(employee));
             sweetAlert.fire("Genial", "El empleado se agregó correctamente", "success");
         } catch (error) {
             console.log(error);
