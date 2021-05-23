@@ -70,6 +70,13 @@ const useStyles = makeStyles({
             backgroundColor: "rgb(138,7,7, 0.7)",
         }
     },
+    buttonYellow: {
+        backgroundColor: "#879442",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#879442b5",
+        }
+    },
     buttonSave: {
         backgroundColor: "rgb(7,138,7)",
         color: "#fff",
@@ -151,6 +158,23 @@ const EmployeeListItem = ({ employee }) => {
         handleCloseFicha();
     }
 
+    const handleSubmitEditFicha = () => {
+        let currentYear = new Date().getFullYear();
+        let tipoDoc = "Ficha Trabajador";
+        let newEmployee = Object.assign({}, employee);
+        //Me fijo si existe una ficha de afiliacion con la misma fecha de ingreso para ese trabajador
+        //Si es asi, filtro esa documentacion y la elimino de la lista.
+        let docs = newEmployee.documentacion.filter(doc => (
+            !(doc.url.indexOf(newEmployee.fecha_ingreso) !== -1 && doc.tipo === "Ficha Trabajador")));
+        //asigno la documentacion que no cumple esa condicion
+        newEmployee.documentacion = docs;
+        //agrego la nueva documentacion.(Vendria a ser una edicion)
+        newEmployee.documentacion.push({ tipo: tipoDoc, anio: currentYear, url: documentacionURL });
+        dispatch(editEmployeeAction(newEmployee, firebase));
+        dispatch(seeEmployeeAction(newEmployee));
+        handleCloseFicha();
+    }
+
     const handleUpload = () => {
         // const uploadTask = firebase.storage.ref(`images/${selectedFile.name}`).put(selectedFile);
         const uploadTask = firebase.storage.ref(`ficha_trabajador/ficha_afiliado_${employee.fecha_ingreso}_${employee.dni}`).put(selectedFile);
@@ -200,8 +224,13 @@ const EmployeeListItem = ({ employee }) => {
         }
     }
 
-    const tieneFichaCargada = (doc) => {
-        let foundit = doc.find(item => item.anio === new Date().getFullYear() && item.tipo === "Ficha Trabajador");
+    const tieneFichaCargada = (employee) => {
+        let position = -1;
+        employee.documentacion.map(doc => {
+            position = doc.url.indexOf(employee.fecha_ingreso);
+        });
+        let foundit = position !== -1 ? true : false;
+        // let foundit = doc.find(item => item.anio === new Date().getFullYear() && item.tipo === "Ficha Trabajador");
         return foundit;
     }
 
@@ -253,6 +282,7 @@ const EmployeeListItem = ({ employee }) => {
                         onClick={() => redirectToEdit(employee)}>Editar</Button>
                 </Link>
             </TableCell>
+            {/* cuando no tiene documento me muestra Editar Ficha */}
             <TableCell align="right">
                 <Fragment>
                     {/* <Link href="#">
@@ -324,8 +354,73 @@ const EmployeeListItem = ({ employee }) => {
                 </Fragment>
             </TableCell>
             <TableCell align="right">
-                {employee.documentacion && tieneFichaCargada(employee.documentacion) ?
-                    null :
+                {employee.documentacion && tieneFichaCargada(employee) ?
+                    <Fragment>
+                        <Link href="#">
+                            <Button className={`${classes.buttonYellow}`}
+                                onClick={() => handleClickOpenFicha(employee.dni)}
+                            >Editar Ficha</Button>
+                        </Link>
+                        <Dialog fullScreen open={openFicha === employee.dni && true}
+                            onClose={handleCloseFicha}
+                            aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">
+                                {employee.apellido}, {employee.nombre}
+                            </DialogTitle>
+                            <form>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        Adjuntar Ficha de trabajador
+                                </DialogContentText>
+                                    <Fragment>
+                                        <input
+                                            type="file"
+                                            name="selectedFile"
+                                            onChange={handleChangeUploadImage}
+                                            className={`${styles.customFileInput}`}
+                                        />
+                                        {
+                                            selectedFile.name ?
+                                                <Fragment>
+                                                    <LinearProgress variant="determinate" value={progress} />
+                                                    <Button
+                                                        variant="contained"
+                                                        component="label"
+                                                        onClick={handleUpload}
+                                                        className={`${classes.btn} ${classes.buttonSuccess}`}
+                                                        disabled={documentacionURL ? true : false}
+                                                    >
+                                                        Subir Archivo
+                                            </Button>
+                                                </Fragment>
+                                                : null
+                                        }
+                                    </Fragment>
+                                    <DialogActions>
+                                        <Button
+                                            variant="contained"
+                                            className={classes.buttonClose}
+                                            onClick={handleCloseFicha}
+                                            disabled={documentacionURL ? true : false}
+                                        >Cerrar
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            onClick={handleSubmitEditFicha}
+                                            // disabled={isSubmitting}
+                                            disabled={documentacionURL ? false : true}
+                                            variant="contained"
+                                            className={classes.buttonSave}
+                                        // className={`btn btnDanger`}
+                                        // startIcon={isSubmitting ? <CircularProgress size="0.9rem" /> : undefined}
+                                        >Guardar
+                                    {/* {isSubmitting ? <DoneAllIcon fontSize="small" /> : <CheckIcon fontSize="small" />} */}
+                                        </Button>
+                                    </DialogActions>
+                                </DialogContent>
+                            </form>
+                        </Dialog>
+                    </Fragment> :
                     <Fragment>
                         <Link href="#">
                             <Button className={`${classes.buttonBlue}`}

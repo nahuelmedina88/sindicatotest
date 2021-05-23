@@ -101,7 +101,7 @@ const HistorialDialog = ({ row }) => {
                     onClick={() => handleClickOpenHistorial(row.dni_familia)}
                 >Historial</a>
             </Link>
-            <Dialog fullScreen open={openHistorial === row.dni_familia && true}
+            <Dialog fullScreen open={openHistorial === row.dni_familia && row.dni_familia ? true : false}
                 onClose={handleCloseHistorial}
                 aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">

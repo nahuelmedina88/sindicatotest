@@ -210,7 +210,7 @@ const Sidebar = () => {
                             </li>
                         ))}
 
-                        <li onClick={handleExport}>
+                        {/* <li onClick={handleExport}>
                             <Link
                                 className={styles.link}
                                 href=""
@@ -252,7 +252,7 @@ const Sidebar = () => {
                                     </Link>
                                 </li>
                             </ul>
-                        </li>
+                        </li> */}
                         {/* <li>
                             <Link
                                 className={styles.link}

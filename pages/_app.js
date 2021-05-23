@@ -37,6 +37,16 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../components/theme';
 
+
+import Router from 'next/router';
+import NProgress from 'nprogress';
+import "./css/nprogress.scss";
+
+//Binding events. 
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
+
 export default function MyApp(props) {
   const { Component, pageProps } = props;
   const user = useAuth();

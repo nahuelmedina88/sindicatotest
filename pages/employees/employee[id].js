@@ -219,6 +219,13 @@ const SeeEmployee = () => {
         )
     }
 
+    const getDateAAAAMMDDFromFicha = (doc) => {
+        let position = doc.url.indexOf("ficha_afiliado_");
+        position = position + 15;
+        let date = doc.url.substr(position, 10);
+        return date;
+    }
+
     const handleChangeUploadImage = async (event) => {
         const imageFile = event.target.files[0];
         console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
@@ -485,7 +492,10 @@ const SeeEmployee = () => {
                                                 {employeeToSee.documentacion.map((row) => (
                                                     <TableRow>
                                                         <TableCell align="left">{row.tipo}</TableCell>
-                                                        <TableCell align="leftt">{row.anio}</TableCell>
+                                                        <TableCell align="leftt">   {row.tipo === "Ficha Trabajador" ?
+                                                            getDateAAAAMMDDFromFicha(row) :
+                                                            row.anio}
+                                                        </TableCell>
                                                         <TableCell align="left">
                                                             {/* <Link href={row.url}>
                                                                 Ver Documento

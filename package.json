@@ -30,6 +30,7 @@
     "formik": "^2.2.6",
     "next": "10.0.2",
     "next-images": "^1.6.2",
+    "nprogress": "^0.2.0",
     "react": "17.0.1",
     "react-bootstrap": "^1.5.1",
     "react-chartjs-2": "^2.11.1",

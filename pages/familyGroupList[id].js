@@ -344,7 +344,7 @@ const familyGroupList = () => {
                                                         onClick={() => handleClickOpen(row.dni_familia)}
                                                     >Agregar Útiles</a>
                                                 </Link>
-                                                <Dialog fullScreen open={open === row.dni_familia && true}
+                                                <Dialog fullScreen open={open === row.dni_familia && row.dni_familia ? true : false}
                                                     onClose={handleClose}
                                                     aria-labelledby="form-dialog-title">
                                                     <DialogTitle id="form-dialog-title">
