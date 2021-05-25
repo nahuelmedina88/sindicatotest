@@ -8,6 +8,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import MuiMenu from "./MuiMenu";
+import MuiMenuItem from "./MuiMenuItem";
 
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import SearchIcon from '@material-ui/icons/Search';
@@ -17,21 +19,7 @@ const StyledMenu = withStyles({
     paper: {
         border: '1px solid #d3d4d5',
     },
-})((props) => (
-    <Menu
-        elevation={0}
-        getContentAnchorEl={null}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-        }}
-        {...props}
-    />
-));
+})(MuiMenu);
 
 const StyledMenuItem = withStyles((theme) => ({
     root: {
@@ -42,7 +30,7 @@ const StyledMenuItem = withStyles((theme) => ({
             },
         },
     },
-}))(MenuItem);
+}))(MuiMenuItem);
 
 
 const Navigation = () => {
@@ -68,7 +56,7 @@ const Navigation = () => {
 
     return (
         <nav className={styles.nav}>
-            <Link href="/" ><a>Sindicato de la Carne</a></Link>
+            <Link href="/" passHref ><a>Sindicato de la Carne</a></Link>
             <Button
                 aria-controls="customized-menu"
                 aria-haspopup="true"
@@ -84,7 +72,7 @@ const Navigation = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <Link href="/generalWorkerList">
+                <Link href="/generalWorkerList" passHref>
                     <StyledMenuItem>
                         <ListItemIcon>
                             <LibraryBooksIcon fontSize="small" />
@@ -92,7 +80,7 @@ const Navigation = () => {
                         <ListItemText primary="Padron General" />
                     </StyledMenuItem>
                 </Link>
-                <Link href="/workerListByYear">
+                <Link href="/workerListByYear" passHref>
                     <StyledMenuItem>
                         <ListItemIcon>
                             <BusinessIcon fontSize="small" />
@@ -100,7 +88,7 @@ const Navigation = () => {
                         <ListItemText primary="Padrón por Año" />
                     </StyledMenuItem>
                 </Link>
-                <Link href="/workerListByCompany">
+                <Link href="/workerListByCompany" passHref>
                     <StyledMenuItem>
                         <ListItemIcon>
                             <BusinessIcon fontSize="small" />
@@ -108,7 +96,7 @@ const Navigation = () => {
                         <ListItemText primary="Padrón por Empresa" />
                     </StyledMenuItem>
                 </Link>
-                <Link href="/workerListSearchForm">
+                <Link href="/workerListSearchForm" passHref>
                     <StyledMenuItem>
                         <ListItemIcon>
                             <SearchIcon fontSize="small" />
@@ -116,7 +104,7 @@ const Navigation = () => {
                         <ListItemText primary="Búsqueda de Padrón" />
                     </StyledMenuItem>
                 </Link>
-                <Link href="/foundationalWorkerList">
+                <Link href="/foundationalWorkerList" passHref>
                     <StyledMenuItem>
                         <ListItemIcon>
                             <LibraryBooksIcon fontSize="small" />
@@ -140,7 +128,7 @@ const Navigation = () => {
                 open={Boolean(anchorElUtiles)}
                 onClose={handleCloseUtiles}
             >
-                <Link href="/schoolSuppliesWorkerList">
+                <Link href="/schoolSuppliesWorkerList" passHref>
                     <StyledMenuItem>
                         <ListItemIcon>
                             <LibraryBooksIcon fontSize="small" />
@@ -148,7 +136,7 @@ const Navigation = () => {
                         <ListItemText primary="Agregar útiles" />
                     </StyledMenuItem>
                 </Link>
-                <Link href="/SchoolSuppliesReport">
+                <Link href="/SchoolSuppliesReport" passHref>
                     <StyledMenuItem>
                         <ListItemIcon>
                             <BusinessIcon fontSize="small" />
@@ -170,10 +158,10 @@ const Navigation = () => {
                 </form>
                 :
                 <form className={styles.form}>
-                    <Link href="/login">
+                    <Link href="/login" passHref>
                         <button className="btn btnExploring" type="button">Login</button>
                     </Link>
-                    <Link href="/signin">
+                    <Link href="/signin" passHref>
                         <button className="btn btnInfo" type="button">Crear cuenta</button>
                     </Link>
                 </form>

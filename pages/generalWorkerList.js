@@ -28,6 +28,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import ExportButton from '../components/ui/ExportButton';
 
+
 const useStyles = makeStyles({
     table: {
         tableLayout: "fixed",
@@ -130,9 +131,10 @@ const GeneralWorkerList = (props) => {
                                                         <TableCell align="right">Empresa</TableCell>
                                                         <TableCell align="right">
                                                             <Link href="/AddEmployee">
-                                                                <a className={`${classes.btn} ${classes.buttonSave}`}>
-                                                                    Agregar
-                                                                </a>
+                                                                <Button
+                                                                    variant="contained"
+                                                                    className={`${classes.buttonSave}`}>
+                                                                    Agregar</Button>
                                                             </Link>
                                                         </TableCell>
                                                     </TableRow>
@@ -145,7 +147,21 @@ const GeneralWorkerList = (props) => {
                                                     ))}
                                                 </TableBody>
                                             </Fragment>
-                                            : <div className={styles.span}>No hay trabajadores</div>
+                                            :
+                                            <Fragment>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell align="right">Nro Legajo</TableCell>
+                                                        <TableCell align="right">Apellido</TableCell>
+                                                        <TableCell align="right">Nombre</TableCell>
+                                                        <TableCell align="right">DNI</TableCell>
+                                                        <TableCell align="right">Empresa</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow><TableCell>No hay trabajadores</TableCell></TableRow>
+                                                </TableBody>
+                                            </Fragment>
                                         }
                                     </Fragment>
                                     :
@@ -182,7 +198,20 @@ const GeneralWorkerList = (props) => {
                                                     ))}
                                                 </TableBody>
                                             </Fragment>
-                                            : <span className={styles.span}>No hay trabajadores</span>
+                                            : <Fragment>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell align="right">Nro Legajo</TableCell>
+                                                        <TableCell align="right">Apellido</TableCell>
+                                                        <TableCell align="right">Nombre</TableCell>
+                                                        <TableCell align="right">DNI</TableCell>
+                                                        <TableCell align="right">Empresa</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow><TableCell>No hay trabajadores</TableCell></TableRow>
+                                                </TableBody>
+                                            </Fragment>
                                         }
                                     </Fragment>
                                 }

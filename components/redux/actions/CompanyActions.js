@@ -22,7 +22,7 @@ export function addCompanyAction(company, firebase) {
             // let ref = firebase.db.collection("empresas").doc();
             // company.id = ref.id;
             const response = await firebase.db.collection("empresas").add(company);
-            dispatch(addCompanySuccess(company));
+            //dispatch(addCompanySuccess(company));
         } catch (error) {
             console.log(error);
             dispatch(addCompanyFailure());

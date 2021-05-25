@@ -68,13 +68,14 @@ export default function validation(values) {
             errors.fecha_ingreso = "La fecha no puede ser posterior a hoy.";
         }
     }
-    if (!values.seccion) {
+    if (Object.keys(values.seccion).length === 0) {
         errors.seccion = 'Seleccione una sección';
     }
-    if (!values.categoria) {
-        errors.categoria = 'Seleccione una sección';
+    if (Object.keys(values.categoria).length === 0) {
+        errors.categoria = 'Seleccione una Categoría';
     }
-    if (!values.empresa) {
+
+    if (Object.keys(values.empresa).length === 0) {
         errors.empresa = 'Seleccione una empresa';
     }
     return errors;

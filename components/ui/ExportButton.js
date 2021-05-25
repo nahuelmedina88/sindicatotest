@@ -5,6 +5,8 @@ import Link from "next/link";
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import MuiMenu from "./MuiMenu";
+import MuiMenuItem from "./MuiMenuItem";
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
@@ -26,21 +28,7 @@ const StyledMenu = withStyles({
     paper: {
         border: '1px solid #d3d4d5',
     },
-})((props) => (
-    <Menu
-        elevation={0}
-        getContentAnchorEl={null}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-        }}
-        {...props}
-    />
-));
+})(MuiMenu);
 
 const StyledMenuItem = withStyles((theme) => ({
     root: {
@@ -51,7 +39,7 @@ const StyledMenuItem = withStyles((theme) => ({
             },
         },
     },
-}))(MenuItem);
+}))(MuiMenuItem);
 
 const ExportButton = ({ employeesSearch, employeesSorted }) => {
     const classes = useStyles();
@@ -88,28 +76,26 @@ const ExportButton = ({ employeesSearch, employeesSorted }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <Link href="#">
-                    <StyledMenuItem
-                        onClick={generate}
-                    >
-                        {/* <ListItemIcon>
+                <StyledMenuItem
+                    onClick={generate}
+                >
+                    {/* <ListItemIcon>
                                             <LibraryBooksIcon fontSize="small" />
                                         </ListItemIcon> */}
-                        <ListItemText primary="Con Firma" />
-                    </StyledMenuItem>
-                </Link>
-                <Link href="#"
-                >
-                    <StyledMenuItem
-                        onClick={generate}
+                    <ListItemText primary="Con Firma" />
+                </StyledMenuItem>
 
-                    >
-                        {/* <ListItemIcon>
+
+                <StyledMenuItem
+                    onClick={generate}
+
+                >
+                    {/* <ListItemIcon>
                                             <BusinessIcon fontSize="small" />
                                         </ListItemIcon> */}
-                        <ListItemText primary="Sin Firma" />
-                    </StyledMenuItem>
-                </Link>
+                    <ListItemText primary="Sin Firma" />
+                </StyledMenuItem>
+
             </StyledMenu>
         </>
     );

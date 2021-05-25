@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import Layout from "../components/layout/Layout";
 import styles from "./css/AddCompany.module.scss";
 import Image from 'next/image';
+import { capitalizeFirstLetter } from "../components/helpers/formHelper";
+
 import { useDispatch, useSelector } from "react-redux";
 import { addCompanyAction, getCompaniesAction } from "../components/redux/actions/CompanyActions";
 import { useRouter } from 'next/router';
@@ -78,6 +80,7 @@ const AddCompany = () => {
                                         className="inputSecondary"
                                         name="nombre"
                                         placeholder="Nombre"
+                                        value={capitalizeFirstLetter(values.nombre)}
                                     ></Field>
                                     {touched.nombre && errors.nombre && <span className="errorMessage">{errors.nombre}</span>}
                                 </div>
@@ -88,6 +91,7 @@ const AddCompany = () => {
                                         className="inputSecondary"
                                         name="ciudad"
                                         placeholder="Ciudad"
+                                        value={capitalizeFirstLetter(values.ciudad)}
                                     ></Field>
                                     {touched.ciudad && errors.ciudad && <span className="errorMessage">{errors.ciudad}</span>}
                                 </div>
@@ -98,6 +102,7 @@ const AddCompany = () => {
                                         className="inputSecondary"
                                         name="calle"
                                         placeholder="Calle"
+                                        value={capitalizeFirstLetter(values.calle)}
                                     ></Field>
                                     {touched.calle && errors.calle && <span className="errorMessage">{errors.calle}</span>}
                                 </div>
@@ -128,6 +133,7 @@ const AddCompany = () => {
                                         className="inputSecondary"
                                         name="razonSocial"
                                         placeholder="Razón Social"
+                                        value={capitalizeFirstLetter(values.razonSocial)}
                                     ></Field>
                                     {touched.razonSocial && errors.razonSocial && <span className="errorMessage">{errors.razonSocial}</span>}
                                 </div>

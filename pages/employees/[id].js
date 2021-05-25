@@ -12,6 +12,7 @@ import Link from "next/link";
 import Image from 'next/image';
 import { getCompaniesAction } from "../../components/redux/actions/CompanyActions";
 // import history from "../history";
+import { capitalizeFirstLetter } from "../../components/helpers/formHelper";
 
 //Import Data
 import relationshipSelect from "../../components/data/relationship.json";
@@ -79,12 +80,12 @@ const EditEmployee = memo(() => {
 
     const companiesSelect = companiesSelector.map(company => ({
         id: company.id,
-        value: company.id,
         label: company.nombre,
+        value: company.id,
         nombre: company.nombre,
         ciudad: company.ciudad,
         calle: company.calle,
-        numero_calle: company.numero_calle,
+        numero_calle: company.numero_calle
     }));
     const sectionsSelector = useSelector(state => state.sections.sections);
     const sectionsSelect = sectionsSelector.map(section => ({
@@ -166,6 +167,7 @@ const EditEmployee = memo(() => {
                     let newCompany = values.empresa.nombre;
                     if (oldCompany && oldCompany !== newCompany) {
                         let currentDay = new Date();
+                        if (!values.fechas_cambio_empresa) values.fechas_cambio_empresa = [];
                         values.fechas_cambio_empresa.push({
                             fecha: currentDay,
                             anterior_empresa: oldCompany,
@@ -224,6 +226,7 @@ const EditEmployee = memo(() => {
                                                 className="inputSecondary"
                                                 name="nombre"
                                                 placeholder="Nombre"
+                                                value={capitalizeFirstLetter(values.nombre)}
                                             />
                                             {touched.nombre && errors.nombre && <span className="errorMessage">{errors.nombre}</span>}
                                         </div>
@@ -234,6 +237,7 @@ const EditEmployee = memo(() => {
                                                 className="inputSecondary"
                                                 name="apellido"
                                                 placeholder="Apellido"
+                                                value={capitalizeFirstLetter(values.apellido)}
                                             />
                                             {touched.apellido && errors.apellido && <p className="errorMessage">{errors.apellido}</p>}
                                         </div>
@@ -244,6 +248,7 @@ const EditEmployee = memo(() => {
                                                 className="inputSecondary"
                                                 name="calle"
                                                 placeholder="Calle"
+                                                value={capitalizeFirstLetter(values.calle)}
                                             ></Field>
                                             {touched.calle && errors.calle && <span className="errorMessage">{errors.calle}</span>}
                                         </div>
@@ -265,6 +270,7 @@ const EditEmployee = memo(() => {
                                                 className="inputSecondary"
                                                 name="ciudad"
                                                 placeholder="Ciudad"
+                                                value={capitalizeFirstLetter(values.ciudad)}
                                             ></Field>
                                             {touched.ciudad && errors.ciudad && <span className="errorMessage">{errors.ciudad}</span>}
                                         </div>
@@ -316,6 +322,7 @@ const EditEmployee = memo(() => {
                                                 className="inputSecondary"
                                                 name="nacionalidad"
                                                 placeholder="Nacionalidad"
+                                                value={capitalizeFirstLetter(values.nacionalidad)}
                                             ></Field>
                                             {touched.nacionalidad && errors.nacionalidad && <span className="errorMessage">{errors.nacionalidad}</span>}
                                         </div>

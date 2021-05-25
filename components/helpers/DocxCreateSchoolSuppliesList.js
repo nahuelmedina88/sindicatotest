@@ -544,7 +544,7 @@ export const DocxCreateSchoolSuppliesList = (emp, type) => {
     type === "confirma" ? textConFirma = "Firma" : textConFirma = "";
 
     if (IsPadronGeneral(employees)) {
-        textLegend = "PADRÓ N GENERAL - ENTREGA DE ÚTILES ESCOLARES " + date.getFullYear().toString();
+        textLegend = "PADRÓN GENERAL - ENTREGA DE ÚTILES ESCOLARES " + date.getFullYear().toString();
         fileName = "Entrega de útiles escolares por Padrón General - " + date.getFullYear().toString() + " " + textConFirma;
     } else {
         let company = employees.map(empleado => empleado.empresa.nombre);

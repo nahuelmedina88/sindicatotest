@@ -1,6 +1,7 @@
 import React, { useState, useContext, Fragment } from 'react';
 import styles from "./css/familyGroupList[id].module.scss";
-import Select from 'react-select';
+// import Select from 'react-select';
+import Select from '@material-ui/core/Select';
 
 import HistorialDialog from "../components/HistorialDialog";
 import SeeDocumentation from "../components/SeeDocumentation";
@@ -27,6 +28,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Checkbox from '@material-ui/core/Checkbox';
 
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+
 // import { CircularProgress } from '@material-ui/core';
 // import CheckIcon from '@material-ui/icons/Check';
 // import AddIcon from '@material-ui/icons/Add';
@@ -38,7 +43,14 @@ import { FirebaseContext } from "../firebase";
 //Next
 import Link from "next/link";
 
-const useStyles2 = makeStyles({
+const useStyles2 = makeStyles((theme) => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2),
+    },
     table: {
         minWidth: 650,
     },
@@ -106,7 +118,7 @@ const useStyles2 = makeStyles({
     bgColorNoChecked: {
         backgroundColor: "#f2747480",
     },
-});
+}));
 
 const familyGroupList = () => {
     const [talle, setTalle] = useState("");
@@ -344,7 +356,7 @@ const familyGroupList = () => {
                                                         onClick={() => handleClickOpen(row.dni_familia)}
                                                     >Agregar Útiles</a>
                                                 </Link>
-                                                <Dialog fullScreen open={open === row.dni_familia && row.dni_familia ? true : false}
+                                                <Dialog open={open === row.dni_familia && row.dni_familia ? true : false}
                                                     onClose={handleClose}
                                                     aria-labelledby="form-dialog-title">
                                                     <DialogTitle id="form-dialog-title">
@@ -365,13 +377,28 @@ const familyGroupList = () => {
                                                                 label="Talle"
                                                                 variant="outlined"
                                                             ></TextField>
-                                                            <Select
+                                                            {/* <Select
                                                                 className={`inputSecondary `}
                                                                 name="kit_escolar"
                                                                 options={schoolSuppliesSelect}
                                                                 placeholder={"Kit Escolar"}
                                                                 onChange={option => setKitEscolar(option.label)}
-                                                            ></Select>
+                                                            ></Select> */}
+                                                            <FormControl className={classes2.formControl}>
+                                                                <InputLabel id="demo-controlled-open-select-label">Kit Escolar</InputLabel>
+                                                                <Select
+                                                                    labelId="demo-controlled-open-select-label"
+                                                                    id="demo-controlled-open-select"
+                                                                    name="kit_escolar"
+                                                                    placeholder="Kit Escolar"
+                                                                    onChange={option => setKitEscolar(option.target.value)}
+                                                                    value={kit_escolar}
+                                                                >
+                                                                    {schoolSuppliesSelect.map(obj =>
+                                                                        <MenuItem value={obj.label}>{obj.label}</MenuItem>
+                                                                    )}
+                                                                </Select>
+                                                            </FormControl>
                                                             {/* {row.documentacion.length === 0 ||
                                                                 row.documentacion[row.documentacion.length - 1].anio !== new Date().getFullYear() ?
                                                                 <Fragment>

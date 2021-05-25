@@ -104,7 +104,7 @@ const Homepage = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(3);
     const [lastWorker, setLastWorker] = React.useState("");
-    const [rowsLength, setRowsLength] = React.useState("");
+    const [rowsLength, setRowsLength] = React.useState(0);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -115,7 +115,7 @@ const Homepage = () => {
     };
 
     const classes = useStyles();
-    const [data, setData] = useState("");
+    const [data, setData] = useState([]);
     const dispatch = useDispatch();
     const { firebase } = useContext(FirebaseContext);
     const loading = useSelector(state => state.employees.loading);
@@ -223,7 +223,6 @@ const Homepage = () => {
         setRowsLength(activeEmployees.length);
     }
 
-
     useEffect(() => {
         loadEmployees(firebase);
     }, []);
@@ -286,7 +285,10 @@ const Homepage = () => {
                     {({ height, width }) => (
                         <XYPlot height={height} width={width}
                             xType="ordinal">
-                            <VerticalBarSeries data={data} color="rgb(5, 9, 126)" />
+                            <VerticalBarSeries
+                                data={data}
+                                color="rgb(5, 9, 126)"
+                            />
                             <XAxis />
                             <YAxis />
                         </XYPlot>
@@ -335,27 +337,27 @@ const Homepage = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <TableFooter>
-                    <TableRow>
-                        <TablePagination
-                            rowsPerPageOptions={[3, 5, 10, 25, 100]}
-                            component="div"
-                            count={rowsLength}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onChangePage={handleChangePage}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                            labelRowsPerPage={"Afiliados por página"}
-                            nextIconButtonText={"Próxima página"}
-                        />
-                        <TableCell>
+                {/* <TableFooter> */}
+                {/* <TableRow> */}
+                <TablePagination
+                    rowsPerPageOptions={[3, 5, 10, 25, 100]}
+                    component="div"
+                    count={rowsLength}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                    labelRowsPerPage={"Afiliados por página"}
+                    nextIconButtonText={"Próxima página"}
+                />
+                {/* <TableCell>
                             <Link href="/generalWorkerList">
                                 <a className={`${classes.btn} ${classes.buttonPurple}`}
                                 >Ver Afiliados en detalle</a>
                             </Link>
-                        </TableCell>
-                    </TableRow>
-                </TableFooter>
+                        </TableCell> */}
+                {/* </TableRow> */}
+                {/* </TableFooter> */}
             </Paper>
         </div>
     </Layout >);

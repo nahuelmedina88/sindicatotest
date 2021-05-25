@@ -1,9 +1,16 @@
 import React, { useEffect, useState, useContext, Fragment } from 'react';
 import Select from 'react-select';
+// import SelectMui from '@material-ui/core/Select';
+// import FormControl from '@material-ui/core/FormControl';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import InputLabel from '@material-ui/core/InputLabel';
+import { makeStyles } from '@material-ui/core/styles';
+
 import Image from 'next/image';
 import Layout from "../components/layout/Layout";
 import { useRouter } from 'next/router';
 import Link from "next/link";
+import { capitalizeFirstLetter, numberWithPoint } from "../components/helpers/formHelper";
 
 //Styles
 import styles from "./css/AddEmployee.module.scss";
@@ -51,29 +58,48 @@ const ErrorMessageArraySelect = ({ name }) => (
         }}
     />
 );
+// const useStyles2 = makeStyles((theme) => ({
+//     formControl: {
+//         margin: theme.spacing(1),
+//         minWidth: 120,
+//     }
+// }));
 
 const AddEmployee = () => {
-
+    // const classes2 = useStyles2();
     const dispatch = useDispatch();
     const router = useRouter();
     const [maritalStatusTypes, updateMaritalStatusTypes] = useState("");
     const [section, setSection] = useState("");
     const [generalError, setGeneralError] = useState("");
     const [legajo, setLegajo] = useState("");
+    const [empresa, setEmpresa] = useState("");
 
     //UseSelector
     const loading = useSelector(state => state.employees.loading);
     const employeesSelector = useSelector(state => state.employees.employees);
 
     const companiesSelector = useSelector(state => state.companies.companies);
+    // const companiesSelect = companiesSelector.map(company => ({
+    //     label: company.nombre,
+    //     value: {
+    //         id: company.id,
+    //         nombre: company.nombre,
+    //         ciudad: company.ciudad,
+    //         calle: company.calle,
+    //         numero_calle: company.numero_calle,
+    //         cuit: company.cuit,
+    //     }
+    // }));
     const companiesSelect = companiesSelector.map(company => ({
         id: company.id,
-        value: company.id,
         label: company.nombre,
+        value: company.id,
         nombre: company.nombre,
         ciudad: company.ciudad,
         calle: company.calle,
         numero_calle: company.numero_calle,
+        cuit: company.cuit,
     }));
     const sectionsSelector = useSelector(state => state.sections.sections);
     const sectionsSelect = sectionsSelector.map(section => ({
@@ -130,6 +156,8 @@ const AddEmployee = () => {
         });
         setLegajo(empleadoMaximo.nroLegajo);
     }
+
+
 
     let EmptyObject = {
         nombre: '',
@@ -235,7 +263,7 @@ const AddEmployee = () => {
                                             className="inputSecondary"
                                             name="nombre"
                                             placeholder="Nombre"
-                                            value={values.nombre}
+                                            value={capitalizeFirstLetter(values.nombre)}
                                         ></Field>
                                         {touched.nombre && errors.nombre && <span className="errorMessage">{errors.nombre}</span>}
                                     </div>
@@ -246,7 +274,7 @@ const AddEmployee = () => {
                                             className="inputSecondary"
                                             name="apellido"
                                             placeholder="Apellido"
-                                            value={values.apellido}
+                                            value={capitalizeFirstLetter(values.apellido)}
                                         ></Field>
                                         {touched.apellido && errors.apellido && <p className="errorMessage">{errors.apellido}</p>}
                                     </div>
@@ -257,7 +285,7 @@ const AddEmployee = () => {
                                             className="inputSecondary"
                                             name="calle"
                                             placeholder="Calle"
-                                            value={values.calle}
+                                            value={capitalizeFirstLetter(values.calle)}
                                         ></Field>
                                         {touched.calle && errors.calle && <span className="errorMessage">{errors.calle}</span>}
                                     </div>
@@ -279,7 +307,7 @@ const AddEmployee = () => {
                                             className="inputSecondary"
                                             name="ciudad"
                                             placeholder="Ciudad"
-                                            value={values.ciudad}
+                                            value={capitalizeFirstLetter(values.ciudad)}
                                         ></Field>
                                         {touched.ciudad && errors.ciudad && <span className="errorMessage">{errors.ciudad}</span>}
                                     </div>
@@ -334,7 +362,7 @@ const AddEmployee = () => {
                                             className="inputSecondary"
                                             name="nacionalidad"
                                             placeholder="Nacionalidad"
-                                            value={values.nacionalidad}
+                                            value={capitalizeFirstLetter(values.nacionalidad)}
                                         ></Field>
                                         {touched.nacionalidad && errors.nacionalidad && <span className="errorMessage">{errors.nacionalidad}</span>}
                                     </div>
@@ -478,7 +506,23 @@ const AddEmployee = () => {
                                         ></Select>
                                         {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
                                     </div>
-
+                                    {/* <FormControl className={classes2.formControl}>
+                                        <InputLabel id="demo-controlled-open-select-label">Empresa</InputLabel>
+                                        <SelectMui
+                                            labelId="demo-controlled-open-select-label"
+                                            id="demo-controlled-open-select"
+                                            name="empresa"
+                                            placeholder="Seleccione un frigorifico"
+                                            // onChange={option => setEmpresa(option.target.value)}
+                                            onChange={option => setFieldValue("empresa", option.target.value)}
+                                            onBlur={option => setFieldTouched("empresa", option.target.value)}
+                                        >
+                                            {companiesSelect.map(obj =>
+                                                <MenuItem value={obj.value}>{obj.label}</MenuItem>
+                                            )}
+                                        </SelectMui>
+                                        {touched.empresa && errors.empresa && <span className="errorMessage">{errors.empresa}</span>}
+                                    </FormControl> */}
                                 </fieldset>
                                 <FieldArray name="familia">
                                     {({ push, remove }) => (
