@@ -85,7 +85,8 @@ const EditEmployee = memo(() => {
         nombre: company.nombre,
         ciudad: company.ciudad,
         calle: company.calle,
-        numero_calle: company.numero_calle
+        numero_calle: company.numero_calle,
+        cuit: company.cuit,
     }));
     const sectionsSelector = useSelector(state => state.sections.sections);
     const sectionsSelect = sectionsSelector.map(section => ({
