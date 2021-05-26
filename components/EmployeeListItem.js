@@ -209,7 +209,7 @@ const EmployeeListItem = ({ employee }) => {
         console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
         console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
         const options = {
-            maxSizeMB: 0.4,
+            maxSizeMB: 0.15,
             maxWidthOrHeight: 1920,
             useWebWorker: true
         }
