@@ -85,6 +85,29 @@ export function getEmployeesActiveAction(firebase) {
         }
     }
 }
+export function getEmployeesNoActiveAction(firebase) {
+    return async (dispatch) => {
+        dispatch(getEmployees());
+        try {
+            // const response = await axiosClient.get("/api/empleados/");
+            const response = firebase.db.collection("empleados").where("estado", "==", "Inactivo");
+            let empleados = await response.get();
+            let employees = [];
+            let i = 0;
+            for (const emp of empleados.docs) {
+                employees.push(emp.data());
+                employees[i].id = emp.id;
+                i++;
+            }
+            dispatch(getEmployeesSuccess(employees));
+            // sweetAlert.fire("Genial", "El empleado se agregó correctamente", "success");
+        } catch (error) {
+            console.log(error);
+            dispatch(getEmployeesFailure());
+            // sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+        }
+    }
+}
 
 export function deleteEmployeeAction(id, firebase) {
     return async (dispatch) => {
@@ -99,7 +122,7 @@ export function deleteEmployeeAction(id, firebase) {
         }
     }
 }
-export function deleteEmployeeActionNoImpactDatabase(id, firebase) {
+export function deleteEmployeeActionNoImpactDatabase(id) {
     return async (dispatch) => {
         dispatch(getEmployeeDelete(id));
         try {

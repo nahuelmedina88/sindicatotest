@@ -112,6 +112,14 @@ const Navigation = () => {
                         <ListItemText primary="Padrón Fundacional" />
                     </StyledMenuItem>
                 </Link>
+                <Link href="/WorkerNoActiveList" passHref>
+                    <StyledMenuItem>
+                        <ListItemIcon>
+                            <LibraryBooksIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText primary="Trabajadores dados de baja" />
+                    </StyledMenuItem>
+                </Link>
             </StyledMenu>
             <Button
                 aria-controls="customized-menu-two"
