@@ -115,7 +115,7 @@ const AddEmployee = () => {
     }));
 
     //Firebase
-    const { firebase, user } = useContext(FirebaseContext);
+    const { firebase } = useContext(FirebaseContext);
     const AddEmployeeDispatch = (employee, firebase) => dispatch(addEmployeeAction(employee, firebase));
 
     useEffect(() => {
@@ -203,6 +203,13 @@ const AddEmployee = () => {
     //     } else { return true; }
     // }
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
     return (<>
         <Formik
             initialValues={EmptyObject}

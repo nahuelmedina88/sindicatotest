@@ -112,6 +112,13 @@ const workerListSearchForm = () => {
         loadCompanies(firebase);
     }, [])
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
     return (
         <Formik initialValues={EmptyObject}
             onSubmit={(values, { setSubmitting

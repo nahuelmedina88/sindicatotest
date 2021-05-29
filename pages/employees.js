@@ -51,7 +51,13 @@ const Employees = () => {
         loadCompanies(firebase);
         console.log("employees Render");
     }, [dispatch]);
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
 
+    const { user } = useContext(FirebaseContext);
     return (
         <>
             {user ?

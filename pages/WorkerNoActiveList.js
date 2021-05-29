@@ -53,6 +53,13 @@ const WorkerNoActiveList = (props) => {
         loadEmployees(firebase);
     }, [dispatch]);
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
     return (
         <>
             <Layout>

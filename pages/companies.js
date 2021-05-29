@@ -82,6 +82,14 @@ const companies = (props) => {
         loadCompanies(firebase);
     }, []);
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
+
     return (
         <>
             <Layout>

@@ -194,6 +194,13 @@ const SchoolSuppliesReport = () => {
         getDataDelivered();
     }, [employeesSelector]);
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
     return (
         <Layout homepage={true}>
             <div className={styles.rowChartBar}>

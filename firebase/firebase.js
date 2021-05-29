@@ -22,6 +22,7 @@ class Firebase {
         if (!app.apps.length) {
             app.initializeApp(firebaseConfig);
             this.auth = app.auth();
+            // this.auth = app.auth().setPersistence(app.auth.Auth.Persistence.SESSION);
             this.db = app.firestore();
             this.storage = app.storage();
         }

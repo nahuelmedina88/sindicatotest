@@ -78,7 +78,13 @@ const foundationalWorkerList = () => {
     const getSearchTextBox = (value) => {
         setSearchTextBox(value);
     }
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
 
+    const { user } = useContext(FirebaseContext);
     return (<>
         <Layout>
             {loading ?

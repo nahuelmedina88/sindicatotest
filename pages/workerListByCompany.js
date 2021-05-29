@@ -79,6 +79,13 @@ const workerListByCompany = (props) => {
         setSearchTextBox(value);
     }
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
     return (
         <>
             <Frame>

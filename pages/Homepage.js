@@ -12,10 +12,11 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import { CircularProgress } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
-
-
 import PeopleIcon from '@material-ui/icons/People';
 import { makeStyles } from '@material-ui/core/styles';
+
+//Helpers
+import { numberWithPoint } from "../components/helpers/formHelper";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -233,6 +234,14 @@ const Homepage = () => {
         handleRowsLength();
     }, [employeesSelector]);
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
+
     return (<Layout homepage={true}>
         <div className={styles.firstRow}>
             <div className={`${styles.amountWorker} ${styles.bgColorAf}`}>
@@ -322,6 +331,8 @@ const Homepage = () => {
                                             let value = "";
                                             if (column.id === "empresa") {
                                                 value = row[column.id].nombre;
+                                            } else if (column.id === "dni") {
+                                                value = numberWithPoint(row[column.id]);
                                             } else {
                                                 value = row[column.id];
                                             }
@@ -362,5 +373,18 @@ const Homepage = () => {
         </div>
     </Layout >);
 }
-
+// export async function getServerSideProps() {
+//     // const { user } = useContext(FirebaseContext);
+//     if (!user) {
+//         return {
+//             redirect: {
+//                 destination: "/login",
+//                 permanent: false
+//             }
+//         };
+//     }
+//     return {
+//         props: { user },
+//     };
+// }
 export default Homepage;

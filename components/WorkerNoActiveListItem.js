@@ -4,7 +4,6 @@ import React, { useContext, useState, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,6 +12,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
+
+//Helpers
+import { numberWithPoint } from "../components/helpers/formHelper";
 
 //Redux
 import {
@@ -119,7 +121,7 @@ const WorkerNoActiveListItem = ({ employee }) => {
             <TableCell align="right">{employee.nroLegajo}</TableCell>
             <TableCell align="right">{employee.apellido}</TableCell>
             <TableCell align="right">{employee.nombre}</TableCell>
-            <TableCell align="right">{employee.dni}</TableCell>
+            <TableCell align="right">{numberWithPoint(employee.dni)}</TableCell>
             <TableCell align="right">{employee.empresa.nombre}</TableCell>
             <TableCell align="right">
                 <Link href="/employees/employee[id]"

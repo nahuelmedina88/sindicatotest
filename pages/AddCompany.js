@@ -20,7 +20,7 @@ const AddCompany = () => {
     const history = useRouter();
     const getPathName = useSelector(state => state.general.pathname);
     const companiesSelector = useSelector(state => state.companies.companies);
-    const { user, firebase } = useContext(FirebaseContext);
+    const { firebase } = useContext(FirebaseContext);
 
     const addCompanyDispatch = (employee, firebase) => {
         dispatch(addCompanyAction(employee, firebase));
@@ -42,6 +42,13 @@ const AddCompany = () => {
         razonSocial: '',
     }
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+    const { user } = useContext(FirebaseContext);
     return (
         <Formik initialValues={EmptyObject}
             onSubmit={(values, { setSubmitting, resetForm }) => {

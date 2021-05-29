@@ -5,7 +5,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -15,6 +14,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
 import styles from "./css/EmployeeListItem.module.scss";
+
+//Helpers
+import { numberWithPoint } from "../components/helpers/formHelper";
 
 //Image Compression
 import imageCompression from 'browser-image-compression';
@@ -244,7 +246,7 @@ const EmployeeListItem = ({ employee }) => {
             {/* <TableCell component="th" scope="row">{employee.apellido}</TableCell> */}
             <TableCell align="right">{employee.apellido}</TableCell>
             <TableCell align="right">{employee.nombre}</TableCell>
-            <TableCell align="right">{employee.dni}</TableCell>
+            <TableCell align="right">{numberWithPoint(employee.dni)}</TableCell>
             <TableCell align="right">{employee.empresa.nombre}</TableCell>
             <TableCell align="right">
                 {/* <Link
@@ -258,7 +260,6 @@ const EmployeeListItem = ({ employee }) => {
                 <Link href="/employees/employee[id]"
                     as={`/employees/employee${employee.id}`} passHref>
                     <Button
-                        variant="contained"
                         className={`${classes.buttonPurple}`}
                         onClick={() => redirectToSee(employee)}>Ver Ficha</Button>
                 </Link>
@@ -277,7 +278,6 @@ const EmployeeListItem = ({ employee }) => {
                 <Link href="/employees/[id]"
                     as={`/employees/${employee.id}`} passHref>
                     <Button
-                        variant="contained"
                         className={`${classes.buttonInfo}`}
                         onClick={() => redirectToEdit(employee)}>Editar</Button>
                 </Link>
@@ -292,7 +292,6 @@ const EmployeeListItem = ({ employee }) => {
                     </Link> */}
                     <Link href="#" passHref>
                         <Button
-                            variant="contained"
                             className={`${classes.buttonClose}`}
                             onClick={() => handleClickOpen(employee.id)}>Eliminar</Button>
                     </Link>
@@ -423,7 +422,8 @@ const EmployeeListItem = ({ employee }) => {
                     </Fragment> :
                     <Fragment>
                         <Link href="#">
-                            <Button className={`${classes.buttonBlue}`}
+                            <Button
+                                className={`${classes.buttonBlue}`}
                                 onClick={() => handleClickOpenFicha(employee.dni)}
                             >Adjuntar Ficha</Button>
                         </Link>

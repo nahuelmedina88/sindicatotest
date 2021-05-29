@@ -2,6 +2,8 @@ import React, { useState, Fragment, useContext } from 'react';
 import styles from "../css/employee[id].module.scss";
 import { useSelector } from "react-redux";
 import { calcularEdad } from "../../components/helpers/validHelper";
+import { numberWithPoint, formatToCUIT } from "../../components/helpers/formHelper";
+
 import Layout2 from '../../components/layout/Layout2';
 
 import Table from '@material-ui/core/Table';
@@ -356,7 +358,7 @@ const SeeEmployee = () => {
                                     <span className={styles.spanLabel}>{employeeToSee.empresa.nombre}</span>
                                 </div>
                                 <div className={styles.rowSidebar}>
-                                    <h4 className={styles.title}>Fecha de Ingreso</h4>
+                                    <h4 className={styles.title}>Fecha de Afiliación</h4>
                                     <span className={styles.spanIcon}><EventRoundedIcon /></span>
                                     <span className={styles.spanLabel}>{getDateDDMMAAAA(employeeToSee.fecha_ingreso)}</span>
                                 </div>
@@ -417,7 +419,11 @@ const SeeEmployee = () => {
                                                 <Divider className={styles.divider} />
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>DNI</span>
-                                                    <span className={styles.spanLabel}>{employeeToSee.dni}</span>
+                                                    <span className={styles.spanLabel}>{numberWithPoint(employeeToSee.dni)}</span>
+                                                </div>
+                                                <div className={styles.itemRow}>
+                                                    <span className={styles.title}>CUIT</span>
+                                                    <span className={styles.spanLabel}>{formatToCUIT(employeeToSee.cuil)}</span>
                                                 </div>
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>Fecha de Nacimiento</span>
@@ -467,7 +473,7 @@ const SeeEmployee = () => {
                                                         <TableCell component="th" scope="row">
                                                             {row.apellido_familia}, {row.nombre_familia}
                                                         </TableCell>
-                                                        <TableCell align="right">{row.dni_familia}</TableCell>
+                                                        <TableCell align="right">{numberWithPoint(row.dni_familia)}</TableCell>
                                                         <TableCell align="right">{getDateDDMMAAAA(row.fecha_nacimiento_familia)}</TableCell>
                                                         <TableCell align="right">{row.parentesco}</TableCell>
                                                         <TableCell align="right">{row.sexo}</TableCell>
@@ -493,14 +499,15 @@ const SeeEmployee = () => {
                                                     <TableRow>
                                                         <TableCell align="left">{row.tipo}</TableCell>
                                                         <TableCell align="leftt">   {row.tipo === "Ficha Trabajador" ?
-                                                            getDateAAAAMMDDFromFicha(row) :
+                                                            getDateDDMMAAAA(getDateAAAAMMDDFromFicha(row)) :
                                                             row.anio}
                                                         </TableCell>
                                                         <TableCell align="left">
                                                             {/* <Link href={row.url}>
                                                                 Ver Documento
                                                             </Link> */}
-                                                            <a target="_blank"
+                                                            <a className={`${classes2.btn} ${classes2.buttonPurple}`}
+                                                                target="_blank"
                                                                 href={row.url}
                                                                 rel="noopener noreferrer">
                                                                 Ver Documento
@@ -514,7 +521,7 @@ const SeeEmployee = () => {
                                 </TabPanel>
                             </div>
                             <Link href={"/generalWorkerList"}>
-                                <a className={`${classes2.btn} ${classes2.buttonPurple}`}
+                                <a className={`${classes2.btn} ${classes2.buttonSave}`}
                                 >Volver al Padrón</a>
                             </Link>
                         </div>
