@@ -61,6 +61,32 @@ export function getEmployeesAction(firebase) {
         }
     }
 }
+
+export function getEmployeesActiveActionServer(firebase) {
+    return async (dispatch) => {
+        dispatch(getEmployees());
+
+        try {
+            // const response = await axiosClient.get("/api/empleados/");
+            const response = firebase.collection("empleados").where("estado", "==", "Activo");
+            let empleados = await response.get();
+            let employees = [];
+            let i = 0;
+            for (const emp of empleados.docs) {
+                employees.push(emp.data());
+                employees[i].id = emp.id;
+                i++;
+            }
+            dispatch(getEmployeesSuccess(employees));
+            // sweetAlert.fire("Genial", "El empleado se agregó correctamente", "success");
+        } catch (error) {
+            console.log(error);
+            dispatch(getEmployeesFailure());
+            // sweetAlert.fire({ title: "Oh no!", text: "Algo fue mal, intenta nuevamente", icon: "error" });
+        }
+    }
+}
+
 export function getEmployeesActiveAction(firebase) {
     return async (dispatch) => {
         dispatch(getEmployees());
@@ -244,7 +270,7 @@ export function getfoundationalWorkerListAction(firebase) {
             // console.log("values: " + values);
             // console.log("JsON: " + JSON.stringify(values));
             let employeesRef = firebase.db.collection("empleados");
-            let response = await employeesRef.where("fecha_ingreso", "==", "2004-01-01");
+            let response = await employeesRef.where("padron_fundacional", "==", true);
             let empleados = await response.get();
             let employees = [];
             let i = 0;

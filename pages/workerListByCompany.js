@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext, Fragment } from 'react';
 
-import EmployeeListItem from "../components/EmployeeListItem";
 import Select from 'react-select';
 import styles from "./css/workerListByCompany.module.scss";
 import Frame from "../components/layout/Frame";
 import Search from "../components/ui/Search";
+import WorkerList from "../components/WorkerList";
+import { SearchBoxContext } from "../components/context/SearchBoxContext";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -16,27 +17,13 @@ import { FirebaseContext } from "../firebase";
 
 //Material UI
 import { CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
 import ExportButton from '../components/ui/ExportButton';
 
-const useStyles = makeStyles({
-    table: {
-        tableLayout: "fixed",
-    },
-});
-
-const workerListByCompany = (props) => {
-    const [company, setCompany] = useState("");
-    const [searchTextbox, setSearchTextBox] = useState("");
-    const classes = useStyles(props);
+const workerListByCompany = () => {
+    //Local States
+    const [searchBoxValue, setSearchBoxValue] = useState("");
+    const [companySelectValue, setCompanySelectValue] = useState("");
 
     const loading = useSelector(state => state.employees.loading);
     let employeesSelector = useSelector(state => state.employees.employees);
@@ -71,12 +58,8 @@ const workerListByCompany = (props) => {
     }, []);
 
     const handleChangeCompany = (option) => {
-        setCompany(option.label);
-        dispatch(getWorkerListByCompanyAction(employeesSorted, option.label, searchTextbox))
-    }
-
-    const getSearchTextBox = (value) => {
-        setSearchTextBox(value);
+        setCompanySelectValue(option.label);
+        dispatch(getWorkerListByCompanyAction(employeesSorted, option.label, searchBoxValue));
     }
 
     useEffect(() => {
@@ -96,91 +79,36 @@ const workerListByCompany = (props) => {
                     :
                     <Fragment>
                         <div className={styles.absCenterSelf}>
-                            <div className={styles.searchExportParent}>
-                                <Search
-                                    employeesRedux={employeesSorted}
-                                    getSearchTextBox={getSearchTextBox}
-                                    company={company}>
-                                </Search>
-                                <div>
+                            <SearchBoxContext.Provider value={
+                                {
+                                    searchBoxValue, setSearchBoxValue,
+                                    companySelectValue, setCompanySelectValue
+                                }
+                            }>
+                                <div className={styles.searchExportParent}>
+                                    <Search
+                                        employeesRedux={employeesSorted}
+                                    />
                                     <ExportButton
                                         employeesSearch={employeesSearch}
                                         employeesSorted={employeesSorted}
                                     />
                                 </div>
-                            </div>
-                            <div>
-                                <Select
-                                    className={`inputSecondary ` + styles.myselect}
-                                    options={companiesSelect}
-                                    name="empresa"
-                                    defaultValue={{ label: "Padrón General", value: 0 }}
-                                    placeholder={"Seleccione un frigorífico"}
-                                    onChange={handleChangeCompany}
-                                ></Select>
-                            </div>
-                            <TableContainer component={Paper}>
-                                <Table
-                                    className={classes.table}
-                                    aria-label="caption table"
-                                >
-                                    <Fragment>
-                                        {!company && !searchTextbox ?
-                                            <Fragment>
-                                                {
-                                                    employeesSorted.length > 0 ?
-                                                        <Fragment>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                                    <TableCell align="right">Apellido</TableCell>
-                                                                    <TableCell align="right">Nombre</TableCell>
-                                                                    <TableCell align="right">DNI</TableCell>
-                                                                    <TableCell align="right">Empresa</TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                {
-                                                                    employeesSorted.map(employee => (
-                                                                        <EmployeeListItem
-                                                                            key={employee.id}
-                                                                            employee={employee} />
-                                                                    ))
-                                                                }
-                                                            </TableBody>
-                                                        </Fragment>
-                                                        : <div className={styles.span}>No existen trabajadores</div>
-                                                }
-                                            </Fragment>
-                                            :
-                                            <Fragment>
-                                                {
-                                                    employeesSearch.length > 0 ?
-                                                        <Fragment>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                                    <TableCell align="right">Apellido</TableCell>
-                                                                    <TableCell align="right">Nombre</TableCell>
-                                                                    <TableCell align="right">DNI</TableCell>
-                                                                    <TableCell align="right">Empresa</TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                {employeesSearch.map(employee => (
-                                                                    <EmployeeListItem
-                                                                        key={employee.id}
-                                                                        employee={employee} />
-                                                                ))}
-                                                            </TableBody>
-                                                        </Fragment>
-                                                        : <div className={styles.span}>No existen trabajadores</div>
-                                                }
-                                            </Fragment>
-                                        }
-                                    </Fragment>
-                                </Table>
-                            </TableContainer>
+                                <div>
+                                    <Select
+                                        className={`inputSecondary ` + styles.myselect}
+                                        options={companiesSelect}
+                                        name="empresa"
+                                        defaultValue={{ label: "Padrón General", value: 0 }}
+                                        placeholder={"Seleccione un frigorífico"}
+                                        onChange={handleChangeCompany}
+                                    ></Select>
+                                </div>
+                                <WorkerList
+                                    employeesSearch={employeesSearch}
+                                    employeesSorted={employeesSorted}
+                                />
+                            </SearchBoxContext.Provider>
                         </div>
                     </Fragment>
                 }

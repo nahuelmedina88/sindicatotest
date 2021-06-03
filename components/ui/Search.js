@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { SearchBoxContext } from "../context/SearchBoxContext";
 
 //Redux
 import { useDispatch } from "react-redux";
@@ -7,9 +8,11 @@ import { updateEmployeesAction } from "../../components/redux/actions/EmployeeAc
 //Styles
 import styles from "./css/Search.module.scss";
 
-const Search = ({ employeesRedux, getSearchTextBox, company, chosenYear }) => {
-    const [searchEmployee, setSearchEmployee] = useState("");
+const Search = ({ employeesRedux }) => {
     const dispatch = useDispatch();
+    const { searchBoxValue, setSearchBoxValue } = useContext(SearchBoxContext);
+    const { companySelectValue, setCompanySelectValue } = useContext(SearchBoxContext);
+    const { chosenYearValue, setChosenYearValue } = useContext(SearchBoxContext);
 
     const searchHandle = (e) => {
 
@@ -38,15 +41,15 @@ const Search = ({ employeesRedux, getSearchTextBox, company, chosenYear }) => {
             dispatch(updateEmployeesAction(emp3));
         }
         let emp3 = "";
-        if (company === "Padrón General" || !company) {
+        if (companySelectValue === "Padrón General" || !companySelectValue) {
             emp3 = emp.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
         } else {
-            emp3 = emp.filter(item => item.empresa.nombre === company);
+            emp3 = emp.filter(item => item.empresa.nombre === companySelectValue);
             emp3.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
         }
 
-        if (chosenYear) {
-            let date = chosenYear.toString() + "-12-31"; //"2020-12-31"
+        if (chosenYearValue) {
+            let date = chosenYearValue.toString() + "-12-31"; //"2020-12-31"
             let LastDayOfTheYear = new Date(date);
             let employeesByYear = [];
             emp3.map(employee => {
@@ -59,8 +62,7 @@ const Search = ({ employeesRedux, getSearchTextBox, company, chosenYear }) => {
             emp3 = employeesByYear;
         }
         updateEmployees(emp3);
-        setSearchEmployee(e.target.value);
-        getSearchTextBox(e.target.value);
+        setSearchBoxValue(e.target.value);
     }
 
     return (
@@ -72,7 +74,7 @@ const Search = ({ employeesRedux, getSearchTextBox, company, chosenYear }) => {
                     name="searchEmployee"
                     placeholder="Buscar"
                     onChange={searchHandle}
-                    value={searchEmployee}
+                    value={searchBoxValue}
                     aria-label="Buscar"
                 />
                 <svg className={styles.icon}>

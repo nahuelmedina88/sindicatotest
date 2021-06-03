@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Fragment } from 'react';
 import Select from "react-select"
-import EmployeeListItem from "../components/EmployeeListItem";
+import FoundationWorkerListItem from "../components/FoundationWorkerListItem";
 
 import styles from "./css/foundationalWorkerList.module.scss";
 import Layout from "../components/layout/Layout";
@@ -140,7 +140,7 @@ const foundationalWorkerList = () => {
                                                         <TableBody>
                                                             {
                                                                 employeesSorted.map(employee => (
-                                                                    <EmployeeListItem
+                                                                    <FoundationWorkerListItem
                                                                         key={employee.id}
                                                                         employee={employee} />
                                                                 ))
@@ -166,7 +166,7 @@ const foundationalWorkerList = () => {
                                                         </TableHead>
                                                         <TableBody>
                                                             {employeesSearch.map(employee => (
-                                                                <EmployeeListItem
+                                                                <FoundationWorkerListItem
                                                                     key={employee.id}
                                                                     employee={employee} />
                                                             ))}

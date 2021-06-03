@@ -3,6 +3,9 @@ import Layout from "../components/layout/Layout";
 import styles from "./css/workerListSearchForm.module.scss";
 // import Image from 'next/image';
 import Select from 'react-select';
+import WorkerList from "../components/WorkerList";
+
+import { SearchBoxContext } from "../components/context/SearchBoxContext";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -58,13 +61,14 @@ const workerListSearchForm = () => {
     const dispatch = useDispatch();
     const [companyComboBox, setCompanyComboBox] = useState("");
     const [employeesByCompany, setEmployeesByCompany] = useState([]);
-    const [searchTextbox, setSearchTextBox] = useState("");
+
+    const [searchBoxValue, setSearchBoxValue] = useState("");
+
     const [formSubmit, setFormSubmit] = useState(false);
 
     let employeesSearch = useSelector(state => state.employees.employeesSearch);
     let employeesSelector = useSelector(state => state.employees.employees);
     let employeesSorted = employeesSelector.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-    // employeesSorted = employeesSorted.filter(employee => employee.estado === "Activo");
 
     const companiesSelector = useSelector(state => state.companies.companies);
     const companiesSelect = companiesSelector.map(company => ({
@@ -80,7 +84,7 @@ const workerListSearchForm = () => {
         label: "Padrón General",
     })
 
-    const { firebase } = useContext(FirebaseContext);
+    const { firebase, user } = useContext(FirebaseContext);
 
     let EmptyObject = {
         fecha_desde: '',
@@ -92,15 +96,11 @@ const workerListSearchForm = () => {
         dispatch(getEmployeesByDateAction(values, firebase));
     }
 
-    const getSearchTextBox = (value) => {
-        setSearchTextBox(value);
-    }
-
-    const handleCompany = (e) => {
-        let employees = employeesSorted.filter(employee => employee.empresa.nombre === e.label);
-        setEmployeesByCompany(employees);
-        setCompanyComboBox(e.label);
-    }
+    // const handleCompany = (e) => {
+    //     let employees = employeesSorted.filter(employee => employee.empresa.nombre === e.label);
+    //     setEmployeesByCompany(employees);
+    //     setCompanyComboBox(e.label);
+    // }
 
     const loadCompanies = (firebase) => {
         dispatch(getCompaniesAction(firebase))
@@ -117,8 +117,6 @@ const workerListSearchForm = () => {
             window.location.href = "/login";
         }
     }, []);
-
-    const { user } = useContext(FirebaseContext);
     return (
         <Formik initialValues={EmptyObject}
             onSubmit={(values, { setSubmitting
@@ -189,18 +187,6 @@ const workerListSearchForm = () => {
                             </fieldset>
 
                             <div className={styles.submittingButton}>
-                                {/* <button
-                                    disabled={isSubmitting}
-                                    type="submit"
-                                    className="btn btnExploring alignSelfCenter"
-                                >{isSubmitting ? "Enviando" : "Enviar"}
-                                </button>
-                                {isSubmitting ? <Image
-                                    src="/img/loading.gif"
-                                    alt="loading"
-                                    width={50}
-                                    height={50}
-                                ></Image> : null} */}
                                 <Button
                                     disabled={isSubmitting}
                                     type="submit"
@@ -211,83 +197,28 @@ const workerListSearchForm = () => {
                                 </Button>
                             </div>
                         </Form>
-
-
                         {formSubmit ?
                             <Fragment>
                                 <div className={styles.absCenterSelf}>
-                                    <div className={styles.searchExportParent}>
-                                        <Search employeesRedux={values.fecha_desde ? employeesSorted : employeesSearch}
-                                            getSearchTextBox={getSearchTextBox}>
-                                        </Search>
-                                        <div>
+                                    <SearchBoxContext.Provider value={{ searchBoxValue, setSearchBoxValue }}>
+                                        <div className={styles.searchExportParent}>
+                                            <Search
+                                                employeesRedux={values.fecha_desde ? employeesSorted : employeesSearch}
+                                            />
                                             <ExportButton
                                                 employeesSearch={employeesSearch}
                                                 employeesSorted={employeesSorted}
                                             />
                                         </div>
-                                    </div>
-                                    <TableContainer component={Paper}>
-                                        <Table className={classes.table} aria-label="caption table">
-                                            {
-                                                searchTextbox ?
-                                                    <Fragment>
-                                                        {employeesSearch.length > 0 ?
-                                                            <Fragment>
-                                                                <TableHead>
-                                                                    <TableRow>
-                                                                        <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                                        <TableCell align="right">Apellido</TableCell>
-                                                                        <TableCell align="right">Nombre</TableCell>
-                                                                        <TableCell align="right">DNI</TableCell>
-                                                                        <TableCell align="right">Empresa</TableCell>
-                                                                    </TableRow>
-                                                                </TableHead>
-                                                                <TableBody>
-                                                                    {
-                                                                        employeesSearch.map(employee => (
-                                                                            <EmployeeListItem
-                                                                                key={employee.id}
-                                                                                employee={employee} />
-                                                                        ))
-                                                                    }
-                                                                </TableBody>
-                                                            </Fragment>
-                                                            : <div className={styles.span}>No existen trabajadores</div>
-                                                        }
-                                                    </Fragment>
-                                                    :
-                                                    <Fragment>
-                                                        {employeesSorted.length > 0 ?
-                                                            <Fragment>
-                                                                <TableHead>
-                                                                    <TableRow>
-                                                                        <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                                        <TableCell align="right">Apellido</TableCell>
-                                                                        <TableCell align="right">Nombre</TableCell>
-                                                                        <TableCell align="right">DNI</TableCell>
-                                                                        <TableCell align="right">Empresa</TableCell>
-                                                                    </TableRow>
-                                                                </TableHead>
-                                                                <TableBody>
-                                                                    {employeesSorted.map(employee => (
-                                                                        <EmployeeListItem
-                                                                            key={employee.id}
-                                                                            employee={employee} />
-                                                                    ))}
-                                                                </TableBody>
-                                                            </Fragment>
-                                                            : <div className={styles.span}>No existen trabajadores</div>
-                                                        }
-                                                    </Fragment>
-                                            }
-                                        </Table>
-                                    </TableContainer>
+                                        <WorkerList
+                                            employeesSearch={employeesSearch}
+                                            employeesSorted={employeesSorted}
+                                        />
+                                    </SearchBoxContext.Provider>
                                 </div>
                             </Fragment>
                             : null
                         }
-
                     </div>
                 </Layout>
             )

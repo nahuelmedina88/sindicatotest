@@ -1,10 +1,19 @@
 import React, { useState, useEffect, useContext, Fragment } from 'react';
 
-import EmployeeListItem from "../components/EmployeeListItem";
-import Select from 'react-select';
+//Context
+import { SearchBoxContext } from "../components/context/SearchBoxContext";
+
+//styles
 import styles from "./css/workerListByYear.module.scss";
+
+//Components
+import ExportButton from '../components/ui/ExportButton';
+import WorkerList from '../components/WorkerList';
 import Frame from "../components/layout/Frame";
 import Search from "../components/ui/Search";
+
+//ReactSelect
+import Select from 'react-select';
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -16,36 +25,20 @@ import { FirebaseContext } from "../firebase";
 
 //Material UI
 import { CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
-import ExportButton from '../components/ui/ExportButton';
+const workerListByYear = () => {
+    const [searchBoxValue, setSearchBoxValue] = useState("");
+    const [companySelectValue, setCompanySelectValue] = useState("");
+    const [chosenYearValue, setChosenYearValue] = useState("");
 
-const useStyles = makeStyles({
-    table: {
-        tableLayout: "fixed",
-    },
-});
-
-const workerListByYear = (props) => {
-    const [company, setCompany] = useState("");
-    const [searchTextbox, setSearchTextBox] = useState("");
-    const classes = useStyles(props);
     const [years, setYears] = useState("");
-    const [chosenYear, setChosenYear] = useState("");
 
     const loading = useSelector(state => state.employees.loading);
     let employeesSorted = useSelector(state => state.employees.employees);
     let employeesSearch = useSelector(state => state.employees.employeesSearch);
 
     const dispatch = useDispatch();
-    const { firebase } = useContext(FirebaseContext);
+    const { firebase, user } = useContext(FirebaseContext);
     const companiesSelector = useSelector(state => state.companies.companies);
     const companiesSelect = companiesSelector.map(company => ({
         id: company.id,
@@ -83,17 +76,13 @@ const workerListByYear = (props) => {
     }, []);
 
     const handleChangeCompany = (option) => {
-        setCompany(option.label);
-        dispatch(getWorkerListByCompanyAction(employeesSorted, option.label, searchTextbox, chosenYear));
+        setCompanySelectValue(option.label);
+        dispatch(getWorkerListByCompanyAction(employeesSorted, option.label, searchBoxValue, chosenYearValue));
     }
 
     const handleChangeAnio = (option) => {
-        setChosenYear(option.value);
-        dispatch(getWorkerListByYearAction(employeesSorted, option.value, searchTextbox, company));
-    }
-
-    const getSearchTextBox = (value) => {
-        setSearchTextBox(value);
+        setChosenYearValue(option.value);
+        dispatch(getWorkerListByYearAction(employeesSorted, option.value, searchBoxValue, companySelectValue));
     }
 
     useEffect(() => {
@@ -102,7 +91,6 @@ const workerListByYear = (props) => {
         }
     }, []);
 
-    const { user } = useContext(FirebaseContext);
     return (
         <>
             <Frame>
@@ -113,103 +101,48 @@ const workerListByYear = (props) => {
                     :
                     <Fragment>
                         <div className={styles.absCenterSelf}>
-                            <div className={styles.searchExportParent}>
-                                <Search
-                                    employeesRedux={employeesSorted}
-                                    getSearchTextBox={getSearchTextBox}
-                                    company={company}
-                                    chosenYear={chosenYear}
-                                ></Search>
-                                <div>
+                            <SearchBoxContext.Provider value={
+                                {
+                                    searchBoxValue, setSearchBoxValue,
+                                    companySelectValue, setCompanySelectValue,
+                                    chosenYearValue, setChosenYearValue,
+                                }
+                            }>
+                                <div className={styles.searchExportParent}>
+                                    <Search
+                                        employeesRedux={employeesSorted}
+                                    ></Search>
                                     <ExportButton
                                         employeesSearch={employeesSearch}
                                         employeesSorted={employeesSorted}
                                     />
                                 </div>
-                            </div>
-                            <div className={styles.flexContainerForm}>
-                                <div className={styles.controlForm}>
-                                    <Select
-                                        className={`inputSecondary ` + styles.myselect}
-                                        options={years}
-                                        name="anio"
-                                        placeholder={"Seleccione un año"}
-                                        onChange={handleChangeAnio}
-                                    ></Select>
+                                <div className={styles.flexContainerForm}>
+                                    <div className={styles.controlForm}>
+                                        <Select
+                                            className={`inputSecondary ` + styles.myselect}
+                                            options={years}
+                                            name="anio"
+                                            placeholder={"Seleccione un año"}
+                                            onChange={handleChangeAnio}
+                                        ></Select>
+                                    </div>
+                                    <div className={styles.controlForm}>
+                                        <Select
+                                            className={`inputSecondary ` + styles.myselect}
+                                            options={companiesSelect}
+                                            name="empresa"
+                                            defaultValue={{ label: "Padrón General", value: 0 }}
+                                            placeholder={"Seleccione un frigorífico"}
+                                            onChange={handleChangeCompany}
+                                        ></Select>
+                                    </div>
                                 </div>
-                                <div className={styles.controlForm}>
-                                    <Select
-                                        className={`inputSecondary ` + styles.myselect}
-                                        options={companiesSelect}
-                                        name="empresa"
-                                        defaultValue={{ label: "Padrón General", value: 0 }}
-                                        placeholder={"Seleccione un frigorífico"}
-                                        onChange={handleChangeCompany}
-                                    ></Select>
-                                </div>
-                            </div>
-                            <TableContainer component={Paper}>
-                                <Table
-                                    className={classes.table}
-                                    aria-label="caption table"
-                                >
-                                    <Fragment>
-                                        {!chosenYear && !company && !searchTextbox ?
-                                            <Fragment>
-                                                {
-                                                    employeesSorted.length > 0 ?
-                                                        <Fragment>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                                    <TableCell align="right">Apellido</TableCell>
-                                                                    <TableCell align="right">Nombre</TableCell>
-                                                                    <TableCell align="right">DNI</TableCell>
-                                                                    <TableCell align="right">Empresa</TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                {
-                                                                    employeesSorted.map(employee => (
-                                                                        <EmployeeListItem
-                                                                            key={employee.id}
-                                                                            employee={employee} />
-                                                                    ))
-                                                                }
-                                                            </TableBody>
-                                                        </Fragment>
-                                                        : <div className={styles.span}>No existen trabajadores</div>
-                                                }
-                                            </Fragment>
-                                            :
-                                            <Fragment>
-                                                {
-                                                    employeesSearch.length > 0 ?
-                                                        <Fragment>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                                    <TableCell align="right">Apellido</TableCell>
-                                                                    <TableCell align="right">Nombre</TableCell>
-                                                                    <TableCell align="right">DNI</TableCell>
-                                                                    <TableCell align="right">Empresa</TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                {employeesSearch.map(employee => (
-                                                                    <EmployeeListItem
-                                                                        key={employee.id}
-                                                                        employee={employee} />
-                                                                ))}
-                                                            </TableBody>
-                                                        </Fragment>
-                                                        : <div className={styles.span}>No existen trabajadores</div>
-                                                }
-                                            </Fragment>
-                                        }
-                                    </Fragment>
-                                </Table>
-                            </TableContainer>
+                                <WorkerList
+                                    employeesSearch={employeesSearch}
+                                    employeesSorted={employeesSorted}
+                                />
+                            </SearchBoxContext.Provider>
                         </div>
                     </Fragment>
                 }

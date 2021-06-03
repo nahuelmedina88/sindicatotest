@@ -59,7 +59,7 @@ const ExportButton = ({ employeesSearch, employeesSorted }) => {
     }
 
     return (
-        <>
+        <div>
             <Button
                 aria-controls="customized-menu"
                 aria-haspopup="true"
@@ -97,7 +97,7 @@ const ExportButton = ({ employeesSearch, employeesSorted }) => {
                 </StyledMenuItem>
 
             </StyledMenu>
-        </>
+        </div>
     );
 }
 

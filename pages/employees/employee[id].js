@@ -344,7 +344,9 @@ const SeeEmployee = () => {
                                 <div className={styles.rowSidebar}>
                                     <h4 className={styles.title}>Edad</h4>
                                     <span className={styles.spanIcon}><CakeRoundedIcon /></span>
-                                    <span className={styles.spanLabel}>{calcularEdad(employeeToSee.fecha_nacimiento)}</span>
+                                    <span className={styles.spanLabel}>
+                                        {employeeToSee.fecha_nacimiento && calcularEdad(employeeToSee.fecha_nacimiento)}
+                                    </span>
                                 </div>
                                 <Divider variant="middle" />
                                 <div className={styles.rowSidebar}>
@@ -360,12 +362,12 @@ const SeeEmployee = () => {
                                 <div className={styles.rowSidebar}>
                                     <h4 className={styles.title}>Fecha de Afiliación</h4>
                                     <span className={styles.spanIcon}><EventRoundedIcon /></span>
-                                    <span className={styles.spanLabel}>{getDateDDMMAAAA(employeeToSee.fecha_ingreso)}</span>
+                                    <span className={styles.spanLabel}>{employeeToSee.fecha_ingreso && getDateDDMMAAAA(employeeToSee.fecha_ingreso)}</span>
                                 </div>
                                 <div className={styles.rowSidebar}>
                                     <h4 className={styles.title}>Antigüedad</h4>
                                     <span className={styles.spanIcon}><HourglassEmptyRoundedIcon /></span>
-                                    <span className={styles.spanLabel}>{calcularEdad(employeeToSee.fecha_ingreso)}</span>
+                                    <span className={styles.spanLabel}>{employeeToSee.fecha_ingreso && calcularEdad(employeeToSee.fecha_ingreso)}</span>
                                 </div>
                                 <div className={styles.rowSidebar}>
                                     <h4 className={styles.title}>Sección</h4>
@@ -419,15 +421,15 @@ const SeeEmployee = () => {
                                                 <Divider className={styles.divider} />
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>DNI</span>
-                                                    <span className={styles.spanLabel}>{numberWithPoint(employeeToSee.dni)}</span>
+                                                    <span className={styles.spanLabel}>{employeeToSee.dni && numberWithPoint(employeeToSee.dni)}</span>
                                                 </div>
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>CUIT</span>
-                                                    <span className={styles.spanLabel}>{formatToCUIT(employeeToSee.cuil)}</span>
+                                                    <span className={styles.spanLabel}>{employeeToSee.cuil && formatToCUIT(employeeToSee.cuil)}</span>
                                                 </div>
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>Fecha de Nacimiento</span>
-                                                    <span className={styles.spanLabel}>{getDateDDMMAAAA(employeeToSee.fecha_nacimiento)}</span>
+                                                    <span className={styles.spanLabel}>{employeeToSee.fecha_nacimiento && getDateDDMMAAAA(employeeToSee.fecha_nacimiento)}</span>
                                                 </div>
                                                 <div className={styles.itemRow}>
                                                     <span className={styles.title}>Estado Civil</span>
@@ -473,8 +475,8 @@ const SeeEmployee = () => {
                                                         <TableCell component="th" scope="row">
                                                             {row.apellido_familia}, {row.nombre_familia}
                                                         </TableCell>
-                                                        <TableCell align="right">{numberWithPoint(row.dni_familia)}</TableCell>
-                                                        <TableCell align="right">{getDateDDMMAAAA(row.fecha_nacimiento_familia)}</TableCell>
+                                                        <TableCell align="right">{row.dni_familia && numberWithPoint(row.dni_familia)}</TableCell>
+                                                        <TableCell align="right">{row.fecha_nacimiento_familia && getDateDDMMAAAA(row.fecha_nacimiento_familia)}</TableCell>
                                                         <TableCell align="right">{row.parentesco}</TableCell>
                                                         <TableCell align="right">{row.sexo}</TableCell>
                                                     </TableRow>
@@ -499,7 +501,7 @@ const SeeEmployee = () => {
                                                     <TableRow>
                                                         <TableCell align="left">{row.tipo}</TableCell>
                                                         <TableCell align="leftt">   {row.tipo === "Ficha Trabajador" ?
-                                                            getDateDDMMAAAA(getDateAAAAMMDDFromFicha(row)) :
+                                                            row && getDateDDMMAAAA(getDateAAAAMMDDFromFicha(row)) :
                                                             row.anio}
                                                         </TableCell>
                                                         <TableCell align="left">

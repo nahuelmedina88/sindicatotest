@@ -24,8 +24,11 @@
 // export default MyApp
 
 import '../styles/globals.scss'
-import { Provider } from "react-redux";
-import store from "../components/redux/store";
+// import { Provider } from "react-redux";
+// import store from "../components/redux/store";
+import { Provider } from 'react-redux'
+import { useStore } from "../components/redux/store";
+
 import FirebaseContext from "../firebase/context";
 import firebase from "../firebase/firebase";
 import useAuth from "../hooks/useAuth";
@@ -47,8 +50,12 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-export default function MyApp(props) {
-  const { Component, pageProps } = props;
+// export default function MyApp(props) {
+//   const { Component, pageProps } = props;
+export default function MyApp({ Component, pageProps }) {
+  const store = useStore(pageProps.initialReduxState)
+
+
   const user = useAuth();
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -63,7 +70,7 @@ export default function MyApp(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>My page</title>
+        <title>Sindicato de la Carne Zona Oeste</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>

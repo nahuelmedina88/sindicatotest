@@ -215,7 +215,8 @@ const WorkerListItemSchoolSupplies = ({ employee }) => {
     const handleChangeCheckBox = (e) => {
         let dniChecked = parseInt(e.target.id);
         const newEmployee = Object.assign({}, employee);
-        newEmployee.entregado = (employee.dni === dniChecked) && { checked: e.target.checked, anio: new Date().getFullYear() }
+        newEmployee.entregado = (employee.dni === dniChecked) &&
+            { checked: e.target.checked, anio: new Date().getFullYear() }
         let newFamiliares = employee.familia.map(familiar => {
             familiar.entregado = { checked: e.target.checked, anio: new Date().getFullYear() }
             return familiar;
