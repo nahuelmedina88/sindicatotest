@@ -31,7 +31,7 @@ const workerListByCompany = () => {
     let employeesSorted = employeesSelector.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
     employeesSorted = employeesSorted.filter(employee => employee.estado === "Activo");
     const dispatch = useDispatch();
-    const { firebase } = useContext(FirebaseContext);
+    const { firebase, user } = useContext(FirebaseContext);
     const companiesSelector = useSelector(state => state.companies.companies);
     const companiesSelect = companiesSelector.map(company => ({
         id: company.id,
@@ -68,7 +68,6 @@ const workerListByCompany = () => {
         }
     }, []);
 
-    const { user } = useContext(FirebaseContext);
     return (
         <>
             <Frame>

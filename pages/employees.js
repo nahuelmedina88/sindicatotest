@@ -56,8 +56,6 @@ const Employees = () => {
             window.location.href = "/login";
         }
     }, []);
-
-    const { user } = useContext(FirebaseContext);
     return (
         <>
             {user ?
