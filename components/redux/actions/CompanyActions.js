@@ -8,6 +8,7 @@ import {
     EDIT_COMPANY,
     EDIT_COMPANY_SUCCESS,
     EDIT_COMPANY_FAILURE,
+    SEE_COMPANY,
 } from "../types";
 // import axiosClient from "../config/axios";
 import sweetAlert from "sweetalert2";
@@ -83,6 +84,12 @@ export function editCompanyAction(company, firebase) {
     }
 }
 
+export function seeCompanyAction(company) {
+    return (dispatch) => {
+        dispatch(getCompanyToSee(company));
+    }
+}
+
 const addCompany = () => ({
     type: ADD_COMPANY
 });
@@ -116,4 +123,9 @@ const editCompanySuccess = (company) => ({
 
 const editCompanyFailure = () => ({
     type: EDIT_COMPANY_FAILURE
+});
+
+const getCompanyToSee = (company) => ({
+    type: SEE_COMPANY,
+    payload: company
 });

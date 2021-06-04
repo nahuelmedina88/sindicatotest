@@ -15,7 +15,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
 
 //Redux
-import { editCompanyAction, editCompanyAction2 } from "./redux/actions/CompanyActions";
+import { editCompanyAction, seeCompanyAction, editCompanyAction2 } from "./redux/actions/CompanyActions";
 import { useDispatch } from "react-redux";
 
 //Firebase
@@ -85,6 +85,11 @@ const Company = ({ company }) => {
         dispatch(editCompanyAction2(company));
         // history.push(`/employees/edit/${employee.id}`);
     }
+    const redirectToSee = (company) => {
+        dispatch(seeCompanyAction(company));
+        // history.push(`/employees/edit/${employee.id}`);
+    }
+
     // const redirectToSee = (company) => {
     //     dispatch(seeEmployeeAction(company));
     //     // history.push(`/employees/edit/${employee.id}`);
@@ -99,16 +104,14 @@ const Company = ({ company }) => {
             </TableCell>
             <TableCell align="right">{company.cuit}</TableCell>
             <TableCell align="right">{company.razonSocial}</TableCell>
-            {/* <TableCell align="right">
-                <Link
-                    href="/employees/employee[id]"
-                    as={`/employees/employee${company.id}`}
-                >
-                    <a className={`${classes.btn} ${classes.buttonPurple}`}
-                        onClick={() => redirectToSee(company)}
-                    >Ver Ficha</a>
-                </Link> 
-            </TableCell>*/}
+            <TableCell align="right">
+                <Link href="/companies/SeeCompany[id]"
+                    as={`/companies/SeeCompany${company.id}`}>
+                    <Button
+                        className={`${classes.buttonPurple}`}
+                        onClick={() => redirectToSee(company)}>Ver</Button>
+                </Link>
+            </TableCell>
             <TableCell>
                 {/* <Link
                     href="/companies/[id]"

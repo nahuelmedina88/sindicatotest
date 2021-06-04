@@ -8,13 +8,15 @@ import {
     GET_COMPANIES,
     GET_COMPANIES_FAILURE,
     GET_COMPANIES_SUCCESS,
+    SEE_COMPANY,
 } from "../types";
 
 const initialState = {
     error: null,
     companies: [],
     loading: false,
-    companyToEdit: null
+    companyToEdit: null,
+    companyToSee: null,
 }
 
 const companiesReducer = (state = initialState, action) => {
@@ -66,6 +68,11 @@ const companiesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 error: true
+            }
+        case SEE_COMPANY:
+            return {
+                ...state,
+                companyToSee: action.payload
             }
         default:
             return state;
