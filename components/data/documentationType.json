@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "value": "Actuacion Notarial: Representante Legal",
+        "label": "Actuacion Notarial: Representante Legal",
+        "name" :"documentacion"
+    },
+    {
+        "id": "2",
+        "value": "Elecciones Delegado Gremial del Personal",
+        "label": "Elecciones Delegado Gremial del Personal",
+        "name" :"documentacion"
+    },
+    {
+        "id": "3",
+        "value": "Denuncias Sindicato",
+        "label": "Denuncias Sindicato",
+        "name" :"documentacion"
+    },
+    {
+        "id": "4",
+        "value": "Denuncias Empresario",
+        "label": "Denuncias Empresario",
+        "name" :"documentacion"
+    }
+]

@@ -111,9 +111,9 @@ const useStyles = makeStyles({
 
 const EmployeeListItem = ({ employee }) => {
     const [open, setOpen] = useState(false);
-    const [openFicha, setOpenFicha] = useState(false);
-    const classes = useStyles();
 
+    const classes = useStyles();
+    const [openFicha, setOpenFicha] = useState(false);
     const [dni_familiar, setDNIFamiliar] = useState("");
     const [selectedFile, setSelectedFile] = useState("");
     const [documentacionURL, setDocumentacionURL] = useState("");

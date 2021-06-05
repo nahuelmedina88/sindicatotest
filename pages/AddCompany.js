@@ -40,6 +40,7 @@ const AddCompany = () => {
         numero_calle: '',
         cuit: '',
         razonSocial: '',
+        documentacion: [],
     }
 
     useEffect(() => {

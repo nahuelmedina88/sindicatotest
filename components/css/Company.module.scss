@@ -1,0 +1,26 @@
+.customFileInput::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.customFileInput {
+  width: 80vh;
+}
+
+.customFileInput::before {
+  content: "Seleccione el archivo";
+  padding: 0.4rem;
+  border-radius: 5px;
+  text-decoration: none;
+  border-width: 1px;
+  border-color: #fff;
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: rgb(86, 7, 138);
+  color: #fff;
+}
+.customFileInput:hover::before {
+  border-color: white;
+}

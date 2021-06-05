@@ -213,6 +213,36 @@ const SeeCompany = () => {
                                     </div>
                                 </div>
                             </TabPanel>
+                            <TabPanel value={value} index={1}>
+                                <TableContainer component={Paper}>
+                                    <Table className={classes2.table} aria-label="caption table">
+                                        {/* <caption>A basic table example with a caption</caption> */}
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="left">Tipo</TableCell>
+                                                <TableCell align="left">Fecha</TableCell>
+                                                <TableCell align="left">Enlace</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {companyToSee.documentacion.sort((a, b) => (a.fecha < b.fecha) ? 1 : ((b.fecha < a.fecha) ? -1 : 0)).map((row) => (
+                                                <TableRow>
+                                                    <TableCell align="left">{row.tipo}</TableCell>
+                                                    <TableCell align="leftt">{getDateDDMMAAAA(row.fecha)}</TableCell>
+                                                    <TableCell align="left">
+                                                        <a className={`${classes2.btn} ${classes2.buttonPurple}`}
+                                                            target="_blank"
+                                                            href={row.url}
+                                                            rel="noopener noreferrer">
+                                                            Ver Documento
+                                                        </a>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </TabPanel>
                         </div>
                         <Link href={"/generalWorkerList"}>
                             <a className={`${classes2.btn} ${classes2.buttonSave}`}
