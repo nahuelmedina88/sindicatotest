@@ -78,7 +78,7 @@ const Search = ({ employeesRedux }) => {
                     aria-label="Buscar"
                 />
                 <svg className={styles.icon}>
-                    <use xlinkHref="img/sprite.svg#icon-search"></use>
+                    <use href="/img/sprite.svg#icon-search"></use>
                 </svg>
             </div>
         </>

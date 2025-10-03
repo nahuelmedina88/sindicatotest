@@ -1,71 +1,36 @@
-// import '../styles/globals.scss'
-// import { Provider } from "react-redux";
-// import store from "../components/redux/store";
-// import FirebaseContext from "../firebase/context";
-// import firebase from "../firebase/firebase";
-// import useAuth from "../hooks/useAuth";
-
-// const MyApp = ({ Component, pageProps }) => {
-//   const user = useAuth();
-
-//   return (
-//     <FirebaseContext.Provider
-//       value={{
-//         firebase,
-//         user
-//       }}
-//     >
-//       <Provider store={store}>
-//         <Component {...pageProps} />
-//       </Provider>
-//     </FirebaseContext.Provider>
-//   );
-// }
-// export default MyApp
-
+// pages/_app.js
 import '../styles/globals.scss'
-// import { Provider } from "react-redux";
-// import store from "../components/redux/store";
-import { Provider } from 'react-redux'
-import { useStore } from "../components/redux/store";
+import '../lib/chartjs-register'  // ⬅️ este import sin asignación
+import Router from 'next/router'
+import Head from 'next/head'
+import NProgress from 'nprogress'
+import './css/nprogress.scss'
 
-import FirebaseContext from "../firebase/context";
-import firebase from "../firebase/firebase";
-import useAuth from "../hooks/useAuth";
+// Redux
+import { Provider as ReduxProvider } from 'react-redux'
+import { useStore } from '../components/redux/store'
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import Head from 'next/head';
-import { ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import theme from '../components/theme';
+// Firebase (nuevo provider)
+import FirebaseProvider from '../firebase/FirebaseProvider'
 
+// MUI (v5/v6)
+import * as React from 'react'
+import { ThemeProvider, CssBaseline } from '@mui/material'
+import theme from '../components/theme' // asegurate de migrar el theme a @mui
 
-import Router from 'next/router';
-import NProgress from 'nprogress';
-import "./css/nprogress.scss";
+// NProgress bindings
+Router.events.on('routeChangeStart', () => NProgress.start())
+Router.events.on('routeChangeComplete', () => NProgress.done())
+Router.events.on('routeChangeError', () => NProgress.done())
 
-//Binding events. 
-Router.events.on('routeChangeStart', () => NProgress.start());
-Router.events.on('routeChangeComplete', () => NProgress.done());
-Router.events.on('routeChangeError', () => NProgress.done());
-
-// export default function MyApp(props) {
-//   const { Component, pageProps } = props;
 export default function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
 
-
-  const user = useAuth();
   React.useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-  }, []);
-
-
+    // si tenías inyección JSS del lado servidor en MUI v4, ya no aplica en v5/v6
+    const jssStyles = document.querySelector('#jss-server-side')
+    if (jssStyles) jssStyles.parentElement.removeChild(jssStyles)
+  }, [])
 
   return (
     <React.Fragment>
@@ -74,24 +39,13 @@ export default function MyApp({ Component, pageProps }) {
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <FirebaseContext.Provider
-          value={{
-            firebase,
-            user
-          }}
-        >
-          <Provider store={store}>
+        <FirebaseProvider>
+          <ReduxProvider store={store}>
             <Component {...pageProps} />
-          </Provider>
-        </FirebaseContext.Provider>
+          </ReduxProvider>
+        </FirebaseProvider>
       </ThemeProvider>
     </React.Fragment>
-  );
+  )
 }
-
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
-};

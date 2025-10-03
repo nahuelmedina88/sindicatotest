@@ -1,39 +1,30 @@
+// components/WorkerList.js
 import React from 'react';
 import { SearchBoxContext } from "./context/SearchBoxContext";
 import WorkerListContent from './WorkerListContent';
 
-//Material UI
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableContainer from '@material-ui/core/TableContainer';
-import Paper from '@material-ui/core/Paper';
-
-const useStyles = makeStyles({
-    table: {
-        tableLayout: "fixed",
-    },
-});
+// Material UI
+import Table from '@mui/material/Table';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
 
 const WorkerList = ({ employeesSearch, employeesSorted }) => {
-    const { searchBoxValue, setSearchBoxValue } = React.useContext(SearchBoxContext);
-    const { companySelectValue, setcompanySelectValue } = React.useContext(SearchBoxContext);
-    const { chosenYearValue, setChosenYearValue } = React.useContext(SearchBoxContext);
+  const { searchBoxValue } = React.useContext(SearchBoxContext);
+  const { companySelectValue } = React.useContext(SearchBoxContext);
+  const { chosenYearValue } = React.useContext(SearchBoxContext);
 
-    const classes = useStyles();
-    return (
-        <>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="caption table">
-                    {!chosenYearValue && !companySelectValue && !searchBoxValue ?
-                        <WorkerListContent employees={employeesSorted} />
-                        :
-                        <WorkerListContent employees={employeesSearch} />
-                    }
-                </Table>
-            </TableContainer>
-        </>
-    );
-}
+  const showFiltered = chosenYearValue || companySelectValue || searchBoxValue;
+
+  return (
+    <TableContainer component={Paper}>
+      <Table sx={{ tableLayout: 'fixed' }} aria-label="caption table">
+        {showFiltered
+          ? <WorkerListContent employees={employeesSearch} />
+          : <WorkerListContent employees={employeesSorted} />
+        }
+      </Table>
+    </TableContainer>
+  );
+};
 
 export default WorkerList;
-

@@ -24,7 +24,7 @@ import { getCompaniesAction } from "../components/redux/actions/CompanyActions";
 import { FirebaseContext } from "../firebase";
 
 //Material UI
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 
 const workerListByYear = () => {
     const [searchBoxValue, setSearchBoxValue] = useState("");

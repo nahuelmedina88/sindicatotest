@@ -1,3 +1,4 @@
+// pages/WorkerNoActiveList.js
 import React, { Fragment, useEffect, useContext, useState } from 'react';
 
 import WorkerNoActiveListItem from "../components/WorkerNoActiveListItem";
@@ -6,159 +7,153 @@ import styles from "./css/generalWorkerList.module.scss";
 import Layout from "../components/layout/Layout";
 import Search from "../components/ui/Search";
 
-//Redux
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeesNoActiveAction } from "../components/redux/actions/EmployeeActions";
 
-//Firebase
+// Firebase
 import { FirebaseContext } from "../firebase";
 
-//Material UI
-import { CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+// MUI
+import { CircularProgress } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
+const WorkerNoActiveList = () => {
+  const [searchTextbox, setSearchTextBox] = useState("");
 
-const useStyles = makeStyles({
-    table: {
-        tableLayout: "fixed",
-    },
-});
+  const employeesSelector = useSelector((state) => state.employees.employees);
+  const employeesSearch = useSelector((state) => state.employees.employeesSearch);
+  const loading = useSelector((state) => state.employees.loading);
 
-const WorkerNoActiveList = (props) => {
-    const classes = useStyles(props);
-    const [searchTextbox, setSearchTextBox] = useState("");
+  const employeesSorted = [...employeesSelector].sort((a, b) =>
+    a.apellido > b.apellido ? 1 : b.apellido > a.apellido ? -1 : 0
+  );
 
-    let employeesSelector = useSelector(state => state.employees.employees);
-    let employeesSearch = useSelector(state => state.employees.employeesSearch);
-    const loading = useSelector(state => state.employees.loading);
-    let employeesSorted = employeesSelector.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-    const dispatch = useDispatch();
-    const { firebase } = useContext(FirebaseContext);
+  const dispatch = useDispatch();
+  const { firebase, user } = useContext(FirebaseContext);
 
-    const loadEmployees = (firebase) => {
-        dispatch(getEmployeesNoActiveAction(firebase));
-    }
-    const getSearchTextBox = (value) => {
-        setSearchTextBox(value);
-    }
+  const loadEmployees = (fb) => {
+    dispatch(getEmployeesNoActiveAction(fb));
+  };
 
-    useEffect(() => {
-        loadEmployees(firebase);
-    }, [dispatch]);
+  const getSearchTextBox = (value) => setSearchTextBox(value);
 
-    useEffect(() => {
-        if (!user) {
-            window.location.href = "/login";
-        }
-    }, []);
+  useEffect(() => {
+    loadEmployees(firebase);
+  }, [dispatch]);
 
-    const { user } = useContext(FirebaseContext);
-    return (
-        <>
-            <Layout>
-                {loading ?
-                    <CircularProgress />
-                    :
-                    <div className={styles.absCenterSelf}>
-                        <div className={styles.searchExportParent}>
-                            <Search
-                                className={styles.searchBox}
-                                employeesRedux={employeesSorted}
-                                getSearchTextBox={getSearchTextBox}
-                            ></Search>
-                        </div>
-                        <TableContainer component={Paper}>
-                            <Table className={classes.table} aria-label="caption table">
-                                {searchTextbox ?
-                                    <Fragment>
-                                        {employeesSearch.length > 0 ?
-                                            <Fragment>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="right">Nro Legajo</TableCell>
-                                                        <TableCell align="right">Apellido</TableCell>
-                                                        <TableCell align="right">Nombre</TableCell>
-                                                        <TableCell align="right">DNI</TableCell>
-                                                        <TableCell align="right">Empresa</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {employeesSearch.map(employee => (
-                                                        <WorkerNoActiveListItem
-                                                            key={employee.id}
-                                                            employee={employee} />
-                                                    ))}
-                                                </TableBody>
-                                            </Fragment>
-                                            :
-                                            <Fragment>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="right">Nro Legajo</TableCell>
-                                                        <TableCell align="right">Apellido</TableCell>
-                                                        <TableCell align="right">Nombre</TableCell>
-                                                        <TableCell align="right">DNI</TableCell>
-                                                        <TableCell align="right">Empresa</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    <TableRow><TableCell>No hay trabajadores</TableCell></TableRow>
-                                                </TableBody>
-                                            </Fragment>
-                                        }
-                                    </Fragment>
-                                    :
-                                    <Fragment>
-                                        {employeesSorted.length > 0 ?
-                                            <Fragment>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
-                                                        <TableCell align="right">Apellido</TableCell>
-                                                        <TableCell align="right">Nombre</TableCell>
-                                                        <TableCell align="right">DNI</TableCell>
-                                                        <TableCell align="right">Empresa</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {employeesSorted.map(employee => (
-                                                        <WorkerNoActiveListItem
-                                                            key={employee.id}
-                                                            employee={employee} />
-                                                    ))}
-                                                </TableBody>
-                                            </Fragment>
-                                            : <Fragment>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="right">Nro Legajo</TableCell>
-                                                        <TableCell align="right">Apellido</TableCell>
-                                                        <TableCell align="right">Nombre</TableCell>
-                                                        <TableCell align="right">DNI</TableCell>
-                                                        <TableCell align="right">Empresa</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    <TableRow><TableCell>No hay trabajadores</TableCell></TableRow>
-                                                </TableBody>
-                                            </Fragment>
-                                        }
-                                    </Fragment>
-                                }
-                            </Table>
-                        </TableContainer>
-                    </div>
-                }
-            </Layout>
-        </>
-    );
-}
+  useEffect(() => {
+    if (!user) window.location.href = "/login";
+  }, []);
+
+  return (
+    <Layout>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <div className={styles.absCenterSelf}>
+          <div className={styles.searchExportParent}>
+            <Search
+              className={styles.searchBox}
+              employeesRedux={employeesSorted}
+              getSearchTextBox={getSearchTextBox}
+            />
+          </div>
+
+          <TableContainer component={Paper}>
+            <Table
+              aria-label="caption table"
+              sx={{ tableLayout: 'fixed' }}   // ⬅️ reemplazo de makeStyles
+            >
+              {searchTextbox ? (
+                <Fragment>
+                  {employeesSearch.length > 0 ? (
+                    <Fragment>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="right">Nro Legajo</TableCell>
+                          <TableCell align="right">Apellido</TableCell>
+                          <TableCell align="right">Nombre</TableCell>
+                          <TableCell align="right">DNI</TableCell>
+                          <TableCell align="right">Empresa</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {employeesSearch.map((employee) => (
+                          <WorkerNoActiveListItem key={employee.id} employee={employee} />
+                        ))}
+                      </TableBody>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="right">Nro Legajo</TableCell>
+                          <TableCell align="right">Apellido</TableCell>
+                          <TableCell align="right">Nombre</TableCell>
+                          <TableCell align="right">DNI</TableCell>
+                          <TableCell align="right">Empresa</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>No hay trabajadores</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Fragment>
+                  )}
+                </Fragment>
+              ) : (
+                <Fragment>
+                  {employeesSorted.length > 0 ? (
+                    <Fragment>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell aria-sort="descending" align="right">Nro Legajo</TableCell>
+                          <TableCell align="right">Apellido</TableCell>
+                          <TableCell align="right">Nombre</TableCell>
+                          <TableCell align="right">DNI</TableCell>
+                          <TableCell align="right">Empresa</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {employeesSorted.map((employee) => (
+                          <WorkerNoActiveListItem key={employee.id} employee={employee} />
+                        ))}
+                      </TableBody>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="right">Nro Legajo</TableCell>
+                          <TableCell align="right">Apellido</TableCell>
+                          <TableCell align="right">Nombre</TableCell>
+                          <TableCell align="right">DNI</TableCell>
+                          <TableCell align="right">Empresa</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>No hay trabajadores</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Fragment>
+                  )}
+                </Fragment>
+              )}
+            </Table>
+          </TableContainer>
+        </div>
+      )}
+    </Layout>
+  );
+};
 
 export default WorkerNoActiveList;

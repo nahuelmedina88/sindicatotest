@@ -1,282 +1,192 @@
+// pages/SchoolSuppliesReport.js
 import React, { useEffect, useContext, useState } from 'react';
 import Layout from "../components/layout/Layout";
 import styles from "./css/SchoolSuppliesReport.module.scss";
 
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeesActiveAction } from "../components/redux/actions/EmployeeActions";
 
-//Firebase
-import { FirebaseContext } from "../firebase";
+// Auth (para gatear si no hay usuario)
+import FirebaseContext from "../firebase/context";
 
-import { AutoSizer } from 'react-virtualized';
-import 'react-virtualized/styles.css'; // only needs to be imported once
-
-import '../node_modules/react-vis/dist/style.css';
+// Recharts
 import {
-    FlexibleXYPlot,
-    XYPlot,
-    LineSeries,
-    VerticalGridLines,
-    HorizontalGridLines,
-    VerticalBarSeries,
-    RadialChart,
-    DiscreteColorLegend,
-    Hint,
-    XAxis,
-    YAxis
-} from 'react-vis';
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from 'recharts';
 
+const COLORS = [
+  '#8884d8', '#82ca9d', '#ffc658', '#ff7f50',
+  '#8dd1e1', '#a4de6c', '#d0ed57', '#d88884'
+];
 
 const SchoolSuppliesReport = () => {
-    const [dataKit, setDataKit] = useState("");
-    const [dataGuardapolvo, setDataGuardapolvo] = useState("");
-    const [dataPie, setDataPie] = useState([]);
-    let employeesSelector = useSelector(state => state.employees.employees);
-    const dispatch = useDispatch();
-    const { firebase } = useContext(FirebaseContext);
-    const [hintValue, setHintValue] = useState("");
+  const [dataKit, setDataKit] = useState([]);
+  const [dataGuardapolvo, setDataGuardapolvo] = useState([]);
+  const [dataPie, setDataPie] = useState([]);
 
-    const getData = (array) => {
-        let objArray = "";
-        if (array === "Guardapolvo") {
-            objArray = employeesSelector.map(empleado => {
-                let cantidadDeGuardapolvosPorEmpleado = empleado.familia && empleado.familia.reduce((contarGuardapolvos, familiar) => {
-                    let ultimoItem = familiar.talle && familiar.talle.length - 1;
-                    let guardapolvoIndice = familiar.talle[ultimoItem] && familiar.talle[ultimoItem].numero.toString() || null;
-                    //Si ContarGUardapolvos[g] no existe entonces asigna 0
-                    contarGuardapolvos[guardapolvoIndice] = (contarGuardapolvos[guardapolvoIndice] || 0) + 1;
-                    return contarGuardapolvos;
-                }, {});
-                return cantidadDeGuardapolvosPorEmpleado;
-            });
-        } else {
-            objArray = employeesSelector.map(empleado => {
-                let cantidadDeKitsPorEmpleado = empleado.familia && empleado.familia.reduce((contarKits, familiar) => {
-                    let ultimoItem = familiar.kit_escolar && familiar.kit_escolar.length - 1;
-                    let indice = familiar.kit_escolar[ultimoItem] && familiar.kit_escolar[ultimoItem].tipo || null;
-                    //Si ContarGUardapolvos[g] no existe entonces asigna 0
-                    contarKits[indice] = (contarKits[indice] || 0) + 1;
-                    return contarKits;
-                }, {});
-                return cantidadDeKitsPorEmpleado;
-            });
+  const employeesSelector = useSelector(state => state.employees.employees);
+  const dispatch = useDispatch();
+
+  // user para redirigir si no hay auth (según tus reglas)
+  const { user } = useContext(FirebaseContext);
+
+  // Si tu action ya usa el SDK modular internamente, no necesita param
+  useEffect(() => {
+    dispatch(getEmployeesActiveAction());
+  }, [dispatch]);
+
+  // Gateo simple (mantené tu lógica si usás router)
+  useEffect(() => {
+    if (!user) {
+      window.location.href = "/login";
+    }
+  }, [user]);
+
+  // ---- Helpers de agregación (misma idea que tenías) ----
+  const buildBarDataFromCounts = (objCounts) =>
+    Object.keys(objCounts).filter(k => k !== 'null' && k !== 'undefined').map((k, idx) => ({
+      name: k,
+      value: objCounts[k]
+    }));
+
+  const getGuardapolvoData = () => {
+    // Cuenta por talle (último registro por familiar en el año actual)
+    const currentYear = new Date().getFullYear();
+    const bySize = {};
+
+    employeesSelector.forEach(emp => {
+      (emp.familia || []).forEach(fam => {
+        const last = (fam.talle || [])[ (fam.talle || []).length - 1 ];
+        if (last && last.numero && last.anio === currentYear) {
+          const key = String(last.numero);
+          bySize[key] = (bySize[key] || 0) + 1;
         }
-        console.log(objArray);
-        let objArray2 = objArray.filter(x => x !== undefined);
+      });
+    });
 
-        let lastCantidad = objArray2.reduce((contador, obj) => {
-            Object.entries(obj).forEach(([key, value]) => {
-                let indice = key && key || null;
-                contador[indice] = value > 1 ? (contador[indice] + value || 0 + value) : (contador[indice] || 0) + 1;
-            });
-            return contador;
-        }, {});
-        delete lastCantidad.null;
-        let guardapolvos = Object.keys(lastCantidad);
-        let cantidad = Object.values(lastCantidad);
-        let newData = [];
-        guardapolvos.map((item, idx) => {
-            newData.push({ x: item, y: cantidad[idx] })
-        });
-        array === "Guardapolvo" ? setDataGuardapolvo(newData) : setDataKit(newData);
-    }
+    setDataGuardapolvo(buildBarDataFromCounts(bySize));
+  };
 
-    const isObjEmpty = (obj) => {
-        for (let prop in obj) {
-            if (obj.hasOwnProperty(prop)) return false;
+  const getKitData = () => {
+    // Cuenta por tipo de kit (último registro por familiar en el año actual)
+    const currentYear = new Date().getFullYear();
+    const byKit = {};
+
+    employeesSelector.forEach(emp => {
+      (emp.familia || []).forEach(fam => {
+        const last = (fam.kit_escolar || [])[ (fam.kit_escolar || []).length - 1 ];
+        if (last && last.tipo && last.anio === currentYear) {
+          const key = String(last.tipo);
+          byKit[key] = (byKit[key] || 0) + 1;
         }
-        return true;
+      });
+    });
+
+    setDataKit(buildBarDataFromCounts(byKit));
+  };
+
+  const getDeliveredData = () => {
+    const currentYear = new Date().getFullYear();
+    let entregados = 0;
+    let sinEntregar = 0;
+
+    employeesSelector.forEach(emp => {
+      const e = emp.entregado;
+      if (e && typeof e === 'object' && e.anio === currentYear) {
+        if (e.checked) entregados += 1;
+        else sinEntregar += 1;
+      }
+    });
+
+    setDataPie([
+      { name: 'Entregados', value: entregados },
+      { name: 'Sin Entregar', value: sinEntregar }
+    ]);
+  };
+
+  useEffect(() => {
+    if (!employeesSelector || employeesSelector.length === 0) {
+      setDataGuardapolvo([]);
+      setDataKit([]);
+      setDataPie([]);
+      return;
     }
+    getGuardapolvoData();
+    getKitData();
+    getDeliveredData();
+  }, [employeesSelector]);
 
-    const getDataDelivered = () => {
-        let cantidadEntregado = 0;
-        let cantidadNoEntregado = 0;
-        employeesSelector.map((empleado) => {
-            cantidadEntregado = empleado.entregado &&
-                empleado.entregado.checked === true &&
-                empleado.entregado.anio === new Date().getFullYear() ?
-                cantidadEntregado + 1 : cantidadEntregado;
-            cantidadNoEntregado = empleado.entregado &&
-                empleado.entregado.checked === false &&
-                empleado.entregado.anio === new Date().getFullYear() ?
-                cantidadNoEntregado + 1 : cantidadNoEntregado;
-        });
+  return (
+    <Layout homepage={true}>
+      <div className={styles.rowChartBar}>
+        <h3>Cantidad de Guardapolvos por Talle</h3>
+        <div style={{ height: 320, width: '100%' }} className="mb-4">
+          <ResponsiveContainer>
+            <BarChart data={dataGuardapolvo} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" name="Guardapolvos" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
 
-        //Determinar la cantidad de trabajadores con falta de documentación teniendo
-        //los guardapolvos y los kit escolares sabidos y que no esten entregados.
-        // let cantidadSinDocumentacion = 0;
-        // employeesSelector.map(empleado => {
-        //     if (empleado && !isObjEmpty(empleado.entregado) && empleado.entregado.checked === false) {
-        //         let arrOfChecks = [];
-        //         empleado.familia && empleado.familia.map(familiar => {
-        //             let kit = familiar.kit_escolar && familiar.kit_escolar[familiar.kit_escolar.length - 1] || 1;
-        //             let guardapolvo = familiar.talle && familiar.talle[familiar.talle.length - 1] || 1;
-        //             let doc = familiar.documentacion && familiar.documentacion[familiar.documentacion.length - 1] || 1;
-        //             if (kit && kit.tipo && kit.anio === new Date().getFullYear() &&
-        //                 guardapolvo && guardapolvo.numero && guardapolvo.anio === new Date().getFullYear() &&
-        //                 doc && !doc.url) {
-        //                 arrOfChecks.push(true);
-        //             }
-        //             else {
-        //                 arrOfChecks.push(false);
-        //             }
-        //         });
-        //         let found = arrOfChecks.find(item => item === false);
-        //         if (found !== false) {
-        //             cantidadSinDocumentacion = (cantidadSinDocumentacion || 0) + 1
-        //         }
-        //     }
-        // });
+      <div className={styles.rowChartBar}>
+        <h3>Cantidad de Kits Escolares por Tipo</h3>
+        <div style={{ height: 320, width: '100%' }} className="mb-4">
+          <ResponsiveContainer>
+            <BarChart data={dataKit} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" name="Kits" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
 
-        // //Determinar la cantidad de trabajadores sin tener los guardapolvos y el kit sabidos
-        // //Sin tener documentacion y que no esten obviamente entregados.
-        // let cantidadSinGuardapolvoOKit = 0;
-        // employeesSelector.map(empleado => {
-        //     if (empleado && !isObjEmpty(empleado.entregado) && empleado.entregado.checked === false) {
-        //         let arrOfChecks = [];
-        //         empleado.familia && empleado.familia.map(familiar => {
-        //             let kit = familiar.kit_escolar && familiar.kit_escolar[familiar.kit_escolar.length - 1] || 1;
-        //             let guardapolvo = familiar.talle && familiar.talle[familiar.talle.length - 1] || 1;
-        //             // let doc = familiar.documentacion && familiar.documentacion[familiar.documentacion.length - 1] || 1;
-        //             if (kit && kit !== 1 && kit.tipo && kit.anio === new Date().getFullYear() &&
-        //                 guardapolvo && guardapolvo !== 1 && guardapolvo.numero && guardapolvo.anio === new Date().getFullYear()) {
-        //                 arrOfChecks.push(false);
-        //             }
-        //             else {
-        //                 arrOfChecks.push(true);
-        //             }
-        //         });
-        //         let found = arrOfChecks.find(item => item === true);
-        //         if (found !== true) {
-        //             cantidadSinGuardapolvoOKit = (cantidadSinGuardapolvoOKit || 0) + 1
-        //         }
-        //     }
-        // });
-
-        console.log("Entregados: " + cantidadEntregado);
-        console.log("Entregados: " + cantidadNoEntregado);
-        // console.log("Sin Doc: " + cantidadSinDocumentacion);
-        // console.log("Sin Guardapolvo o Kit: " + cantidadSinGuardapolvoOKit);
-        // const myData = [
-        //     {
-        //         title: 'Entregados', count: cantidadEntregado,
-        //     },
-        //     {
-        //         title: 'Sin Documentacion', count: cantidadSinDocumentacion,
-        //     },
-        //     {
-        //         title: 'Sin Informacion', count: cantidadSinGuardapolvoOKit,
-        //     }
-        // ]
-        const myData = [
-            {
-                title: 'Entregados', count: cantidadEntregado,
-            },
-            {
-                title: 'Sin Entregar', count: cantidadNoEntregado,
-            }
-        ]
-        setDataPie(myData);
-
-    }
-
-    const loadEmployees = (firebase) => {
-        dispatch(getEmployeesActiveAction(firebase));
-    }
-
-    useEffect(() => {
-        loadEmployees(firebase);
-    }, []);
-
-    useEffect(() => {
-        getData("Guardapolvo");
-        getData("Kit");
-        getDataDelivered();
-    }, [employeesSelector]);
-
-    useEffect(() => {
-        if (!user) {
-            window.location.href = "/login";
-        }
-    }, []);
-
-    const { user } = useContext(FirebaseContext);
-    return (
-        <Layout homepage={true}>
-            <div className={styles.rowChartBar}>
-                <h3>Cantidad de Guardapolvos por Talle</h3>
-                <div style={{ height: '100%', width: '100%' }} className={"mb-4"}>
-                    <AutoSizer>
-                        {({ height, width }) => (
-                            <XYPlot height={height} width={width}
-                                xType="ordinal">
-                                <VerticalBarSeries data={dataGuardapolvo} color="rgb(5, 9, 126)" />
-                                <XAxis />
-                                <YAxis />
-                            </XYPlot>
-                        )}
-                    </AutoSizer>
-                </div>
-            </div>
-            <div className={styles.rowChartBar}>
-                <h3>Cantidad de Kit Escolares por Tipo</h3>
-                <div style={{ height: '100%', width: '100%' }} className={"mb-4"}>
-                    <AutoSizer>
-                        {({ height, width }) => (
-                            <XYPlot height={height} width={width}
-                                xType="ordinal">
-                                <VerticalBarSeries data={dataKit} color="rgb(11, 76, 14)" />
-                                <XAxis />
-                                <YAxis />
-                            </XYPlot>
-                        )}
-                    </AutoSizer>
-                </div>
-            </div >
-
-            <div className={styles.rowChartBar}>
-                <h3>Total Entregas</h3>
-                <div style={{ height: '100%', width: '100%' }} >
-                    <AutoSizer>
-                        {({ height, width }) => (
-                            <RadialChart
-                                data={dataPie}
-                                width={width}
-                                height={height}
-                                innerRadius={20}
-                                radius={90}
-                                getAngle={d => d.count}
-                                getLabel={d => d.count}
-                                showLabels
-                                onValueMouseOver={v => setHintValue({ value: v })}
-                                onSeriesMouseOut={v => setHintValue({ value: false })}
-                            >
-                                {/* {hintValue !== false &&
-                                    <Hint value={hintValue.value}>
-                                        <div style={{ fontSize: 20, color: '#111' }}>
-                                            {hintValue.value.title}
-                                        </div>
-                                    </Hint>} */}
-                            </RadialChart>
-                        )}
-
-                    </AutoSizer>
-                </div>
-                <div style={{ height: '100%', width: '100%' }}>
-                    <AutoSizer>
-                        {({ height, width }) => (
-                            <DiscreteColorLegend
-                                width={width}
-                                height={height}
-                                items={dataPie.map(d => d.title)} />
-                        )}
-
-                    </AutoSizer>
-                </div>
-            </div>
-        </Layout >
-
-    );
-}
+      <div className={styles.rowChartBar}>
+        <h3>Total Entregas</h3>
+        <div style={{ height: 320, width: '100%' }}>
+          <ResponsiveContainer>
+            <PieChart>
+              <Tooltip />
+              <Legend />
+              <Pie
+                data={dataPie}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={60}
+                outerRadius={90}
+                label
+                isAnimationActive={false}
+              >
+                {dataPie.map((entry, idx) => (
+                  <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </Layout>
+  );
+};
 
 export default SchoolSuppliesReport;

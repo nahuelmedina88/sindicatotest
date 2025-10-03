@@ -2,18 +2,16 @@ import React, { useEffect, useContext, useState } from 'react';
 import Layout from "../components/layout/Layout";
 import styles from "./css/Homepage.module.scss";
 
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import { CircularProgress } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
-import PeopleIcon from '@material-ui/icons/People';
-import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import { CircularProgress } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 
 //Helpers
 import { numberWithPoint } from "../components/helpers/formHelper";
@@ -23,26 +21,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getEmployeesAction } from "../components/redux/actions/EmployeeActions";
 
 //Firebase
-import { FirebaseContext } from "../firebase";
+import FirebaseContext from "../firebase/context";
 
-import Link from "next/link"
-
-import { AutoSizer } from 'react-virtualized';
-import 'react-virtualized/styles.css'; // only needs to be imported once
-
-import '../node_modules/react-vis/dist/style.css';
-import {
-    FlexibleXYPlot,
-    XYPlot,
-    LineSeries,
-    VerticalGridLines,
-    HorizontalGridLines,
-    VerticalBarSeries,
-    XAxis,
-    YAxis
-} from 'react-vis';
-import { TableFooter } from '@material-ui/core';
+import { TableFooter } from '@mui/material';
 import { Fragment } from 'react';
+import { Bar } from 'react-chartjs-2';
 
 
 const columns = [
@@ -67,47 +50,14 @@ const columns = [
         align: 'right'
     },
 ];
-const useStyles = makeStyles({
-    icon: {
-        fontSize: "20vh",
-        borderStyle: "solid",
-        borderRadius: "50px",
-    },
-    root: {
-        width: '100%',
-        opacity: 0.8,
-    },
-    container: {
-        maxHeight: 200,
-    },
-    btn: {
-        padding: "0.4rem",
-        borderRadius: "5px",
-        textDecoration: "none",
-        borderWidth: "1px",
-        borderColor: "#fff",
-        fontSize: "1rem",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    buttonPurple: {
-        backgroundColor: "rgb(86, 7, 138)",
-        color: "#fff",
-        "&:hover": {
-            backgroundColor: "rgb(86, 7, 138,0.7)",
-        }
-    },
-});
-
 
 const Homepage = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(3);
     const [lastWorker, setLastWorker] = React.useState("");
     const [rowsLength, setRowsLength] = React.useState(0);
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    const handleChangePage = (_event, newPage) => {
+    setPage(newPage);
     };
 
     const handleChangeRowsPerPage = (event) => {
@@ -115,7 +65,6 @@ const Homepage = () => {
         setPage(0);
     };
 
-    const classes = useStyles();
     const [data, setData] = useState([]);
     const dispatch = useDispatch();
     const { firebase } = useContext(FirebaseContext);
@@ -124,10 +73,6 @@ const Homepage = () => {
     let inactiveEmployees = employeesSelector.filter(item => item.estado === "Inactivo");
     let activeEmployees = employeesSelector.filter(item => item.estado === "Activo");
     let employeesSorted = activeEmployees.sort((a, b) => (a.apellido > b.apellido) ? 1 : ((b.apellido > a.apellido) ? -1 : 0));
-
-    const loadEmployees = (firebase) => {
-        dispatch(getEmployeesAction(firebase));
-    }
 
     const getPorcentageAfiliados = () => {
         let current = activeEmployees.length;
@@ -181,11 +126,11 @@ const Homepage = () => {
         let counter = 0;
         let lastYear = new Date().getFullYear();
         lastYear = (lastYear - 1).toString();
-        let date = lastYear + "-12-31"; //"2020-12-31"
+        let date = lastYear + "-12-31";
         let dateObject = new Date(date);
         inactiveEmployees.map(employee => {
             let mydate = new Date(employee.fecha_baja);
-            if (mydate >= dateObject) { //"2021-03-29" <= "2020-12-31"
+            if (mydate >= dateObject) {
                 counter = counter + 1;
             }
         });
@@ -224,9 +169,12 @@ const Homepage = () => {
         setRowsLength(activeEmployees.length);
     }
 
+    const { user } = useContext(FirebaseContext);
     useEffect(() => {
-        loadEmployees(firebase);
-    }, []);
+    if (user) {
+        dispatch(getEmployeesAction());
+    }
+    }, [user, dispatch]);
 
     useEffect(() => {
         getData();
@@ -240,13 +188,9 @@ const Homepage = () => {
         }
     }, []);
 
-    const { user } = useContext(FirebaseContext);
-
     return (<Layout homepage={true}>
         <div className={styles.firstRow}>
             <div className={`${styles.amountWorker} ${styles.bgColorAf}`}>
-                {/* Cantidad de Afiliados {employeesSelector.length} */}
-                {/* <PeopleIcon className={classes.icon} /> */}
                 <div className={styles.textSpan}>Afiliados</div>
                 <div className={styles.numberSpan}>
                     {loading ? <CircularProgress /> : activeEmployees.length}
@@ -258,8 +202,6 @@ const Homepage = () => {
 
             </div>
             <div className={`${styles.amountWorker} ${styles.bgColorDes}`}>
-                {/* Cantidad de Afiliados {employeesSelector.length} */}
-                {/* <PeopleIcon className={classes.icon} /> */}
                 <div className={styles.textSpan}>Desafiliados</div>
                 <div className={styles.numberSpan}>
                     {loading ? <CircularProgress /> : inactiveEmployees.length}
@@ -271,7 +213,7 @@ const Homepage = () => {
             <div className={styles.lastWorker}>
                 <div className={styles.iconImage}>
                     <svg className={styles.icon}>
-                        <use xlinkHref="/img/sprite.svg#icon-user"></use>
+                        <use href="/img/sprite.svg#icon-user"></use>
                     </svg>
                 </div>
                 <div className={styles.column}>
@@ -282,33 +224,42 @@ const Homepage = () => {
                             <div>Afiliado Nro {lastWorker.nroLegajo}</div>
                         </Fragment>
                     }
-                    {/* <div>Frigorífico {lastWorker.nroLegajo}</div> */}
                 </div>
             </div>
         </div>
         <div className={styles.secondRow}>
             <h3>Afiliados por empresa</h3>
-            <div style={{ height: '100%', width: '100%' }} className={"mb-4"}>
-
-                <AutoSizer>
-                    {({ height, width }) => (
-                        <XYPlot height={height} width={width}
-                            xType="ordinal">
-                            <VerticalBarSeries
-                                data={data}
-                                color="rgb(5, 9, 126)"
-                            />
-                            <XAxis />
-                            <YAxis />
-                        </XYPlot>
-                    )}
-                </AutoSizer>
+            <div style={{ height: 320, width: '100%' }} className={"mb-4"}>
+                <Bar
+                    data={{
+                    labels: data.map(d => d.x),
+                    datasets: [
+                        {
+                        label: 'Afiliados',
+                        data: data.map(d => d.y),
+                        },
+                    ],
+                    }}
+                    options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { autoSkip: true, maxRotation: 0 }, grid: { display: false } },
+                        y: { beginAtZero: true },
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        title: { display: false },
+                        tooltip: { enabled: true },
+                    },
+                    }}
+                />
             </div>
         </div >
         <div className={styles.thirdRow}>
             <h3>Padrón General</h3>
-            <Paper className={classes.root}>
-                <TableContainer className={classes.container}>
+            <Paper sx={{ width: '100%', opacity: 0.8 }}>
+                <TableContainer sx={{ maxHeight: 200 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
@@ -348,43 +299,18 @@ const Homepage = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                {/* <TableFooter> */}
-                {/* <TableRow> */}
                 <TablePagination
-                    rowsPerPageOptions={[3, 5, 10, 25, 100]}
-                    component="div"
-                    count={rowsLength}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                    labelRowsPerPage={"Afiliados por página"}
-                    nextIconButtonText={"Próxima página"}
+                rowsPerPageOptions={[3, 5, 10, 25, 100]}
+                component="div"
+                count={rowsLength}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Afiliados por página"
                 />
-                {/* <TableCell>
-                            <Link href="/generalWorkerList">
-                                <a className={`${classes.btn} ${classes.buttonPurple}`}
-                                >Ver Afiliados en detalle</a>
-                            </Link>
-                        </TableCell> */}
-                {/* </TableRow> */}
-                {/* </TableFooter> */}
             </Paper>
         </div>
     </Layout >);
 }
-// export async function getServerSideProps() {
-//     // const { user } = useContext(FirebaseContext);
-//     if (!user) {
-//         return {
-//             redirect: {
-//                 destination: "/login",
-//                 permanent: false
-//             }
-//         };
-//     }
-//     return {
-//         props: { user },
-//     };
-// }
 export default Homepage;

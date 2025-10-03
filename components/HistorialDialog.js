@@ -1,153 +1,146 @@
+// components/HistorialDialog.js
 import React, { useState, Fragment } from 'react';
 
-//Next
-import Link from "next/link";
+// Material UI
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 
-//Material UI
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+// Si más adelante reactivás esta columna, dejá el import.
+// import SeeDocumentationList from "./SeeDocumentationList";
 
-import SeeDocumentationList from "./SeeDocumentationList";
-
-const useStyles = makeStyles({
-    btn: {
-        padding: "0.4rem",
-        borderRadius: "5px",
-        textDecoration: "none",
-        borderWidth: "1px",
-        borderColor: "#fff",
-        fontSize: "1rem",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    buttonInfo: {
-        backgroundColor: "#00a2ba",
-        color: "#fff",
-        "&:hover": {
-            backgroundColor: "#00a2bab5",
-        }
-    },
-    buttonClose: {
-        backgroundColor: "rgb(138,7,7)",
-        color: "#fff",
-        "&:hover": {
-            backgroundColor: "rgb(138,7,7, 0.7)",
-        }
-    },
-});
+const btnBaseSx = {
+  px: 1,
+  py: 0.5,
+  borderRadius: '5px',
+  textDecoration: 'none',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: '#fff',
+  fontSize: '1rem',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+};
 
 const HistorialDialog = ({ row }) => {
-    const classes = useStyles();
-    const [openHistorial, setOpenHistorial] = useState("");
-    const handleClickOpenHistorial = (dni) => {
-        setOpenHistorial(dni);
-    };
+  const [openHistorial, setOpenHistorial] = useState("");
 
-    const handleCloseHistorial = () => {
-        setOpenHistorial("");
-    };
+  const handleClickOpenHistorial = (dni) => {
+    setOpenHistorial(dni);
+  };
 
-    // const ArregloUtiles = (talle, kit_escolar, documentacion) => {
-    const ArregloUtiles = (talle, kit_escolar) => {
-        const currentYear = new Date().getFullYear();
-        let yearsArray = [];
-        for (let i = currentYear; i >= 2017; i--) {
-            yearsArray.push(i);
-        }
-        let nuevoArray = [];
-        yearsArray.map((itemAnio, idx) => {
-            let talleNumero = talle.map(item => {
-                if (item.anio === itemAnio) {
-                    return item.numero;
-                }
-            });
-            let tipoKit = kit_escolar.map(item => {
-                if (item.anio === itemAnio) {
-                    return item.tipo;
-                }
-            });
-            // let tipoDoc = documentacion.map(item => {
-            //     if (item.anio === itemAnio) {
-            //         return item.url;
-            //     }
-            // });
-            nuevoArray.push({
-                talleNumero: talleNumero.find(element => element !== undefined),
-                tipoKit: tipoKit.find(element => element !== undefined),
-                // tipoDoc: tipoDoc.find(element => element !== undefined),
-                anio: itemAnio
-            });
-        });
-        return nuevoArray;
+  const handleCloseHistorial = () => {
+    setOpenHistorial("");
+  };
+
+  // const ArregloUtiles = (talle, kit_escolar, documentacion) => {
+  const ArregloUtiles = (talle, kit_escolar) => {
+    const currentYear = new Date().getFullYear();
+    let yearsArray = [];
+    for (let i = currentYear; i >= 2017; i--) {
+      yearsArray.push(i);
     }
+    let nuevoArray = [];
+    yearsArray.forEach((itemAnio) => {
+      const talleNumero = talle.map(item => (item.anio === itemAnio ? item.numero : undefined));
+      const tipoKit = kit_escolar.map(item => (item.anio === itemAnio ? item.tipo : undefined));
+      // const tipoDoc = documentacion.map(item => (item.anio === itemAnio ? item.url : undefined));
+      nuevoArray.push({
+        talleNumero: talleNumero.find(el => el !== undefined),
+        tipoKit: tipoKit.find(el => el !== undefined),
+        // tipoDoc: tipoDoc.find(el => el !== undefined),
+        anio: itemAnio
+      });
+    });
+    return nuevoArray;
+  };
 
-    return (
-        <Fragment>
-            <Link href="#">
-                <a className={`${classes.btn} ${classes.buttonInfo}`}
-                    onClick={() => handleClickOpenHistorial(row.dni_familia)}
-                >Historial</a>
-            </Link>
-            <Dialog fullScreen open={openHistorial === row.dni_familia && row.dni_familia ? true : false}
-                onClose={handleCloseHistorial}
-                aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">
-                    {row.apellido_familia}, {row.nombre_familia}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Información detallada
-                                                    </DialogContentText>
-                    <TableContainer component={Paper}>
-                        <Table aria-label="caption table">
-                            {/* <caption>A basic table example with a caption</caption> */}
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left">Talle</TableCell>
-                                    <TableCell align="left">Kit Escolar</TableCell>
-                                    {/* <TableCell align="left">Documentación</TableCell> */}
-                                    <TableCell align="left">Año</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {/* ArregloUtiles(row.talle, row.kit_escolar, row.documentacion).map(item => ( */}
-                                {ArregloUtiles(row.talle, row.kit_escolar).map(item => (
-                                    <TableRow key={item.anio} id={item.anio}>
-                                        <TableCell align="left">{item && item.talleNumero}</TableCell>
-                                        <TableCell align="left">{item && item.tipoKit}</TableCell>
-                                        {/* <TableCell align="left">
-                                            {item.tipoDoc ?
-                                                <SeeDocumentationList item={item} />
-                                                : null
-                                            }
-                                        </TableCell> */}
-                                        <TableCell align="left">{item && item.anio}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <DialogActions>
-                        <Button variant="contained"
-                            className={classes.buttonClose}
-                            onClick={handleCloseHistorial}>Cerrar</Button>
-                    </DialogActions>
-                </DialogContent>
-            </Dialog>
-        </Fragment>
-    );
-}
+  return (
+    <Fragment>
+      {/* Antes había <Link><a/></Link>; ahora usamos directamente Button */}
+      <Button
+        variant="contained"
+        onClick={() => handleClickOpenHistorial(row.dni_familia)}
+        sx={{
+          ...btnBaseSx,
+          bgcolor: '#00a2ba',
+          color: '#fff',
+          '&:hover': { bgcolor: '#00a2bab5' }
+        }}
+      >
+        Historial
+      </Button>
+
+      <Dialog
+        fullScreen
+        open={openHistorial === row.dni_familia && Boolean(row.dni_familia)}
+        onClose={handleCloseHistorial}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          {row.apellido_familia}, {row.nombre_familia}
+        </DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            Información detallada
+          </DialogContentText>
+
+          <TableContainer component={Paper}>
+            <Table aria-label="caption table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Talle</TableCell>
+                  <TableCell align="left">Kit Escolar</TableCell>
+                  {/* <TableCell align="left">Documentación</TableCell> */}
+                  <TableCell align="left">Año</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* ArregloUtiles(row.talle, row.kit_escolar, row.documentacion).map(item => ( */}
+                {ArregloUtiles(row.talle, row.kit_escolar).map(item => (
+                  <TableRow key={item.anio} id={String(item.anio)}>
+                    <TableCell align="left">{item && item.talleNumero}</TableCell>
+                    <TableCell align="left">{item && item.tipoKit}</TableCell>
+                    {/* <TableCell align="left">
+                      {item.tipoDoc ? <SeeDocumentationList item={item} /> : null}
+                    </TableCell> */}
+                    <TableCell align="left">{item && item.anio}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <DialogActions sx={{ mt: 2 }}>
+            <Button
+              variant="contained"
+              onClick={handleCloseHistorial}
+              sx={{
+                ...btnBaseSx,
+                bgcolor: 'rgb(138,7,7)',
+                color: '#fff',
+                '&:hover': { bgcolor: 'rgba(138,7,7,0.7)' }
+              }}
+            >
+              Cerrar
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    </Fragment>
+  );
+};
+
 export default HistorialDialog;

@@ -1,139 +1,107 @@
-import React, { useEffect, useContext, useState } from 'react';
+// pages/companies.js
+import React, { useEffect, useContext, Fragment } from 'react';
 
 import Company from "../components/Company";
-
 import styles from "./css/generalWorkerList.module.scss";
 import Layout from "../components/layout/Layout";
 
-//Redux
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import { getCompaniesAction } from "../components/redux/actions/CompanyActions";
 
+// Next
 import Link from "next/link";
 
-//Firebase
-import { FirebaseContext } from "../firebase";
+// Firebase (provider con { user, ready, ... })
+import FirebaseContext from "../firebase/context";
 
-//Material UI
-import { CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { Fragment } from 'react';
+// MUI
+import { CircularProgress, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-const useStyles = makeStyles({
-    table: {
-        tableLayout: "fixed",
-    },
-    btn: {
-        padding: "0.4rem",
-        borderRadius: "5px",
-        textDecoration: "none",
-        borderWidth: "1px",
-        borderColor: "#fff",
-        fontSize: "1rem",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    buttonPurple: {
-        backgroundColor: "rgb(86, 7, 138)",
-        color: "#fff",
-        "&:hover": {
-            backgroundColor: "rgb(86, 7, 138,0.7)",
-        }
-    },
-    buttonClose: {
-        backgroundColor: "rgb(138,7,7)",
-        color: "#fff",
-        "&:hover": {
-            backgroundColor: "rgb(138,7,7, 0.7)",
-        }
-    },
-    buttonSave: {
-        backgroundColor: "rgb(7,138,7)",
-        color: "#fff",
-        "&:hover": {
-            backgroundColor: "rgb(7,138,7, 0.7)",
-        }
-    }
-});
+const btnBaseSx = {
+  p: '0.4rem',
+  borderRadius: '5px',
+  textDecoration: 'none',
+  borderWidth: '1px',
+  borderColor: '#fff',
+  fontSize: '1rem',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+};
 
+const sxSave = {
+  ...btnBaseSx,
+  bgcolor: 'rgb(7,138,7)',
+  color: '#fff',
+  '&:hover': { bgcolor: 'rgba(7,138,7,0.7)' }
+};
 
-const companies = (props) => {
-    const classes = useStyles(props);
-    let companiesSelector = useSelector(state => state.companies.companies);
-    const loading = useSelector(state => state.companies.loading);
-    let activeCompanies = companiesSelector.filter(item => item.estado === "Activo");
-    let companiesSorted = activeCompanies.sort((a, b) => (a.nombre > b.nombre) ? 1 : ((b.nombre > a.nombre) ? -1 : 0));
-    const dispatch = useDispatch();
-    const { firebase } = useContext(FirebaseContext);
+const CompaniesPage = () => {
+  const companiesSelector = useSelector(state => state.companies.companies);
+  const loading = useSelector(state => state.companies.loading);
 
-    const loadCompanies = (firebase) => {
-        dispatch(getCompaniesAction(firebase));
-    }
+  // ⚠️ No filtramos por estado acá. Si querés, podés mostrar solo Activas,
+  // pero contemplando que muchas no tienen el campo en DB.
+  const companiesSorted = companiesSelector; // ya vienen ordenadas del action
 
-    useEffect(() => {
-        loadCompanies(firebase);
-    }, []);
+  const dispatch = useDispatch();
+  const { user, ready } = useContext(FirebaseContext);
 
-    // useEffect(() => {
-    //     if (!user) {
-    //         window.location.href = "/login";
-    //     }
-    // }, []);
+  useEffect(() => {
+    // Gateo simple si tus reglas Firestore requieren auth
+    if (!ready) return;
+    if (!user) return; // si querés redirigir, hacelo acá
+    dispatch(getCompaniesAction());
+  }, [dispatch, ready, user]);
 
-    // const { user } = useContext(FirebaseContext);
+  return (
+    <Layout>
+      {!ready ? (
+        <CircularProgress />
+      ) : !user ? (
+        <div className={styles.absCenterSelf}>Necesitás iniciar sesión para ver Empresas.</div>
+      ) : loading ? (
+        <CircularProgress />
+      ) : (
+        <div className={styles.absCenterSelf}>
+          <TableContainer component={Paper}>
+            <Table aria-label="companies table" sx={{ tableLayout: 'fixed' }}>
+              {companiesSorted.length > 0 ? (
+                <Fragment>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="right">Nombre</TableCell>
+                      <TableCell align="right">Ciudad</TableCell>
+                      <TableCell align="right">Domicilio</TableCell>
+                      <TableCell align="right">CUIT</TableCell>
+                      <TableCell align="right">Razón Social</TableCell>
+                      <TableCell align="right">
+                        <Link href="/AddCompany">
+                          <Button variant="contained" sx={sxSave}>
+                            Agregar
+                          </Button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {companiesSorted.map(company => (
+                      <Company key={company.id} company={company} />
+                    ))}
+                  </TableBody>
+                </Fragment>
+              ) : (
+                <caption className={styles.span} style={{ captionSide: 'top' }}>
+                  No hay frigoríficos
+                </caption>
+              )}
+            </Table>
+          </TableContainer>
+        </div>
+      )}
+    </Layout>
+  );
+};
 
-    return (
-        <>
-            <Layout>
-                {loading ?
-                    <CircularProgress />
-                    :
-                    <div className={styles.absCenterSelf}>
-                        <TableContainer component={Paper}>
-                            <Table className={classes.table} aria-label="caption table">
-                                {companiesSorted.length > 0 ?
-                                    <Fragment>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell align="right">Nombre</TableCell>
-                                                <TableCell align="right">Ciudad</TableCell>
-                                                <TableCell align="right">Domicilio</TableCell>
-                                                <TableCell align="right">CUIT</TableCell>
-                                                <TableCell align="right">Razón Social</TableCell>
-                                                <TableCell align="right">
-                                                    <Link href="/AddCompany">
-                                                        <a className={`${classes.btn} ${classes.buttonSave}`}>
-                                                            Agregar
-                                                        </a>
-                                                    </Link>
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {companiesSorted.map(company => (
-                                                <Company
-                                                    key={company.id}
-                                                    company={company} />
-                                            ))}
-                                        </TableBody>
-                                    </Fragment>
-                                    : <span className={styles.span}>No hay frigoríficos</span>
-                                }
-                            </Table>
-                        </TableContainer>
-                    </div>
-                }
-            </Layout>
-        </>
-    );
-}
-
-export default companies;
+export default CompaniesPage;
